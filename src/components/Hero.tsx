@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, ArrowDown, Coffee } from 'lucide-react';
+import { MapPin, ArrowDown, ArrowUpRight } from 'lucide-react';
 import { personalInfo } from '../data/personal';
 import { ImageWithFallback } from './ImageWithFallback';
 import { MusicPlayer } from './MusicPlayer';
@@ -77,15 +77,15 @@ export const Hero: React.FC = () => {
               onClick={() => scrollTo('#about')}
               className="px-7 py-3.5 bg-ivory text-obsidian hover:bg-ivory-muted transition-all duration-300 text-xs font-semibold uppercase tracking-widest rounded-sm shadow-lg hover:shadow-ivory/10 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-terracotta"
             >
-              A little about me
+              Get to know me
             </button>
 
             <button
-              onClick={() => scrollTo('#contact')}
-              className="px-7 py-3.5 border border-terracotta/50 text-ivory hover:bg-terracotta hover:border-terracotta transition-all duration-300 text-xs font-semibold uppercase tracking-widest rounded-sm flex items-center gap-2 group focus:outline-none focus:ring-2 focus:ring-terracotta"
+              onClick={() => scrollTo('#personality')}
+              className="px-7 py-3.5 border border-editorial hover:border-terracotta text-ivory hover:text-ivory transition-all duration-300 text-xs font-semibold uppercase tracking-widest rounded-sm flex items-center gap-2 group focus:outline-none focus:ring-2 focus:ring-terracotta"
             >
-              <Coffee className="w-3.5 h-3.5 text-terracotta group-hover:text-ivory transition-colors" />
-              <span>Coffee sometime?</span>
+              <span>The rest of the story</span>
+              <ArrowUpRight className="w-3.5 h-3.5 text-stone group-hover:text-terracotta transition-colors" />
             </button>
           </div>
         </motion.div>
@@ -136,7 +136,7 @@ export const Hero: React.FC = () => {
         transition={{ duration: 0.8, delay: 0.8 }}
         className="flex items-center justify-between pt-8 border-t border-editorial text-xs text-stone font-mono tracking-wider"
       >
-        <span className="hidden sm:inline">01 // WELCOME</span>
+        <span className="hidden sm:inline">BANGALORE, IN</span>
         <button
           onClick={() => scrollTo('#about')}
           className="flex items-center gap-2 hover:text-ivory transition-colors group cursor-pointer mx-auto sm:mx-0 focus:outline-none focus:text-ivory"

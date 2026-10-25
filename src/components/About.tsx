@@ -13,11 +13,9 @@ export const About: React.FC = () => {
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6 pb-8 border-b border-editorial">
           <div className="space-y-3">
-            <div className="flex items-center gap-2 text-xs font-mono text-terracotta tracking-wider uppercase">
-              <span>02</span>
-              <span className="text-stone">/</span>
-              <span>About Me</span>
-            </div>
+            <span className="text-xs font-mono text-terracotta tracking-wider uppercase">
+              About
+            </span>
             <h2 className="font-serif text-3xl sm:text-5xl md:text-6xl text-ivory font-light tracking-tight max-w-2xl">
               {aboutData.heading}
             </h2>
@@ -65,13 +63,14 @@ export const About: React.FC = () => {
                     key={idx}
                     className="p-5 bg-charcoal/60 border border-editorial hover:border-terracotta/40 transition-colors duration-300 rounded-sm flex flex-col justify-between"
                   >
-                    <span className="text-[10px] font-mono text-stone mb-3">0{idx + 1}</span>
-                    <h3 className="font-serif text-lg text-ivory font-medium mb-2">
-                      {item.title}
-                    </h3>
-                    <p className="text-xs text-stone leading-relaxed font-sans">
-                      {item.description}
-                    </p>
+                    <div>
+                      <h3 className="font-serif text-lg text-ivory font-medium mb-2">
+                        {item.title}
+                      </h3>
+                      <p className="text-xs text-stone leading-relaxed font-sans">
+                        {item.description}
+                      </p>
+                    </div>
                   </div>
                 ))}
               </div>

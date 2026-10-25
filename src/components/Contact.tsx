@@ -47,7 +47,7 @@ export const Contact: React.FC = () => {
 
             {/* Supporting Copy */}
             <p className="text-base sm:text-lg text-stone-light max-w-xl mx-auto font-sans font-light leading-relaxed my-8">
-              If something here made you laugh, disagree with me, or think of a song I need to hear, say hi.
+              If something here caught your attention, you have a recommendation, or you just want to say hello, my inbox is open.
             </p>
 
             {/* CTAs */}

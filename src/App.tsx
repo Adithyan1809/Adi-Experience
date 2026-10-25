@@ -4,10 +4,8 @@ import { Hero } from './components/Hero';
 import { About } from './components/About';
 import { LifestyleGallery } from './components/LifestyleGallery';
 import { CurrentlyMe } from './components/CurrentlyMe';
-import { Projects } from './components/Projects';
 import { Personality } from './components/Personality';
-import { AdventureSelector } from './components/AdventureSelector';
-import { DateGenerator } from './components/DateGenerator';
+import { Projects } from './components/Projects';
 import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
 
@@ -25,10 +23,8 @@ export const App: React.FC = () => {
         <About />
         <LifestyleGallery />
         <CurrentlyMe />
-        <Projects />
         <Personality />
-        <AdventureSelector />
-        <DateGenerator />
+        <Projects />
         <Contact />
       </main>
 

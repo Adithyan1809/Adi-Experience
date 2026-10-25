@@ -7,8 +7,8 @@ const navLinks = [
   { label: 'About', href: '#about' },
   { label: 'Snapshots', href: '#lifestyle' },
   { label: 'Right Now', href: '#currently' },
+  { label: 'Little Things', href: '#personality' },
   { label: 'Projects', href: '#projects' },
-  { label: 'Questions', href: '#personality' },
   { label: 'Say Hello', href: '#contact' },
 ];
 
@@ -23,7 +23,7 @@ export const Navbar: React.FC = () => {
       setIsScrolled(window.scrollY > 40);
 
       // Section spy
-      const sections = ['hero', 'about', 'lifestyle', 'currently', 'projects', 'personality', 'contact'];
+      const sections = ['hero', 'about', 'lifestyle', 'currently', 'personality', 'projects', 'contact'];
       const scrollPosition = window.scrollY + 200;
 
       for (let i = sections.length - 1; i >= 0; i--) {
@@ -175,7 +175,7 @@ export const Navbar: React.FC = () => {
                 style={{ transitionDelay: `${idx * 40}ms` }}
               >
                 <span>{link.label}</span>
-                <span className="text-xs font-mono text-stone">0{idx + 1}</span>
+                <span className="text-xs font-mono text-stone/60">→</span>
               </a>
             );
           })}

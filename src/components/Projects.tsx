@@ -13,11 +13,9 @@ export const Projects: React.FC = () => {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6 pb-8 border-b border-editorial">
           <div className="space-y-3">
-            <div className="flex items-center gap-2 text-xs font-mono text-terracotta tracking-wider uppercase">
-              <span>05</span>
-              <span className="text-stone">/</span>
-              <span>Projects</span>
-            </div>
+            <span className="text-xs font-mono text-terracotta tracking-wider uppercase">
+              Projects
+            </span>
             <h2 className="font-serif text-3xl sm:text-5xl md:text-6xl text-ivory font-light tracking-tight">
               Things I've been building.
             </h2>
@@ -70,8 +68,10 @@ export const Projects: React.FC = () => {
                   {/* Left Column: Title, Role, Tags (5 cols) */}
                   <div className="lg:col-span-5 space-y-4">
                     <div className="flex items-center gap-3">
-                      <span className="text-xs font-mono text-stone">0{idx + 1}</span>
-                      <span className="w-8 h-[1px] bg-editorial" />
+                      <span className="text-[11px] font-mono text-terracotta uppercase tracking-wider">
+                        {project.status === 'Featured' ? 'Featured Build' : 'Active System'}
+                      </span>
+                      <span className="w-6 h-[1px] bg-editorial" />
                       <span className="text-xs font-mono text-stone ml-auto">
                         {project.timeframe}
                       </span>
@@ -153,7 +153,7 @@ export const Projects: React.FC = () => {
                           className="inline-flex items-center gap-2 px-4 py-2 border border-editorial hover:border-terracotta text-ivory text-xs font-mono uppercase tracking-wider rounded-sm transition-colors"
                         >
                           <GithubIcon className="w-3.5 h-3.5 text-stone" />
-                          <span>View on GitHub</span>
+                          <span>GitHub Profile</span>
                         </a>
                       )}
                     </div>

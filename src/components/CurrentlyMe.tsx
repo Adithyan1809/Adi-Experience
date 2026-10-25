@@ -41,11 +41,9 @@ export const CurrentlyMe: React.FC = () => {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6 pb-8 border-b border-editorial">
           <div className="space-y-3">
-            <div className="flex items-center gap-2 text-xs font-mono text-terracotta tracking-wider uppercase">
-              <span>04</span>
-              <span className="text-stone">/</span>
-              <span>Right Now</span>
-            </div>
+            <span className="text-xs font-mono text-terracotta tracking-wider uppercase">
+              Right Now
+            </span>
             <h2 className="font-serif text-3xl sm:text-5xl md:text-6xl text-ivory font-light tracking-tight">
               A few things taking up my brain lately.
             </h2>

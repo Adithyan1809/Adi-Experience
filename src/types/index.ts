@@ -77,30 +77,9 @@ export interface PersonalityPrompt {
   question: string;
   answer: string;
   tagline: string;
-  category: 'Lifestyle' | 'Dating' | 'Quirk' | 'Deep Dive';
+  category: 'Lifestyle' | 'Quirk' | 'Deep Dive' | 'Curiosity' | 'Observation';
   icon: string;
   isConfigured?: boolean;
-}
-
-export interface AdventureVersion {
-  id: 'curious' | 'chaotic' | 'softie';
-  title: string;
-  tagline: string;
-  vibe: string;
-  badge: string;
-  description: string;
-  highlightPoints: string[];
-  suggestedTopic: string;
-}
-
-export interface DateIdea {
-  id: string;
-  title: string;
-  location: string;
-  vibe: string;
-  description: string;
-  tag: string;
-  duration: string;
 }
 
 export interface MusicTrackConfig {

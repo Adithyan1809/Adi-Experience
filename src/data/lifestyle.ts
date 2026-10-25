@@ -38,11 +38,11 @@ export const lifestyleItems: LifestyleItem[] = [
     id: 'exploration',
     title: 'City Walk',
     category: 'Exploration',
-    caption: 'Wandering around Church Street on a weekend.',
+    caption: 'An afternoon walk around town to clear my head.',
     imagePath: '/images/lifestyle-4.jpg',
     aspect: 'landscape',
     hasRealPhoto: false, // Set to true once you add your photo to public/images/lifestyle-4.jpg
-    locationTag: 'Central Bangalore',
+    locationTag: 'Bangalore',
     isConfigured: true
   },
   {

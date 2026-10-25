@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Copy, Check, Send, Mail, ExternalLink } from 'lucide-react';
+import { X, Copy, Check, Mail, ExternalLink, ArrowUpRight } from 'lucide-react';
 import { personalInfo } from '../data/personal';
 
 interface ContactModalProps {
@@ -15,7 +15,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    topic: 'Coffee in Bangalore',
+    topic: 'Just saying hello',
     message: '',
   });
 
@@ -42,21 +42,23 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
   };
 
   const copyNoteText = () => {
-    const fullText = `Hi Adi,\n\n${formData.message}\n\nFrom: ${formData.name} (${formData.email})\nTopic: ${formData.topic}`;
+    const senderName = formData.name.trim() || 'A Visitor';
+    const fullText = `Hi Adi,\n\n${formData.message}\n\nFrom: ${senderName} (${formData.email})\nTopic: ${formData.topic}`;
     navigator.clipboard.writeText(fullText);
     setCopiedNote(true);
     setTimeout(() => setCopiedNote(false), 2500);
   };
 
   const openMailto = () => {
-    const subject = encodeURIComponent(`[Adi Experience] ${formData.topic} — from ${formData.name}`);
-    const body = encodeURIComponent(`Hi Adi,\n\n${formData.message}\n\nFrom: ${formData.name} (${formData.email})`);
+    const senderName = formData.name.trim() || 'A Visitor';
+    const subject = encodeURIComponent(`[Adi Experience] ${formData.topic} — from ${senderName}`);
+    const body = encodeURIComponent(`Hi Adi,\n\n${formData.message}\n\nFrom: ${senderName} (${formData.email})`);
     window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
+    if (!formData.email.trim() || !formData.message.trim()) {
       return;
     }
     setSubmitted(true);
@@ -68,7 +70,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
     setFormData({
       name: '',
       email: '',
-      topic: 'Coffee in Bangalore',
+      topic: 'Just saying hello',
       message: '',
     });
   };
@@ -111,7 +113,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
                 Say Hello
               </h3>
               <p className="text-xs sm:text-sm text-stone mt-1.5 font-sans leading-relaxed">
-                Drop a note below. Clicking &ldquo;Send Note&rdquo; opens your default mail app with a draft ready to send. Or copy my email directly.
+                Drop a quick note below. Clicking &ldquo;Open Mail Client&rdquo; prepares a draft in your email application ready to send to <span className="text-ivory font-mono">{email}</span>. Or copy my email directly.
               </p>
             </div>
 
@@ -149,9 +151,9 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
                   <ExternalLink className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="font-serif text-2xl text-ivory">Opening Your Email App</h4>
+                  <h4 className="font-serif text-2xl text-ivory">Preparing Your Email App</h4>
                   <p className="text-xs text-stone font-sans max-w-sm mx-auto mt-1 leading-relaxed">
-                    A pre-filled draft should appear in your mail app. If your browser blocked it or you prefer sending manually, use the options below:
+                    A pre-filled draft should open in your email application. If your browser blocked it or you prefer sending manually, use the options below:
                   </p>
                 </div>
 
@@ -200,12 +202,11 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label htmlFor="contact-name" className="text-[11px] font-mono text-stone uppercase tracking-wider block mb-1.5">
-                      Your Name
+                      Your Name <span className="text-stone/60 lowercase">(optional)</span>
                     </label>
                     <input
                       id="contact-name"
                       type="text"
-                      required
                       placeholder="Your name"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -214,7 +215,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
                   </div>
                   <div>
                     <label htmlFor="contact-email" className="text-[11px] font-mono text-stone uppercase tracking-wider block mb-1.5">
-                      Your Email
+                      Your Email <span className="text-terracotta">*</span>
                     </label>
                     <input
                       id="contact-email"
@@ -238,22 +239,22 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
                     onChange={(e) => setFormData({ ...formData, topic: e.target.value })}
                     className="w-full px-3.5 py-2.5 bg-obsidian border border-editorial rounded-sm text-sm text-ivory focus:border-terracotta focus:outline-none transition-colors"
                   >
-                    <option value="Coffee in Bangalore">Coffee in Bangalore</option>
-                    <option value="Tech or Project Idea">Tech or project idea</option>
-                    <option value="Music Recommendation">Music recommendation</option>
-                    <option value="Just Saying Hi">Just saying hi</option>
+                    <option value="Just saying hello">Just saying hello</option>
+                    <option value="Something I'm building">Something I'm building</option>
+                    <option value="A recommendation">A recommendation</option>
+                    <option value="Other">Other</option>
                   </select>
                 </div>
 
                 <div>
                   <label htmlFor="contact-message" className="text-[11px] font-mono text-stone uppercase tracking-wider block mb-1.5">
-                    Your Message
+                    Your Message <span className="text-terracotta">*</span>
                   </label>
                   <textarea
                     id="contact-message"
                     rows={4}
                     required
-                    placeholder="Tell me what you're working on, your favorite coffee spot, or an absurd thought from today..."
+                    placeholder="Tell me what you're working on, a good book or music recommendation, or just say hello..."
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                     className="w-full px-3.5 py-2.5 bg-obsidian border border-editorial rounded-sm text-sm text-ivory focus:border-terracotta focus:outline-none transition-colors resize-none"
@@ -262,14 +263,14 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
 
                 <div className="pt-2 flex items-center justify-between">
                   <span className="text-[11px] font-mono text-stone">
-                    Prepares draft to {email}
+                    Opens draft to {email}
                   </span>
                   <button
                     type="submit"
                     className="px-6 py-3 bg-terracotta text-ivory hover:bg-terracotta-hover transition-colors text-xs font-semibold uppercase tracking-widest rounded-sm flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-ivory"
                   >
-                    <span>Send Note</span>
-                    <Send className="w-3.5 h-3.5" />
+                    <span>Open Mail Client</span>
+                    <ArrowUpRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
               </form>

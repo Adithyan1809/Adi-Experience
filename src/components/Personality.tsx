@@ -3,23 +3,23 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { personalityPrompts } from '../data/personal';
 import {
   Sun,
-  Heart,
   AlertCircle,
   Coffee,
   MessageSquare,
   Sparkles,
   Smile,
+  Compass,
   ChevronDown
 } from 'lucide-react';
 
 const iconMap = {
   Sun,
-  Heart,
   AlertCircle,
   Coffee,
   MessageSquare,
   Sparkles,
   Smile,
+  Compass,
 };
 
 export const Personality: React.FC = () => {
@@ -45,13 +45,11 @@ export const Personality: React.FC = () => {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6 pb-8 border-b border-editorial">
           <div className="space-y-3">
-            <div className="flex items-center gap-2 text-xs font-mono text-terracotta tracking-wider uppercase">
-              <span>06</span>
-              <span className="text-stone">/</span>
-              <span>The Fun Stuff</span>
-            </div>
+            <span className="text-xs font-mono text-terracotta tracking-wider uppercase">
+              Little Things
+            </span>
             <h2 className="font-serif text-3xl sm:text-5xl md:text-6xl text-ivory font-light tracking-tight">
-              Important questions. Absolutely no stakes.
+              A few things about me.
             </h2>
           </div>
           <div className="flex items-center gap-3">
@@ -72,7 +70,7 @@ export const Personality: React.FC = () => {
 
         {/* Interactive Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {activePrompts.map((item, idx) => {
+          {activePrompts.map((item) => {
             const Icon = (iconMap as any)[item.icon] || Sparkles;
             const isOpen = openIds.includes(item.id);
 
@@ -114,12 +112,9 @@ export const Personality: React.FC = () => {
                 </button>
 
                 {/* Subtag */}
-                <div className="mt-3 flex items-center justify-between">
+                <div className="mt-3">
                   <span className="text-xs font-sans text-stone italic">
                     {item.tagline}
-                  </span>
-                  <span className="text-[10px] font-mono text-stone/70">
-                    0{idx + 1}
                   </span>
                 </div>
 

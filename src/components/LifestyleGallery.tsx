@@ -60,11 +60,9 @@ export const LifestyleGallery: React.FC = () => {
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6 pb-8 border-b border-editorial">
           <div className="space-y-3">
-            <div className="flex items-center gap-2 text-xs font-mono text-terracotta tracking-wider uppercase">
-              <span>03</span>
-              <span className="text-stone">/</span>
-              <span>Visual Log</span>
-            </div>
+            <span className="text-xs font-mono text-terracotta tracking-wider uppercase">
+              Snapshots
+            </span>
             <h2 className="font-serif text-3xl sm:text-5xl md:text-6xl text-ivory font-light tracking-tight">
               A few actual snapshots from my world.
             </h2>
@@ -112,16 +110,13 @@ export const LifestyleGallery: React.FC = () => {
                   </span>
                 </div>
               </div>
-              <div className="mt-4 flex items-baseline justify-between">
-                <div>
-                  <span className="text-[11px] font-mono text-terracotta uppercase tracking-wider">
-                    {item.category}
-                  </span>
-                  <h3 className="font-serif text-xl text-ivory font-medium group-hover:text-terracotta transition-colors">
-                    {item.title}
-                  </h3>
-                </div>
-                <span className="text-xs font-mono text-stone">0{idx + 1}</span>
+              <div className="mt-4">
+                <span className="text-[11px] font-mono text-terracotta uppercase tracking-wider block">
+                  {item.category}
+                </span>
+                <h3 className="font-serif text-xl text-ivory font-medium group-hover:text-terracotta transition-colors">
+                  {item.title}
+                </h3>
               </div>
               <p className="text-xs text-stone mt-1">
                 {item.caption}

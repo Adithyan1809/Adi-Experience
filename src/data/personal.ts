@@ -3,7 +3,6 @@ import {
   AboutFact,
   CurrentlyItem,
   PersonalityPrompt,
-  AdventureVersion,
   ResearchItem,
   MusicTrackConfig
 } from '../types';
@@ -17,7 +16,7 @@ export const personalInfo: PersonalInfo = {
   location: 'Bangalore, India',
   tagline: 'A little bit of code. A little bit of chaos.',
   heroHeadline: 'A little bit of code.\nA little bit of chaos.',
-  heroSupporting: 'AI/ML engineering student in Bangalore, usually building something, learning something, or trying to be a little more consistent at both.',
+  heroSupporting: "I'm Adi, an AI/ML engineering student in Bangalore. I like building things, going down the occasional rabbit hole, and trying to keep life bigger than a screen.",
   heroPhoto: {
     src: '/images/hero.jpg',
     // Set to true once you place your genuine portrait in public/images/hero.jpg
@@ -120,10 +119,19 @@ export const personalityPrompts: PersonalityPrompt[] = [
     isConfigured: true
   },
   {
+    id: 'rabbit-holes',
+    question: 'What gets me down a multi-hour rabbit hole',
+    answer: "Understanding how complex systems work under the hood — whether that's distributed database architectures, how movie soundtracks are mixed, or why a specific piece of software feels delightfully snappy.",
+    tagline: 'Fascinated by how things tick',
+    category: 'Curiosity',
+    icon: 'Compass',
+    isConfigured: true
+  },
+  {
     id: 'talk-for-hours',
     question: 'Something I could talk about for hours',
-    answer: 'Emerging AI systems, why certain movie scores hit you right in the chest, or whatever weird engineering problem kept me up until 2 AM.',
-    tagline: 'Rabbit holes guaranteed',
+    answer: 'Emerging AI systems, why certain film scores hit you right in the chest, or whatever weird engineering bug kept me up until 2 AM.',
+    tagline: 'Deep dives and good conversation',
     category: 'Deep Dive',
     icon: 'MessageSquare',
     isConfigured: true
@@ -138,10 +146,10 @@ export const personalityPrompts: PersonalityPrompt[] = [
     isConfigured: true
   },
   {
-    id: 'weekend-style',
-    question: 'My kind of weekend',
-    answer: 'Waking up without an alarm, a solid gym workout, tinkering with a side project, and taking an unhurried walk in the evening without watching the clock.',
-    tagline: 'Unrushed and grounding',
+    id: 'slow-afternoon',
+    question: 'My kind of slow afternoon',
+    answer: 'Grabbing a solid coffee, browsing second-hand bookstores or walking through a leafy corner of Bangalore with zero rush, and having an unhurried conversation.',
+    tagline: 'Unhurried and grounded',
     category: 'Lifestyle',
     icon: 'Sun',
     isConfigured: true
@@ -151,62 +159,17 @@ export const personalityPrompts: PersonalityPrompt[] = [
     question: 'Three small things that make my day better',
     answer: '1. When code compiles on the first try.\n2. Bangalore weather right after a sudden afternoon shower.\n3. Finding a great instrumental track on loop while working.',
     tagline: 'The quiet daily wins',
-    category: 'Lifestyle',
+    category: 'Observation',
     icon: 'Smile',
     isConfigured: true
   },
   {
-    id: 'first-date',
-    question: 'A first-date idea I genuinely enjoy',
-    answer: 'Grabbing good coffee, walking around an interesting part of town with zero rush, and laughing at something completely stupid.',
-    tagline: 'Low pressure, natural conversation',
-    category: 'Dating',
+    id: 'plan-rarely-turn-down',
+    question: 'A plan I rarely turn down',
+    answer: "Exploring a neighborhood spot I've never visited, trying street food or an unfamiliar café, and laughing when spontaneous plans take an unexpected detour.",
+    tagline: 'Always up for spontaneous exploration',
+    category: 'Observation',
     icon: 'Sparkles',
     isConfigured: true
-  }
-];
-
-export const adventureVersions: AdventureVersion[] = [
-  {
-    id: 'curious',
-    title: 'The Curious One',
-    tagline: "Deep conversations, rabbit holes, and 'wait, how does that work?'",
-    vibe: 'Inquisitive & thoughtful',
-    badge: 'Curious',
-    description: "The side that gets genuinely fascinated by how complex systems work under the hood, reads technical deep-dives, and will ask you questions about your most obscure interests.",
-    highlightPoints: [
-      'Loves understanding the backstory behind how things were built',
-      'Enjoys quiet spots and unhurried conversations',
-      'Will happily debate technology, science, and ideas'
-    ],
-    suggestedTopic: "Ask me: What's a technical rabbit hole you fell down recently?"
-  },
-  {
-    id: 'chaotic',
-    title: 'The Chaotic One',
-    tagline: 'Fast humor, spontaneous ideas, and playful banter',
-    vibe: 'Spontaneous & energetic',
-    badge: 'High Energy',
-    description: "Equal parts banter, spontaneous decisions, and dry humor. Might convince you to try a random street food cart or challenge you to a friendly game where loser buys dessert.",
-    highlightPoints: [
-      'Finds the funny side when plans go completely sideways',
-      'Considers teasing and playful banter essential',
-      'Spontaneous about trying new food or places'
-    ],
-    suggestedTopic: "Ask me: What's the most unhinged idea you've had that actually worked?"
-  },
-  {
-    id: 'softie',
-    title: 'The Low-Key One',
-    tagline: 'Unrushed coffee, quiet observations, and great background music',
-    vibe: 'Calm & easygoing',
-    badge: 'Relaxed',
-    description: "The relaxed side that appreciates comfortable silences, peaceful evenings, good music, and believes the best conversations happen when nobody is in a rush.",
-    highlightPoints: [
-      'Notices the small details and remembers offhand comments',
-      'Prefers a quiet corner over crowded venues',
-      'Appreciates genuine conversation without performance'
-    ],
-    suggestedTopic: "Ask me: What's something that instantly puts you in a good mood?"
   }
 ];
