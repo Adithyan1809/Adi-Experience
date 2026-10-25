@@ -1,0 +1,219 @@
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X, Copy, Check, Send, Mail, MapPin } from 'lucide-react';
+import { personalInfo } from '../data/personal';
+
+interface ContactModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
+  const [copied, setCopied] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    topic: 'Coffee in Bangalore',
+    message: '',
+  });
+
+  const email = personalInfo.links.email || 'contact@adithyanp.me';
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    if (isOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'hidden';
+    }
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+    };
+  }, [isOpen, onClose]);
+
+  const copyEmail = () => {
+    navigator.clipboard.writeText(email);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2500);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Simulate graceful sending and open user's mail client as fallback
+    setSubmitted(true);
+    const subject = encodeURIComponent(`[The Adi Experience] Message from ${formData.name}: ${formData.topic}`);
+    const body = encodeURIComponent(`Hi Adi,\n\n${formData.message}\n\nFrom: ${formData.name} (${formData.email})`);
+    
+    setTimeout(() => {
+      window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+    }, 800);
+  };
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-obsidian/90 backdrop-blur-md"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="contact-modal-title"
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 10 }}
+            transition={{ duration: 0.3 }}
+            className="relative max-w-xl w-full bg-charcoal border border-editorial rounded-sm p-6 sm:p-10 shadow-2xl space-y-6"
+          >
+            {/* Close Button */}
+            <button
+              onClick={onClose}
+              className="absolute top-5 right-5 p-2 text-stone hover:text-ivory transition-colors"
+              aria-label="Close dialog"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Header */}
+            <div>
+              <div className="flex items-center gap-2 text-xs font-mono text-terracotta uppercase tracking-wider mb-1">
+                <Mail className="w-3.5 h-3.5" />
+                <span>Direct Dispatch</span>
+              </div>
+              <h3 id="contact-modal-title" className="font-serif text-3xl text-ivory font-light">
+                Say Hello
+              </h3>
+              <p className="text-xs sm:text-sm text-stone mt-1.5 font-sans">
+                Drop a note about projects, AI ideas, Bangalore cafés, or just to introduce yourself.
+              </p>
+            </div>
+
+            {/* One-click Copy Email Row */}
+            <div className="p-4 bg-obsidian border border-editorial rounded-sm flex items-center justify-between gap-4">
+              <div className="flex items-center gap-2.5 truncate">
+                <Mail className="w-4 h-4 text-terracotta shrink-0" />
+                <span className="text-xs sm:text-sm font-mono text-ivory/90 truncate">
+                  {email}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={copyEmail}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono bg-charcoal border border-editorial hover:border-terracotta text-ivory rounded-sm transition-colors shrink-0"
+              >
+                {copied ? (
+                  <>
+                    <Check className="w-3.5 h-3.5 text-emerald-400" />
+                    <span className="text-emerald-400">Copied!</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-3.5 h-3.5 text-stone" />
+                    <span>Copy</span>
+                  </>
+                )}
+              </button>
+            </div>
+
+            {/* Direct Form */}
+            {submitted ? (
+              <div className="p-8 text-center bg-obsidian/70 border border-editorial rounded-sm space-y-3">
+                <div className="w-12 h-12 rounded-full bg-terracotta/20 border border-terracotta/30 flex items-center justify-center mx-auto text-terracotta">
+                  <Check className="w-6 h-6" />
+                </div>
+                <h4 className="font-serif text-2xl text-ivory">Message Dispatched</h4>
+                <p className="text-xs text-stone font-sans">
+                  Your mail client has been opened. I'll get back to you once I step away from the terminal!
+                </p>
+                <button
+                  onClick={onClose}
+                  className="mt-4 px-6 py-2 bg-ivory text-obsidian text-xs font-semibold uppercase tracking-wider rounded-sm hover:bg-ivory-muted transition-colors"
+                >
+                  Close Window
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-[11px] font-mono text-stone uppercase tracking-wider block mb-1.5">
+                      Your Name
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Jane Doe"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      className="w-full px-3.5 py-2.5 bg-obsidian border border-editorial rounded-sm text-sm text-ivory focus:border-terracotta focus:outline-none transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-mono text-stone uppercase tracking-wider block mb-1.5">
+                      Your Email
+                    </label>
+                    <input
+                      type="email"
+                      required
+                      placeholder="jane@example.com"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      className="w-full px-3.5 py-2.5 bg-obsidian border border-editorial rounded-sm text-sm text-ivory focus:border-terracotta focus:outline-none transition-colors"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-[11px] font-mono text-stone uppercase tracking-wider block mb-1.5">
+                    Topic
+                  </label>
+                  <select
+                    value={formData.topic}
+                    onChange={(e) => setFormData({ ...formData, topic: e.target.value })}
+                    className="w-full px-3.5 py-2.5 bg-obsidian border border-editorial rounded-sm text-sm text-ivory focus:border-terracotta focus:outline-none transition-colors"
+                  >
+                    <option value="Coffee in Bangalore">Coffee & conversation in Bangalore</option>
+                    <option value="AI Collaboration">AI & machine learning project</option>
+                    <option value="General Hello">Just wanted to say hello</option>
+                    <option value="Hypothetical First Date">Hypothetical first date proposal</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-[11px] font-mono text-stone uppercase tracking-wider block mb-1.5">
+                    Your Message
+                  </label>
+                  <textarea
+                    rows={4}
+                    required
+                    placeholder="Tell me what you're working on, your favorite coffee spot, or an absurd thought from today..."
+                    value={formData.message}
+                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                    className="w-full px-3.5 py-2.5 bg-obsidian border border-editorial rounded-sm text-sm text-ivory focus:border-terracotta focus:outline-none transition-colors resize-none"
+                  />
+                </div>
+
+                <div className="pt-2 flex items-center justify-between">
+                  <span className="text-[11px] font-mono text-stone flex items-center gap-1">
+                    <MapPin className="w-3 h-3 text-terracotta" />
+                    <span>Based in Bangalore</span>
+                  </span>
+                  <button
+                    type="submit"
+                    className="px-6 py-3 bg-terracotta text-ivory hover:bg-terracotta-hover transition-colors text-xs font-semibold uppercase tracking-widest rounded-sm flex items-center gap-2"
+                  >
+                    <span>Send Note</span>
+                    <Send className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </form>
+            )}
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
+  );
+};
