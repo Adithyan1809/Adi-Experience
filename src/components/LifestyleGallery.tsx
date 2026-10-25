@@ -8,6 +8,9 @@ import { Eye, X, MapPin } from 'lucide-react';
 export const LifestyleGallery: React.FC = () => {
   const [selectedItem, setSelectedItem] = useState<LifestyleItem | null>(null);
 
+  // Only render configured lifestyle frames
+  const activeItems = lifestyleItems.filter((item) => item.isConfigured !== false);
+
   const handleKeyDown = (e: React.KeyboardEvent, item: LifestyleItem) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
@@ -27,284 +30,84 @@ export const LifestyleGallery: React.FC = () => {
               <span>Visual Log</span>
             </div>
             <h2 className="font-serif text-3xl sm:text-5xl md:text-6xl text-ivory font-light tracking-tight">
-              Proof I occasionally leave the house.
+              A few actual snapshots from my world.
             </h2>
           </div>
           <div className="max-w-md space-y-1">
             <p className="text-stone text-sm font-sans leading-relaxed">
-              Quiet moments, workout sessions, cold brew runs, and Bangalore skies.
+              Quiet moments, workout sessions, and glimpses of everyday life in Bangalore.
             </p>
             <span className="text-[11px] font-mono text-terracotta/80 block">
-              Click any frame to view
+              Click any frame to inspect details
             </span>
           </div>
         </div>
 
         {/* Magazine Asymmetric Collage Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 sm:gap-8 items-start">
-          {/* Card 1: Everyday Workspace (5 cols) */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.8 }}
-            className="lg:col-span-5 cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-terracotta rounded-sm"
-            role="button"
-            tabIndex={0}
-            onClick={() => setSelectedItem(lifestyleItems[0])}
-            onKeyDown={(e) => handleKeyDown(e, lifestyleItems[0])}
-            aria-label={`View ${lifestyleItems[0].title}`}
-          >
-            <div className="relative overflow-hidden rounded-sm">
-              <ImageWithFallback
-                src={lifestyleItems[0].imagePath}
-                alt={lifestyleItems[0].title}
-                aspect="portrait"
-                category={lifestyleItems[0].category}
-                badge={lifestyleItems[0].locationTag}
-                caption={lifestyleItems[0].caption}
-              />
-              <div className="absolute inset-0 bg-obsidian/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none">
-                <span className="p-3 bg-obsidian/80 backdrop-blur-md rounded-full text-ivory border border-editorial flex items-center gap-2 text-xs font-mono">
-                  <Eye className="w-3.5 h-3.5 text-terracotta" />
-                  <span>View</span>
-                </span>
-              </div>
-            </div>
-            <div className="mt-4 flex items-baseline justify-between">
-              <div>
-                <span className="text-[11px] font-mono text-terracotta uppercase tracking-wider">
-                  {lifestyleItems[0].category}
-                </span>
-                <h3 className="font-serif text-xl text-ivory font-medium group-hover:text-terracotta transition-colors">
-                  {lifestyleItems[0].title}
-                </h3>
-              </div>
-              <span className="text-xs font-mono text-stone">01</span>
-            </div>
-            <p className="text-xs text-stone mt-1">
-              {lifestyleItems[0].caption}
-            </p>
-          </motion.div>
+          {activeItems.map((item, idx) => {
+            // Determine column span based on index for balanced asymmetric editorial composition
+            const colSpan =
+              idx === 0
+                ? 'lg:col-span-5'
+                : idx === 3
+                ? 'sm:col-span-2 lg:col-span-7'
+                : idx >= 4
+                ? 'lg:col-span-6'
+                : 'sm:col-span-1 lg:col-span-3.5';
 
-          {/* Cards 2 & 3: Gym & Cafés (7 cols) */}
-          <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
-            {/* Card 2: Fitness */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-60px' }}
-              transition={{ duration: 0.8, delay: 0.1 }}
-              className="cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-terracotta rounded-sm"
-              role="button"
-              tabIndex={0}
-              onClick={() => setSelectedItem(lifestyleItems[1])}
-              onKeyDown={(e) => handleKeyDown(e, lifestyleItems[1])}
-              aria-label={`View ${lifestyleItems[1].title}`}
-            >
-              <div className="relative overflow-hidden rounded-sm">
-                <ImageWithFallback
-                  src={lifestyleItems[1].imagePath}
-                  alt={lifestyleItems[1].title}
-                  aspect="square"
-                  category={lifestyleItems[1].category}
-                  badge={lifestyleItems[1].locationTag}
-                  caption={lifestyleItems[1].caption}
-                />
-                <div className="absolute inset-0 bg-obsidian/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none">
-                  <span className="p-3 bg-obsidian/80 backdrop-blur-md rounded-full text-ivory border border-editorial flex items-center gap-2 text-xs font-mono">
-                    <Eye className="w-3.5 h-3.5 text-terracotta" />
-                    <span>View</span>
-                  </span>
+            return (
+              <motion.div
+                key={item.id}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-60px' }}
+                transition={{ duration: 0.7, delay: idx * 0.08 }}
+                className={`${colSpan} cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-terracotta rounded-sm`}
+                role="button"
+                tabIndex={0}
+                onClick={() => setSelectedItem(item)}
+                onKeyDown={(e) => handleKeyDown(e, item)}
+                aria-label={`View ${item.title}`}
+              >
+                <div className="relative overflow-hidden rounded-sm">
+                  <ImageWithFallback
+                    src={item.imagePath}
+                    alt={item.title}
+                    aspect={item.aspect}
+                    category={item.category}
+                    badge={item.locationTag}
+                    caption={item.caption}
+                    hasRealPhoto={item.hasRealPhoto}
+                  />
+                  <div className="absolute inset-0 bg-obsidian/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none">
+                    <span className="p-3 bg-obsidian/80 backdrop-blur-md rounded-full text-ivory border border-editorial flex items-center gap-2 text-xs font-mono">
+                      <Eye className="w-3.5 h-3.5 text-terracotta" />
+                      <span>View</span>
+                    </span>
+                  </div>
                 </div>
-              </div>
-              <div className="mt-4 flex items-baseline justify-between">
-                <div>
-                  <span className="text-[11px] font-mono text-terracotta uppercase tracking-wider">
-                    {lifestyleItems[1].category}
-                  </span>
-                  <h3 className="font-serif text-xl text-ivory font-medium group-hover:text-terracotta transition-colors">
-                    {lifestyleItems[1].title}
-                  </h3>
+                <div className="mt-4 flex items-baseline justify-between">
+                  <div>
+                    <span className="text-[11px] font-mono text-terracotta uppercase tracking-wider">
+                      {item.category}
+                    </span>
+                    <h3 className="font-serif text-xl text-ivory font-medium group-hover:text-terracotta transition-colors">
+                      {item.title}
+                    </h3>
+                  </div>
+                  <span className="text-xs font-mono text-stone">0{idx + 1}</span>
                 </div>
-                <span className="text-xs font-mono text-stone">02</span>
-              </div>
-              <p className="text-xs text-stone mt-1">
-                {lifestyleItems[1].caption}
-              </p>
-            </motion.div>
-
-            {/* Card 3: Cafes */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-60px' }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-terracotta rounded-sm"
-              role="button"
-              tabIndex={0}
-              onClick={() => setSelectedItem(lifestyleItems[2])}
-              onKeyDown={(e) => handleKeyDown(e, lifestyleItems[2])}
-              aria-label={`View ${lifestyleItems[2].title}`}
-            >
-              <div className="relative overflow-hidden rounded-sm">
-                <ImageWithFallback
-                  src={lifestyleItems[2].imagePath}
-                  alt={lifestyleItems[2].title}
-                  aspect="square"
-                  category={lifestyleItems[2].category}
-                  badge={lifestyleItems[2].locationTag}
-                  caption={lifestyleItems[2].caption}
-                />
-                <div className="absolute inset-0 bg-obsidian/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none">
-                  <span className="p-3 bg-obsidian/80 backdrop-blur-md rounded-full text-ivory border border-editorial flex items-center gap-2 text-xs font-mono">
-                    <Eye className="w-3.5 h-3.5 text-terracotta" />
-                    <span>View</span>
-                  </span>
-                </div>
-              </div>
-              <div className="mt-4 flex items-baseline justify-between">
-                <div>
-                  <span className="text-[11px] font-mono text-terracotta uppercase tracking-wider">
-                    {lifestyleItems[2].category}
-                  </span>
-                  <h3 className="font-serif text-xl text-ivory font-medium group-hover:text-terracotta transition-colors">
-                    {lifestyleItems[2].title}
-                  </h3>
-                </div>
-                <span className="text-xs font-mono text-stone">03</span>
-              </div>
-              <p className="text-xs text-stone mt-1">
-                {lifestyleItems[2].caption}
-              </p>
-            </motion.div>
-
-            {/* Card 4: Exploration (Spans across both columns on desktop) */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-60px' }}
-              transition={{ duration: 0.8, delay: 0.25 }}
-              className="sm:col-span-2 cursor-pointer group pt-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-terracotta rounded-sm"
-              role="button"
-              tabIndex={0}
-              onClick={() => setSelectedItem(lifestyleItems[3])}
-              onKeyDown={(e) => handleKeyDown(e, lifestyleItems[3])}
-              aria-label={`View ${lifestyleItems[3].title}`}
-            >
-              <div className="relative overflow-hidden rounded-sm">
-                <ImageWithFallback
-                  src={lifestyleItems[3].imagePath}
-                  alt={lifestyleItems[3].title}
-                  aspect="landscape"
-                  category={lifestyleItems[3].category}
-                  badge={lifestyleItems[3].locationTag}
-                  caption={lifestyleItems[3].caption}
-                />
-                <div className="absolute inset-0 bg-obsidian/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none">
-                  <span className="p-3 bg-obsidian/80 backdrop-blur-md rounded-full text-ivory border border-editorial flex items-center gap-2 text-xs font-mono">
-                    <Eye className="w-3.5 h-3.5 text-terracotta" />
-                    <span>View</span>
-                  </span>
-                </div>
-              </div>
-              <div className="mt-4 flex items-baseline justify-between">
-                <div>
-                  <span className="text-[11px] font-mono text-terracotta uppercase tracking-wider">
-                    {lifestyleItems[3].category}
-                  </span>
-                  <h3 className="font-serif text-xl text-ivory font-medium group-hover:text-terracotta transition-colors">
-                    {lifestyleItems[3].title}
-                  </h3>
-                </div>
-                <span className="text-xs font-mono text-stone">04</span>
-              </div>
-              <p className="text-xs text-stone mt-1">
-                {lifestyleItems[3].caption}
-              </p>
-            </motion.div>
-          </div>
-
-          {/* Cards 5 & 6 (Style & Sunset) */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="lg:col-span-6 cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-terracotta rounded-sm"
-            role="button"
-            tabIndex={0}
-            onClick={() => setSelectedItem(lifestyleItems[4])}
-            onKeyDown={(e) => handleKeyDown(e, lifestyleItems[4])}
-            aria-label={`View ${lifestyleItems[4].title}`}
-          >
-            <div className="relative overflow-hidden rounded-sm">
-              <ImageWithFallback
-                src={lifestyleItems[4].imagePath}
-                alt={lifestyleItems[4].title}
-                aspect="landscape"
-                category={lifestyleItems[4].category}
-                badge={lifestyleItems[4].locationTag}
-                caption={lifestyleItems[4].caption}
-              />
-            </div>
-            <div className="mt-4 flex items-baseline justify-between">
-              <div>
-                <span className="text-[11px] font-mono text-terracotta uppercase tracking-wider">
-                  {lifestyleItems[4].category}
-                </span>
-                <h3 className="font-serif text-xl text-ivory font-medium group-hover:text-terracotta transition-colors">
-                  {lifestyleItems[4].title}
-                </h3>
-              </div>
-              <span className="text-xs font-mono text-stone">05</span>
-            </div>
-            <p className="text-xs text-stone mt-1">
-              {lifestyleItems[4].caption}
-            </p>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.8, delay: 0.35 }}
-            className="lg:col-span-6 cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-terracotta rounded-sm"
-            role="button"
-            tabIndex={0}
-            onClick={() => setSelectedItem(lifestyleItems[5])}
-            onKeyDown={(e) => handleKeyDown(e, lifestyleItems[5])}
-            aria-label={`View ${lifestyleItems[5].title}`}
-          >
-            <div className="relative overflow-hidden rounded-sm">
-              <ImageWithFallback
-                src={lifestyleItems[5].imagePath}
-                alt={lifestyleItems[5].title}
-                aspect="landscape"
-                category={lifestyleItems[5].category}
-                badge={lifestyleItems[5].locationTag}
-                caption={lifestyleItems[5].caption}
-              />
-            </div>
-            <div className="mt-4 flex items-baseline justify-between">
-              <div>
-                <span className="text-[11px] font-mono text-terracotta uppercase tracking-wider">
-                  {lifestyleItems[5].category}
-                </span>
-                <h3 className="font-serif text-xl text-ivory font-medium group-hover:text-terracotta transition-colors">
-                  {lifestyleItems[5].title}
-                </h3>
-              </div>
-              <span className="text-xs font-mono text-stone">06</span>
-            </div>
-            <p className="text-xs text-stone mt-1">
-              {lifestyleItems[5].caption}
-            </p>
-          </motion.div>
+                <p className="text-xs text-stone mt-1">
+                  {item.caption}
+                </p>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
 
-      {/* Interactive Lightbox / Detail Modal */}
+      {/* Lightbox Detail Modal */}
       <AnimatePresence>
         {selectedItem && (
           <div
@@ -348,6 +151,7 @@ export const LifestyleGallery: React.FC = () => {
                   category={selectedItem.category}
                   badge={selectedItem.locationTag}
                   caption={selectedItem.caption}
+                  hasRealPhoto={selectedItem.hasRealPhoto}
                 />
               </div>
 
@@ -367,10 +171,6 @@ export const LifestyleGallery: React.FC = () => {
                 <p className="text-sm text-stone-light leading-relaxed font-sans">
                   {selectedItem.caption}
                 </p>
-                <div className="pt-3 border-t border-editorial-subtle flex items-center justify-between text-[11px] font-mono text-stone">
-                  <span>Photo path: {selectedItem.imagePath}</span>
-                  <span className="text-terracotta/90">Editable in lifestyle.ts</span>
-                </div>
               </div>
             </motion.div>
           </div>

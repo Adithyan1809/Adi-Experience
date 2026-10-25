@@ -8,7 +8,6 @@ import { Projects } from './components/Projects';
 import { Personality } from './components/Personality';
 import { AdventureSelector } from './components/AdventureSelector';
 import { DateGenerator } from './components/DateGenerator';
-import { Favorites } from './components/Favorites';
 import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
 
@@ -30,7 +29,6 @@ export const App: React.FC = () => {
         <Personality />
         <AdventureSelector />
         <DateGenerator />
-        <Favorites />
         <Contact />
       </main>
 

@@ -23,7 +23,12 @@ const iconMap = {
 };
 
 export const Personality: React.FC = () => {
-  const [openIds, setOpenIds] = useState<string[]>([personalityPrompts[0].id, personalityPrompts[1].id]);
+  // Only display prompts that are explicitly filled in and configured
+  const activePrompts = personalityPrompts.filter(
+    (p) => p.isConfigured !== false && p.answer && p.answer.trim() !== ''
+  );
+
+  const [openIds, setOpenIds] = useState<string[]>([activePrompts[0]?.id || '']);
 
   const togglePrompt = (id: string) => {
     setOpenIds((prev) =>
@@ -31,7 +36,7 @@ export const Personality: React.FC = () => {
     );
   };
 
-  const expandAll = () => setOpenIds(personalityPrompts.map((p) => p.id));
+  const expandAll = () => setOpenIds(activePrompts.map((p) => p.id));
   const collapseAll = () => setOpenIds([]);
 
   return (
@@ -67,7 +72,7 @@ export const Personality: React.FC = () => {
 
         {/* Interactive Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {personalityPrompts.map((item, idx) => {
+          {activePrompts.map((item, idx) => {
             const Icon = (iconMap as any)[item.icon] || Sparkles;
             const isOpen = openIds.includes(item.id);
 
@@ -80,7 +85,7 @@ export const Personality: React.FC = () => {
                     : 'bg-obsidian-light/60 border-editorial hover:border-terracotta/30'
                 }`}
               >
-                {/* Header row as accessible button */}
+                {/* Header button */}
                 <button
                   type="button"
                   onClick={() => togglePrompt(item.id)}
@@ -108,7 +113,7 @@ export const Personality: React.FC = () => {
                   />
                 </button>
 
-                {/* Subtag line */}
+                {/* Subtag */}
                 <div className="mt-3 flex items-center justify-between">
                   <span className="text-xs font-sans text-stone italic">
                     {item.tagline}

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { projectsData } from '../data/projects';
 import { GithubIcon } from './Icons';
-import { ExternalLink, ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 
 export const Projects: React.FC = () => {
   const [activeProject, setActiveProject] = useState<string>(projectsData[0].id);
@@ -16,15 +16,15 @@ export const Projects: React.FC = () => {
             <div className="flex items-center gap-2 text-xs font-mono text-terracotta tracking-wider uppercase">
               <span>05</span>
               <span className="text-stone">/</span>
-              <span>Side Projects</span>
+              <span>Projects</span>
             </div>
             <h2 className="font-serif text-3xl sm:text-5xl md:text-6xl text-ivory font-light tracking-tight">
-              Things I made instead of sleeping.
+              Things I've been building.
             </h2>
           </div>
           <div className="max-w-md space-y-2">
             <p className="text-stone text-sm font-sans leading-relaxed">
-              A few side projects I built because I genuinely wanted them to exist. No corporate fluff, just software that scratched an itch.
+              A few side projects and software experiments. Code built to solve actual problems and explore interesting architectures.
             </p>
             <a
               href="https://github.com/Adithyan1809"
@@ -33,7 +33,7 @@ export const Projects: React.FC = () => {
               className="inline-flex items-center gap-1.5 text-xs font-mono text-terracotta hover:text-ivory transition-colors uppercase tracking-wider"
             >
               <GithubIcon className="w-3.5 h-3.5" />
-              <span>More on GitHub</span>
+              <span>Explore GitHub Repositories</span>
               <ArrowUpRight className="w-3 h-3" />
             </a>
           </div>
@@ -89,19 +89,31 @@ export const Projects: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Right Column: Story & Action Links (7 cols) */}
+                  {/* Right Column: Narrative Story & Actions (7 cols) */}
                   <div className="lg:col-span-7 flex flex-col justify-between h-full space-y-6">
                     <div className="space-y-4">
                       <p className="text-base sm:text-lg text-ivory/90 font-light leading-relaxed">
                         {project.description}
                       </p>
-                      <div className="p-4 bg-obsidian/60 border border-editorial-subtle rounded-sm">
-                        <span className="text-[10px] font-mono text-stone uppercase tracking-wider block mb-1">
-                          Why I Built It
-                        </span>
-                        <p className="text-xs sm:text-sm text-stone leading-relaxed font-sans">
-                          {project.story}
-                        </p>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                        <div className="p-4 bg-obsidian/60 border border-editorial-subtle rounded-sm">
+                          <span className="text-[10px] font-mono text-stone uppercase tracking-wider block mb-1">
+                            The Problem
+                          </span>
+                          <p className="text-xs text-stone-light leading-relaxed font-sans">
+                            {project.problem}
+                          </p>
+                        </div>
+
+                        <div className="p-4 bg-obsidian/60 border border-editorial-subtle rounded-sm">
+                          <span className="text-[10px] font-mono text-stone uppercase tracking-wider block mb-1">
+                            Technical Challenge
+                          </span>
+                          <p className="text-xs text-stone-light leading-relaxed font-sans">
+                            {project.challenge}
+                          </p>
+                        </div>
                       </div>
                     </div>
 
@@ -116,11 +128,11 @@ export const Projects: React.FC = () => {
                           className="inline-flex items-center gap-2 px-4 py-2 bg-ivory text-obsidian text-xs font-semibold uppercase tracking-wider rounded-sm hover:bg-ivory-muted transition-colors"
                         >
                           <span>Live Site</span>
-                          <ExternalLink className="w-3.5 h-3.5" />
+                          <ArrowUpRight className="w-3.5 h-3.5" />
                         </a>
                       ) : (
                         <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-obsidian text-stone text-xs font-mono tracking-wider rounded-sm border border-editorial-subtle cursor-default">
-                          <span>In progress</span>
+                          <span>{project.status === 'Featured' ? 'Project build' : 'In development'}</span>
                         </span>
                       )}
 

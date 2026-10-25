@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { aboutData, personalInfo } from '../data/personal';
-import { Heart, Target, Sparkles, CheckCircle2, Flame } from 'lucide-react';
+import { Target, Sparkles, FileText, CheckCircle2 } from 'lucide-react';
 
 export const About: React.FC = () => {
   return (
@@ -46,14 +46,14 @@ export const About: React.FC = () => {
               ))}
             </div>
 
-            {/* What I'm into */}
+            {/* Core Focus Areas */}
             <div className="pt-6 border-t border-editorial space-y-6">
               <div className="flex items-center gap-2 text-xs font-mono tracking-wider text-terracotta uppercase">
                 <Target className="w-3.5 h-3.5" />
                 <span>What I'm focused on</span>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                {aboutData.ambitions.map((item, idx) => (
+                {aboutData.focusAreas.map((item, idx) => (
                   <div
                     key={idx}
                     className="p-5 bg-charcoal/60 border border-editorial hover:border-terracotta/40 transition-colors duration-300 rounded-sm flex flex-col justify-between"
@@ -70,29 +70,30 @@ export const About: React.FC = () => {
               </div>
             </div>
 
-            {/* Things I appreciate */}
-            <div className="pt-6 border-t border-editorial space-y-4">
-              <div className="flex items-center gap-2 text-xs font-mono tracking-wider text-terracotta uppercase">
-                <Heart className="w-3.5 h-3.5" />
-                <span>Things I appreciate</span>
+            {/* Research Highlight Card */}
+            {aboutData.researchHighlight && (
+              <div className="p-5 bg-charcoal/40 border border-editorial rounded-sm space-y-2">
+                <div className="flex items-center justify-between text-xs font-mono text-terracotta">
+                  <span className="flex items-center gap-1.5 uppercase tracking-wider">
+                    <FileText className="w-3.5 h-3.5" />
+                    <span>Research Activity</span>
+                  </span>
+                  <span className="text-stone font-mono">{aboutData.researchHighlight.status}</span>
+                </div>
+                <h4 className="font-serif text-xl text-ivory font-medium">
+                  {aboutData.researchHighlight.title}
+                </h4>
+                <p className="text-xs text-stone font-mono">
+                  {aboutData.researchHighlight.venue}
+                </p>
+                <p className="text-xs text-stone-light font-sans pt-1">
+                  {aboutData.researchHighlight.description}
+                </p>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                {aboutData.values.map((val, idx) => (
-                  <div
-                    key={idx}
-                    className="flex items-center gap-3 p-3.5 bg-charcoal/40 border border-editorial-subtle rounded-sm"
-                  >
-                    <CheckCircle2 className="w-4 h-4 text-terracotta shrink-0" />
-                    <span className="text-xs sm:text-sm text-ivory/90 font-medium">
-                      {val}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
+            )}
           </motion.div>
 
-          {/* Right Column: Quirks & Fast Facts (5 cols) */}
+          {/* Right Column: Quick Dossier & Verified Facts (5 cols) */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -100,34 +101,14 @@ export const About: React.FC = () => {
             transition={{ duration: 0.8, delay: 0.15 }}
             className="lg:col-span-5 space-y-8"
           >
-            {/* Quirks & Humor Card */}
-            <div className="p-6 sm:p-8 bg-charcoal/80 border border-editorial relative rounded-sm shadow-xl">
-              <div className="flex items-center justify-between mb-6 pb-4 border-b border-editorial-subtle">
-                <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-terracotta">
-                  <Flame className="w-3.5 h-3.5" />
-                  <span>A Few Honest Quirks</span>
-                </div>
-                <span className="text-[10px] font-mono text-stone">Self-aware</span>
-              </div>
-
-              <div className="space-y-4">
-                {aboutData.quirks.map((quirk, idx) => (
-                  <div key={idx} className="flex gap-3 text-xs sm:text-sm text-ivory/85 leading-relaxed font-sans">
-                    <span className="font-serif italic text-terracotta text-base leading-none">“</span>
-                    <p>{quirk}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Quick Facts (with clear editable indicators) */}
+            {/* Quick Facts Dossier */}
             <div className="p-6 sm:p-8 bg-obsidian-light border border-editorial rounded-sm space-y-5">
               <div className="flex items-center justify-between pb-3 border-b border-editorial-subtle">
                 <span className="text-xs font-mono tracking-wider uppercase text-stone">
-                  Fast Facts
+                  Quick Dossier
                 </span>
                 <span className="text-[10px] font-mono text-terracotta/90 uppercase">
-                  src/data/personal.ts
+                  Verified Details
                 </span>
               </div>
 
@@ -149,13 +130,27 @@ export const About: React.FC = () => {
               </dl>
             </div>
 
-            {/* Small note */}
+            {/* Technical Background Note */}
+            <div className="p-6 bg-charcoal/80 border border-editorial rounded-sm space-y-3">
+              <span className="text-xs font-mono uppercase tracking-wider text-terracotta block">
+                Technical Background
+              </span>
+              <p className="text-xs text-stone-light font-sans leading-relaxed">
+                Prior experience includes serving as <strong>Technical Lead Intern at SMAP Technologies</strong> (Sept 2025 – Jan 2026), focusing on computer vision and multi-stream system reliability.
+              </p>
+              <div className="pt-2 flex items-center gap-2 text-[11px] font-mono text-stone">
+                <CheckCircle2 className="w-3.5 h-3.5 text-terracotta" />
+                <span>Dayananda Sagar Academy of Tech & Management</span>
+              </div>
+            </div>
+
+            {/* Signature Tag */}
             <div className="p-4 border border-editorial-subtle bg-charcoal/20 flex items-center justify-between text-xs text-stone font-mono">
               <div className="flex items-center gap-2">
                 <Sparkles className="w-3.5 h-3.5 text-terracotta" />
                 <span>{personalInfo.fullName}</span>
               </div>
-              <span className="text-stone/70">Bangalore</span>
+              <span className="text-stone/70">Bangalore, India</span>
             </div>
           </motion.div>
         </div>

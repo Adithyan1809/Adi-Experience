@@ -2,17 +2,24 @@ export interface PersonalInfo {
   name: string;
   fullName: string;
   role: string;
+  college: string;
   specialization: string;
   location: string;
   tagline: string;
   heroHeadline: string;
   heroSupporting: string;
+  heroPhoto: {
+    src: string;
+    hasRealPhoto: boolean;
+    alt: string;
+    caption: string;
+  };
   links: {
     website: string;
     github: string;
     linkedin: string;
     instagram?: string;
-    email?: string;
+    email: string;
   };
 }
 
@@ -29,8 +36,9 @@ export interface LifestyleItem {
   caption: string;
   imagePath: string;
   aspect: 'portrait' | 'landscape' | 'square';
-  placeholderHint: string;
+  hasRealPhoto: boolean;
   locationTag?: string;
+  isConfigured?: boolean;
 }
 
 export interface CurrentlyItem {
@@ -48,12 +56,20 @@ export interface ProjectItem {
   role: string;
   timeframe: string;
   description: string;
-  story: string;
+  problem: string;
+  challenge: string;
   tags: string[];
   imagePath?: string;
   demoUrl?: string;
   repoUrl?: string;
   status: 'Live' | 'In Progress' | 'Prototype' | 'Featured';
+}
+
+export interface ResearchItem {
+  title: string;
+  venue: string;
+  status: string;
+  description: string;
 }
 
 export interface PersonalityPrompt {
@@ -63,6 +79,7 @@ export interface PersonalityPrompt {
   tagline: string;
   category: 'Lifestyle' | 'Dating' | 'Quirk' | 'Deep Dive';
   icon: string;
+  isConfigured?: boolean;
 }
 
 export interface AdventureVersion {
@@ -86,17 +103,9 @@ export interface DateIdea {
   duration: string;
 }
 
-export interface FavoriteItem {
+export interface MusicTrackConfig {
   title: string;
-  artistOrAuthor?: string;
-  categoryTag: string;
-  note: string;
-  link?: string;
-}
-
-export interface FavoriteGroup {
-  category: string;
-  description: string;
-  icon: string;
-  items: FavoriteItem[];
+  artist: string;
+  src: string;
+  defaultVolume: number; // 0.0 to 1.0
 }

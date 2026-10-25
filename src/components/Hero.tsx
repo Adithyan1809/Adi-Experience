@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { MapPin, ArrowDown, Coffee } from 'lucide-react';
 import { personalInfo } from '../data/personal';
 import { ImageWithFallback } from './ImageWithFallback';
+import { MusicPlayer } from './MusicPlayer';
 
 export const Hero: React.FC = () => {
   const scrollTo = (id: string) => {
@@ -21,20 +22,25 @@ export const Hero: React.FC = () => {
       <div className="absolute top-1/4 -left-20 w-96 h-96 bg-terracotta/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-1/3 -right-20 w-96 h-96 bg-ivory/5 rounded-full blur-3xl pointer-events-none" />
 
-      {/* Top Tagline / Meta row */}
+      {/* Top Meta Bar with Location & Integrated Soundtrack Player */}
       <motion.div
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className="flex flex-wrap items-center justify-between gap-4 py-4 border-b border-editorial text-xs font-mono text-stone tracking-wider"
+        className="flex flex-wrap items-center justify-between gap-4 py-3.5 border-b border-editorial text-xs font-mono text-stone tracking-wider"
       >
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-emerald-500/80 animate-pulse" />
-          <span className="text-ivory/80">Student, builder & occasional explorer</span>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <MapPin className="w-3.5 h-3.5 text-terracotta" />
+            <span className="text-ivory/80">{personalInfo.location}</span>
+          </div>
+          <span className="text-stone/40 hidden sm:inline">•</span>
+          <span className="text-stone hidden sm:inline">{personalInfo.specialization}</span>
         </div>
-        <div className="flex items-center gap-2 text-stone hover:text-ivory transition-colors">
-          <MapPin className="w-3.5 h-3.5 text-terracotta" />
-          <span>{personalInfo.location}</span>
+
+        {/* Integrated Background Music Player */}
+        <div className="flex items-center gap-2">
+          <MusicPlayer />
         </div>
       </motion.div>
 
@@ -45,14 +51,14 @@ export const Hero: React.FC = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-          className="lg:col-span-7 flex flex-col justify-center space-y-8"
+          className="lg:col-span-7 flex flex-col justify-center space-y-7"
         >
           {/* Eyebrow badge */}
           <div className="inline-flex items-center gap-2 self-start px-3 py-1 rounded-full bg-charcoal border border-editorial text-xs tracking-wider text-ivory/80 font-mono">
-            <span>Adi • Bangalore</span>
+            <span>Adi • DSATM Bangalore</span>
           </div>
 
-          {/* Large Headline */}
+          {/* Large Editorial Headline */}
           <h1 className="font-serif text-4xl sm:text-6xl md:text-7xl font-light text-ivory leading-[1.08] tracking-tight">
             A little bit of code.{' '}
             <span className="italic font-normal text-terracotta block sm:inline">
@@ -62,7 +68,7 @@ export const Hero: React.FC = () => {
 
           {/* Supporting Text */}
           <p className="text-base sm:text-lg md:text-xl text-stone-light max-w-xl font-sans leading-relaxed font-light">
-            AI/ML student by day. Trying to get my life together by… also day.
+            {personalInfo.heroSupporting}
           </p>
 
           {/* Action CTAs */}
@@ -84,7 +90,7 @@ export const Hero: React.FC = () => {
           </div>
         </motion.div>
 
-        {/* Right Column: Hero Portrait Plate */}
+        {/* Right Column: Hero Portrait Slot */}
         <motion.div
           initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -94,18 +100,19 @@ export const Hero: React.FC = () => {
           {/* Decorative Framing Accent */}
           <div className="absolute -top-3 -right-3 w-full h-full border border-terracotta/30 rounded-none pointer-events-none -z-10 translate-x-1 translate-y-1" />
 
-          {/* Portrait Image */}
+          {/* Portrait Image with Tasteful Editorial Frame */}
           <ImageWithFallback
-            src="/images/hero.jpg"
-            alt="Adi"
+            src={personalInfo.heroPhoto.src}
+            alt={personalInfo.heroPhoto.alt}
             aspect="hero"
             category="Portrait"
-            badge="Bangalore"
-            caption="Add your portrait photograph to /public/images/hero.jpg"
+            badge="Adi"
+            caption={personalInfo.heroPhoto.caption}
+            hasRealPhoto={personalInfo.heroPhoto.hasRealPhoto}
             className="shadow-2xl"
           />
 
-          {/* Small Floating Annotation */}
+          {/* Subtle Status Note */}
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
@@ -116,7 +123,7 @@ export const Hero: React.FC = () => {
               <span>● Right Now</span>
             </div>
             <p className="text-xs text-ivory/90 font-sans leading-tight">
-              Probably building a side project or hunting for Bangalore's best cold brew.
+              Building projects, gym training, and exploring Bangalore.
             </p>
           </motion.div>
         </motion.div>

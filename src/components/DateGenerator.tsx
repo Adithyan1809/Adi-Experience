@@ -134,7 +134,7 @@ export const DateGenerator: React.FC = () => {
             className="w-full sm:w-auto px-8 py-4 border border-editorial hover:border-ivory text-ivory text-xs font-semibold uppercase tracking-widest rounded-sm transition-colors flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-terracotta"
           >
             <Coffee className="w-4 h-4 text-terracotta" />
-            <span>Coffee sometime?</span>
+            <span>Say hello</span>
           </button>
         </div>
       </div>

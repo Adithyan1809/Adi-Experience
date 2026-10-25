@@ -52,12 +52,12 @@ export const CurrentlyMe: React.FC = () => {
           </div>
           <div className="flex items-center gap-2 text-xs font-mono text-stone max-w-sm">
             <Clock className="w-3.5 h-3.5 text-terracotta" />
-            <span>What I'm building, learning, and listening to right now.</span>
+            <span>What I'm building, learning, and working toward right now.</span>
           </div>
         </div>
 
-        {/* 6-Card Interactive Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {/* Interactive Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {currentlyItems.map((item, idx) => {
             const IconComponent = iconMap[item.iconName] || Sparkles;
             const isExpanded = expandedId === item.id;

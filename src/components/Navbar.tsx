@@ -5,10 +5,10 @@ import { personalInfo } from '../data/personal';
 const navLinks = [
   { label: 'Home', href: '#hero' },
   { label: 'About', href: '#about' },
-  { label: 'My World', href: '#lifestyle' },
-  { label: 'Currently', href: '#currently' },
+  { label: 'Snapshots', href: '#lifestyle' },
+  { label: 'Right Now', href: '#currently' },
   { label: 'Projects', href: '#projects' },
-  { label: 'The Fun Stuff', href: '#personality' },
+  { label: 'Questions', href: '#personality' },
   { label: 'Say Hello', href: '#contact' },
 ];
 
@@ -131,7 +131,7 @@ export const Navbar: React.FC = () => {
               }}
               className="hidden lg:inline-flex items-center gap-1.5 text-xs uppercase tracking-wider px-4 py-2 rounded-sm border border-terracotta/40 text-ivory hover:bg-terracotta hover:border-terracotta transition-all duration-300 font-medium focus:outline-none focus:ring-1 focus:ring-terracotta"
             >
-              <span>Coffee sometime?</span>
+              <span>Say hello</span>
               <ArrowUpRight className="w-3.5 h-3.5 text-terracotta hover:text-ivory transition-colors" />
             </a>
 
@@ -157,7 +157,7 @@ export const Navbar: React.FC = () => {
       >
         <div className="flex flex-col space-y-6 pt-6">
           <span className="text-[11px] font-mono uppercase tracking-wider text-stone">
-            Menu
+            Navigation
           </span>
           {navLinks.map((link, idx) => {
             const isActive = activeSection === link.href.replace('#', '');
