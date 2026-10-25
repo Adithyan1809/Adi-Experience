@@ -3,62 +3,62 @@ import { LifestyleItem } from '../types';
 export const lifestyleItems: LifestyleItem[] = [
   {
     id: 'everyday',
-    title: 'Daily Cadence',
+    title: 'Workspace',
     category: 'Everyday',
-    caption: 'Between code commits and unhurried thoughts. Finding quiet focus in a buzzing world.',
+    caption: 'My desk when I actually have it together.',
     imagePath: '/images/lifestyle-1.jpg',
     aspect: 'portrait',
-    placeholderHint: 'Everyday workspace or candid moment',
-    locationTag: 'Bangalore Studio'
+    placeholderHint: 'Desk setup, notebook or laptop moment',
+    locationTag: 'Bangalore'
   },
   {
     id: 'fitness',
-    title: 'The Daily Anchor',
+    title: 'Gym',
     category: 'Fitness',
-    caption: 'No shortcuts, just disciplined reps. The gym is where I clear mental static and reset my baseline.',
+    caption: 'Lifting heavy things to keep the mental static at bay.',
     imagePath: '/images/lifestyle-2.jpg',
     aspect: 'square',
-    placeholderHint: 'Training session or gym snapshot',
-    locationTag: 'Morning Split'
+    placeholderHint: 'Gym or training session snapshot',
+    locationTag: 'Morning Routine'
   },
   {
     id: 'cafes',
-    title: 'Specialty Brews',
+    title: 'Cold Brews',
     category: 'Cafés',
-    caption: 'Hunting for the cleanest iced pour-over in the city. The best ideas always start near an espresso machine.',
+    caption: 'Hunting for Bangalore’s best cold brew. Open to recommendations.',
     imagePath: '/images/lifestyle-3.jpg',
     aspect: 'landscape',
-    placeholderHint: 'Coffee shop, pour-over or café corner',
-    locationTag: 'Indiranagar, Bangalore'
+    placeholderHint: 'Coffee cup, pour-over or café table',
+    locationTag: 'Indiranagar'
   },
   {
     id: 'exploration',
-    title: 'Wandering Bangalore',
+    title: 'City Walks',
     category: 'Exploration',
-    caption: 'Tree-lined avenues, ancient raintrees, bustling intersections, and quiet book corners.',
+    caption: 'Church Street on a Sunday afternoon.',
     imagePath: '/images/lifestyle-4.jpg',
     aspect: 'landscape',
-    placeholderHint: 'Bangalore street, tree canopy or travel view',
-    locationTag: 'Cubbon & Church St.'
+    placeholderHint: 'Church Street or Bangalore canopy',
+    locationTag: 'Central Bangalore'
   },
   {
     id: 'style',
-    title: 'Understated Detail',
+    title: 'Off-Duty',
     category: 'Style',
-    caption: 'Clean silhouettes, muted earth tones, and a watch that has seen too many late nights.',
+    caption: 'Dressing slightly above “computer science student”.',
     imagePath: '/images/lifestyle-5.jpg',
     aspect: 'portrait',
-    placeholderHint: 'Personal style, tailored fit or portrait',
-    locationTag: 'Minimalist Wardrobe'
+    placeholderHint: 'Personal style snapshot or portrait',
+    locationTag: 'Weekend Fit'
   },
   {
     id: 'moments',
-    title: 'Golden Hour & Acoustics',
+    title: 'Dusk',
     category: 'Moments',
-    caption: 'Sunset skies bleeding into deep indigo, headphones on, and a grateful pause before dinner.',
+    caption: 'Bangalore sky doing its golden hour thing.',
     imagePath: '/images/lifestyle-6.jpg',
     aspect: 'square',
-    placeholderHint: 'Sunset sky, headphones or evening moment',
-    locationTag: 'Dusk in Bangalore'
+    placeholderHint: 'Sunset sky or quiet evening view',
+    locationTag: 'Golden Hour'
   }
 ];

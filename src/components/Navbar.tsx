@@ -81,7 +81,7 @@ export const Navbar: React.FC = () => {
               e.preventDefault();
               scrollTo('#hero');
             }}
-            className="group flex items-center gap-3 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-terracotta"
+            className="group flex items-center gap-3 focus:outline-none focus-visible:ring-1 focus-visible:ring-terracotta"
             aria-label="Adi — Back to top"
           >
             <div className="w-9 h-9 rounded-full border border-ivory/20 flex items-center justify-center bg-charcoal group-hover:border-terracotta transition-colors duration-300">
@@ -106,7 +106,7 @@ export const Navbar: React.FC = () => {
                     e.preventDefault();
                     scrollTo(link.href);
                   }}
-                  className={`text-xs uppercase tracking-widest transition-all duration-300 relative py-1 ${
+                  className={`text-xs uppercase tracking-wider transition-all duration-300 relative py-1 focus:outline-none focus:text-ivory ${
                     isActive
                       ? 'text-ivory font-medium'
                       : 'text-stone hover:text-ivory'
@@ -129,16 +129,16 @@ export const Navbar: React.FC = () => {
                 e.preventDefault();
                 scrollTo('#contact');
               }}
-              className="hidden lg:inline-flex items-center gap-1.5 text-xs uppercase tracking-wider px-4 py-2 rounded-sm border border-terracotta/40 text-ivory hover:bg-terracotta hover:border-terracotta transition-all duration-300 font-medium"
+              className="hidden lg:inline-flex items-center gap-1.5 text-xs uppercase tracking-wider px-4 py-2 rounded-sm border border-terracotta/40 text-ivory hover:bg-terracotta hover:border-terracotta transition-all duration-300 font-medium focus:outline-none focus:ring-1 focus:ring-terracotta"
             >
-              <span>Get Coffee</span>
+              <span>Coffee sometime?</span>
               <ArrowUpRight className="w-3.5 h-3.5 text-terracotta hover:text-ivory transition-colors" />
             </a>
 
             {/* Mobile Hamburger Toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 text-ivory hover:text-terracotta transition-colors focus:outline-none"
+              className="md:hidden p-2 text-ivory hover:text-terracotta transition-colors focus:outline-none focus:ring-1 focus:ring-terracotta rounded-sm"
               aria-label={mobileMenuOpen ? 'Close Menu' : 'Open Menu'}
               aria-expanded={mobileMenuOpen}
             >
@@ -156,8 +156,8 @@ export const Navbar: React.FC = () => {
         aria-hidden={!mobileMenuOpen}
       >
         <div className="flex flex-col space-y-6 pt-6">
-          <span className="text-[11px] font-mono uppercase tracking-widest text-stone">
-            Navigation Index
+          <span className="text-[11px] font-mono uppercase tracking-wider text-stone">
+            Menu
           </span>
           {navLinks.map((link, idx) => {
             const isActive = activeSection === link.href.replace('#', '');
@@ -189,9 +189,9 @@ export const Navbar: React.FC = () => {
           </div>
           <button
             onClick={() => scrollTo('#contact')}
-            className="w-full text-center py-3 bg-terracotta text-ivory font-medium text-xs uppercase tracking-widest rounded-sm mt-2"
+            className="w-full text-center py-3 bg-terracotta text-ivory font-medium text-xs uppercase tracking-widest rounded-sm mt-2 focus:outline-none focus:ring-2 focus:ring-ivory"
           >
-            Plan a Coffee
+            Say hello
           </button>
         </div>
       </div>

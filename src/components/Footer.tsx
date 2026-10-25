@@ -24,12 +24,12 @@ export const Footer: React.FC = () => {
         </div>
 
         {/* Center: Social links */}
-        <div className="flex items-center gap-6 uppercase tracking-widest text-[11px]">
+        <div className="flex items-center gap-6 uppercase tracking-wider text-[11px]">
           <a
             href={personalInfo.links.website}
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-ivory transition-colors"
+            className="hover:text-ivory transition-colors focus:outline-none focus:underline"
           >
             Portfolio
           </a>
@@ -38,7 +38,7 @@ export const Footer: React.FC = () => {
             href={personalInfo.links.github}
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-ivory transition-colors inline-flex items-center gap-1.5"
+            className="hover:text-ivory transition-colors inline-flex items-center gap-1.5 focus:outline-none focus:underline"
           >
             <GithubIcon className="w-3.5 h-3.5 text-stone hover:text-ivory" />
             <span>GitHub</span>
@@ -48,7 +48,7 @@ export const Footer: React.FC = () => {
             href={personalInfo.links.linkedin}
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-ivory transition-colors inline-flex items-center gap-1.5"
+            className="hover:text-ivory transition-colors inline-flex items-center gap-1.5 focus:outline-none focus:underline"
           >
             <LinkedinIcon className="w-3.5 h-3.5 text-stone hover:text-ivory" />
             <span>LinkedIn</span>
@@ -60,7 +60,7 @@ export const Footer: React.FC = () => {
           <span>© {currentYear} Adi. All rights reserved.</span>
           <button
             onClick={scrollToTop}
-            className="p-2 border border-editorial rounded-sm hover:border-terracotta hover:text-ivory transition-colors group flex items-center gap-1.5"
+            className="p-2 border border-editorial rounded-sm hover:border-terracotta hover:text-ivory transition-colors group flex items-center gap-1.5 focus:outline-none focus:ring-1 focus:ring-terracotta"
             aria-label="Back to top"
           >
             <span className="text-[10px] uppercase tracking-wider">Top</span>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Copy, Check, Send, Mail, MapPin } from 'lucide-react';
+import { X, Copy, Check, Send, Mail, ExternalLink } from 'lucide-react';
 import { personalInfo } from '../data/personal';
 
 interface ContactModalProps {
@@ -10,6 +10,7 @@ interface ContactModalProps {
 
 export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
   const [copied, setCopied] = useState(false);
+  const [copiedNote, setCopiedNote] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -40,16 +41,36 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
     setTimeout(() => setCopied(false), 2500);
   };
 
+  const copyNoteText = () => {
+    const fullText = `Hi Adi,\n\n${formData.message}\n\nFrom: ${formData.name} (${formData.email})\nTopic: ${formData.topic}`;
+    navigator.clipboard.writeText(fullText);
+    setCopiedNote(true);
+    setTimeout(() => setCopiedNote(false), 2500);
+  };
+
+  const openMailto = () => {
+    const subject = encodeURIComponent(`[Adi Experience] ${formData.topic} — from ${formData.name}`);
+    const body = encodeURIComponent(`Hi Adi,\n\n${formData.message}\n\nFrom: ${formData.name} (${formData.email})`);
+    window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate graceful sending and open user's mail client as fallback
+    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
+      return;
+    }
     setSubmitted(true);
-    const subject = encodeURIComponent(`[The Adi Experience] Message from ${formData.name}: ${formData.topic}`);
-    const body = encodeURIComponent(`Hi Adi,\n\n${formData.message}\n\nFrom: ${formData.name} (${formData.email})`);
-    
-    setTimeout(() => {
-      window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
-    }, 800);
+    openMailto();
+  };
+
+  const resetForm = () => {
+    setSubmitted(false);
+    setFormData({
+      name: '',
+      email: '',
+      topic: 'Coffee in Bangalore',
+      message: '',
+    });
   };
 
   return (
@@ -65,13 +86,16 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
             initial={{ opacity: 0, scale: 0.95, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.25 }}
             className="relative max-w-xl w-full bg-charcoal border border-editorial rounded-sm p-6 sm:p-10 shadow-2xl space-y-6"
           >
             {/* Close Button */}
             <button
-              onClick={onClose}
-              className="absolute top-5 right-5 p-2 text-stone hover:text-ivory transition-colors"
+              onClick={() => {
+                resetForm();
+                onClose();
+              }}
+              className="absolute top-5 right-5 p-2 text-stone hover:text-ivory transition-colors focus:outline-none focus:ring-1 focus:ring-terracotta"
               aria-label="Close dialog"
             >
               <X className="w-5 h-5" />
@@ -81,13 +105,13 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
             <div>
               <div className="flex items-center gap-2 text-xs font-mono text-terracotta uppercase tracking-wider mb-1">
                 <Mail className="w-3.5 h-3.5" />
-                <span>Direct Dispatch</span>
+                <span>Get in touch</span>
               </div>
               <h3 id="contact-modal-title" className="font-serif text-3xl text-ivory font-light">
                 Say Hello
               </h3>
-              <p className="text-xs sm:text-sm text-stone mt-1.5 font-sans">
-                Drop a note about projects, AI ideas, Bangalore cafés, or just to introduce yourself.
+              <p className="text-xs sm:text-sm text-stone mt-1.5 font-sans leading-relaxed">
+                Drop a note below. Clicking &ldquo;Send Note&rdquo; opens your default mail app with a draft ready to send. Or copy my email directly.
               </p>
             </div>
 
@@ -102,7 +126,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
               <button
                 type="button"
                 onClick={copyEmail}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono bg-charcoal border border-editorial hover:border-terracotta text-ivory rounded-sm transition-colors shrink-0"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono bg-charcoal border border-editorial hover:border-terracotta text-ivory rounded-sm transition-colors shrink-0 focus:outline-none focus:ring-1 focus:ring-terracotta"
               >
                 {copied ? (
                   <>
@@ -118,22 +142,58 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
               </button>
             </div>
 
-            {/* Direct Form */}
+            {/* Direct Form or Post-Submit Guide */}
             {submitted ? (
-              <div className="p-8 text-center bg-obsidian/70 border border-editorial rounded-sm space-y-3">
+              <div className="p-6 text-center bg-obsidian/70 border border-editorial rounded-sm space-y-4">
                 <div className="w-12 h-12 rounded-full bg-terracotta/20 border border-terracotta/30 flex items-center justify-center mx-auto text-terracotta">
-                  <Check className="w-6 h-6" />
+                  <ExternalLink className="w-5 h-5" />
                 </div>
-                <h4 className="font-serif text-2xl text-ivory">Message Dispatched</h4>
-                <p className="text-xs text-stone font-sans">
-                  Your mail client has been opened. I'll get back to you once I step away from the terminal!
-                </p>
-                <button
-                  onClick={onClose}
-                  className="mt-4 px-6 py-2 bg-ivory text-obsidian text-xs font-semibold uppercase tracking-wider rounded-sm hover:bg-ivory-muted transition-colors"
-                >
-                  Close Window
-                </button>
+                <div>
+                  <h4 className="font-serif text-2xl text-ivory">Opening Your Email App</h4>
+                  <p className="text-xs text-stone font-sans max-w-sm mx-auto mt-1 leading-relaxed">
+                    A pre-filled draft should appear in your mail app. If your browser blocked it or you prefer sending manually, use the options below:
+                  </p>
+                </div>
+
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={openMailto}
+                    className="w-full sm:w-auto px-4 py-2.5 bg-ivory text-obsidian text-xs font-semibold uppercase tracking-wider rounded-sm hover:bg-ivory-muted transition-colors"
+                  >
+                    Launch Mail Client Again
+                  </button>
+                  <button
+                    type="button"
+                    onClick={copyNoteText}
+                    className="w-full sm:w-auto px-4 py-2.5 border border-editorial text-ivory text-xs font-mono uppercase tracking-wider rounded-sm hover:border-terracotta transition-colors flex items-center justify-center gap-1.5"
+                  >
+                    {copiedNote ? (
+                      <>
+                        <Check className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>Message Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3.5 h-3.5 text-stone" />
+                        <span>Copy Message Text</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                <div className="pt-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      resetForm();
+                      onClose();
+                    }}
+                    className="text-xs font-mono text-stone hover:text-ivory transition-colors underline"
+                  >
+                    Close Window
+                  </button>
+                </div>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
@@ -145,7 +205,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
                     <input
                       type="text"
                       required
-                      placeholder="Jane Doe"
+                      placeholder="Your name"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       className="w-full px-3.5 py-2.5 bg-obsidian border border-editorial rounded-sm text-sm text-ivory focus:border-terracotta focus:outline-none transition-colors"
@@ -158,7 +218,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
                     <input
                       type="email"
                       required
-                      placeholder="jane@example.com"
+                      placeholder="your.email@example.com"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       className="w-full px-3.5 py-2.5 bg-obsidian border border-editorial rounded-sm text-sm text-ivory focus:border-terracotta focus:outline-none transition-colors"
@@ -175,10 +235,10 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
                     onChange={(e) => setFormData({ ...formData, topic: e.target.value })}
                     className="w-full px-3.5 py-2.5 bg-obsidian border border-editorial rounded-sm text-sm text-ivory focus:border-terracotta focus:outline-none transition-colors"
                   >
-                    <option value="Coffee in Bangalore">Coffee & conversation in Bangalore</option>
-                    <option value="AI Collaboration">AI & machine learning project</option>
-                    <option value="General Hello">Just wanted to say hello</option>
-                    <option value="Hypothetical First Date">Hypothetical first date proposal</option>
+                    <option value="Coffee in Bangalore">Coffee in Bangalore</option>
+                    <option value="Tech or Project Idea">Tech or project idea</option>
+                    <option value="Music Recommendation">Music recommendation</option>
+                    <option value="Just Saying Hi">Just saying hi</option>
                   </select>
                 </div>
 
@@ -197,13 +257,12 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
                 </div>
 
                 <div className="pt-2 flex items-center justify-between">
-                  <span className="text-[11px] font-mono text-stone flex items-center gap-1">
-                    <MapPin className="w-3 h-3 text-terracotta" />
-                    <span>Based in Bangalore</span>
+                  <span className="text-[11px] font-mono text-stone">
+                    Prepares draft to {email}
                   </span>
                   <button
                     type="submit"
-                    className="px-6 py-3 bg-terracotta text-ivory hover:bg-terracotta-hover transition-colors text-xs font-semibold uppercase tracking-widest rounded-sm flex items-center gap-2"
+                    className="px-6 py-3 bg-terracotta text-ivory hover:bg-terracotta-hover transition-colors text-xs font-semibold uppercase tracking-widest rounded-sm flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-ivory"
                   >
                     <span>Send Note</span>
                     <Send className="w-3.5 h-3.5" />

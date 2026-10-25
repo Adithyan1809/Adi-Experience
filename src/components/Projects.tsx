@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { projectsData } from '../data/projects';
 import { GithubIcon } from './Icons';
-import { ExternalLink, Sparkles, Lock, ArrowUpRight } from 'lucide-react';
+import { ExternalLink, ArrowUpRight } from 'lucide-react';
 
 export const Projects: React.FC = () => {
   const [activeProject, setActiveProject] = useState<string>(projectsData[0].id);
@@ -13,18 +13,18 @@ export const Projects: React.FC = () => {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6 pb-8 border-b border-editorial">
           <div className="space-y-3">
-            <div className="flex items-center gap-2 text-xs font-mono text-terracotta tracking-widest uppercase">
+            <div className="flex items-center gap-2 text-xs font-mono text-terracotta tracking-wider uppercase">
               <span>05</span>
               <span className="text-stone">/</span>
-              <span>Engineering & Craft</span>
+              <span>Side Projects</span>
             </div>
             <h2 className="font-serif text-3xl sm:text-5xl md:text-6xl text-ivory font-light tracking-tight">
-              Things I'm Building
+              Things I made instead of sleeping.
             </h2>
           </div>
           <div className="max-w-md space-y-2">
             <p className="text-stone text-sm font-sans leading-relaxed">
-              Code as an instrument for solving actual human friction. These aren't corporate résumé bullet points; they are things I cared enough about to build from scratch.
+              A few side projects I built because I genuinely wanted them to exist. No corporate fluff, just software that scratched an itch.
             </p>
             <a
               href="https://github.com/Adithyan1809"
@@ -33,13 +33,13 @@ export const Projects: React.FC = () => {
               className="inline-flex items-center gap-1.5 text-xs font-mono text-terracotta hover:text-ivory transition-colors uppercase tracking-wider"
             >
               <GithubIcon className="w-3.5 h-3.5" />
-              <span>Explore GitHub Repository Index</span>
+              <span>More on GitHub</span>
               <ArrowUpRight className="w-3 h-3" />
             </a>
           </div>
         </div>
 
-        {/* Editorial Project Story List / Feature Showcase */}
+        {/* Project Story List */}
         <div className="space-y-8">
           {projectsData.map((project, idx) => {
             const isSelected = activeProject === project.id;
@@ -59,14 +59,11 @@ export const Projects: React.FC = () => {
                 }`}
               >
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                  {/* Left Column: Number, Title, Status (5 cols) */}
+                  {/* Left Column: Title, Role, Tags (5 cols) */}
                   <div className="lg:col-span-5 space-y-4">
                     <div className="flex items-center gap-3">
                       <span className="text-xs font-mono text-stone">0{idx + 1}</span>
                       <span className="w-8 h-[1px] bg-editorial" />
-                      <span className="text-[10px] font-mono uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-obsidian border border-editorial text-ivory/80">
-                        {project.status}
-                      </span>
                       <span className="text-xs font-mono text-stone ml-auto">
                         {project.timeframe}
                       </span>
@@ -92,15 +89,15 @@ export const Projects: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Right Column: Narrative Story & Actions (7 cols) */}
+                  {/* Right Column: Story & Action Links (7 cols) */}
                   <div className="lg:col-span-7 flex flex-col justify-between h-full space-y-6">
                     <div className="space-y-4">
                       <p className="text-base sm:text-lg text-ivory/90 font-light leading-relaxed">
                         {project.description}
                       </p>
                       <div className="p-4 bg-obsidian/60 border border-editorial-subtle rounded-sm">
-                        <span className="text-[10px] font-mono text-stone uppercase tracking-widest block mb-1">
-                          The Story Behind It
+                        <span className="text-[10px] font-mono text-stone uppercase tracking-wider block mb-1">
+                          Why I Built It
                         </span>
                         <p className="text-xs sm:text-sm text-stone leading-relaxed font-sans">
                           {project.story}
@@ -123,12 +120,11 @@ export const Projects: React.FC = () => {
                         </a>
                       ) : (
                         <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-obsidian text-stone text-xs font-mono tracking-wider rounded-sm border border-editorial-subtle cursor-default">
-                          <Lock className="w-3 h-3 text-stone" />
-                          <span>Private Preview</span>
+                          <span>In progress</span>
                         </span>
                       )}
 
-                      {project.repoUrl ? (
+                      {project.repoUrl && (
                         <a
                           href={project.repoUrl}
                           target="_blank"
@@ -137,38 +133,15 @@ export const Projects: React.FC = () => {
                           className="inline-flex items-center gap-2 px-4 py-2 border border-editorial hover:border-terracotta text-ivory text-xs font-mono uppercase tracking-wider rounded-sm transition-colors"
                         >
                           <GithubIcon className="w-3.5 h-3.5 text-stone" />
-                          <span>Source Code</span>
+                          <span>View on GitHub</span>
                         </a>
-                      ) : (
-                        <span className="text-xs font-mono text-stone">Repository upon request</span>
                       )}
-
-                      <span className="ml-auto text-[11px] font-mono text-stone hidden sm:inline">
-                        Verified Destination
-                      </span>
                     </div>
                   </div>
                 </div>
               </motion.div>
             );
           })}
-        </div>
-
-        {/* Small Footer Callout */}
-        <div className="mt-12 p-6 border border-editorial bg-charcoal/30 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-stone">
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-terracotta" />
-            <span className="text-ivory/80">More experiments and research logs on GitHub</span>
-          </div>
-          <a
-            href="https://github.com/Adithyan1809"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-terracotta hover:text-ivory uppercase tracking-widest font-semibold flex items-center gap-1"
-          >
-            <span>Visit @Adithyan1809</span>
-            <ArrowUpRight className="w-3.5 h-3.5" />
-          </a>
         </div>
       </div>
     </section>

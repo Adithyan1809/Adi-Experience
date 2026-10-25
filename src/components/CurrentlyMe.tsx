@@ -28,28 +28,35 @@ export const CurrentlyMe: React.FC = () => {
     setExpandedId(expandedId === id ? null : id);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent, id: string) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      toggleExpand(id);
+    }
+  };
+
   return (
     <section id="currently" className="py-24 border-t border-editorial relative bg-charcoal/30">
       <div className="max-w-7xl mx-auto px-6 sm:px-8 md:px-12">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6 pb-8 border-b border-editorial">
           <div className="space-y-3">
-            <div className="flex items-center gap-2 text-xs font-mono text-terracotta tracking-widest uppercase">
+            <div className="flex items-center gap-2 text-xs font-mono text-terracotta tracking-wider uppercase">
               <span>04</span>
               <span className="text-stone">/</span>
-              <span>Live Cadence</span>
+              <span>Right Now</span>
             </div>
             <h2 className="font-serif text-3xl sm:text-5xl md:text-6xl text-ivory font-light tracking-tight">
-              Currently Me
+              A few things taking up my brain lately.
             </h2>
           </div>
           <div className="flex items-center gap-2 text-xs font-mono text-stone max-w-sm">
             <Clock className="w-3.5 h-3.5 text-terracotta" />
-            <span>A snapshot of what's occupying my mental bandwidth right now.</span>
+            <span>What I'm building, learning, and listening to right now.</span>
           </div>
         </div>
 
-        {/* 6-Card Interactive Editorial Grid */}
+        {/* 6-Card Interactive Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {currentlyItems.map((item, idx) => {
             const IconComponent = iconMap[item.iconName] || Sparkles;
@@ -63,7 +70,11 @@ export const CurrentlyMe: React.FC = () => {
                 viewport={{ once: true, margin: '-40px' }}
                 transition={{ duration: 0.6, delay: idx * 0.08 }}
                 onClick={() => toggleExpand(item.id)}
-                className={`p-6 rounded-sm border cursor-pointer transition-all duration-300 relative flex flex-col justify-between ${
+                onKeyDown={(e) => handleKeyDown(e, item.id)}
+                role="button"
+                tabIndex={0}
+                aria-expanded={isExpanded}
+                className={`p-6 rounded-sm border cursor-pointer transition-all duration-300 relative flex flex-col justify-between focus:outline-none focus-visible:ring-2 focus-visible:ring-terracotta ${
                   isExpanded
                     ? 'bg-charcoal border-terracotta/50 shadow-xl'
                     : 'bg-obsidian-light/70 border-editorial hover:border-terracotta/30 hover:bg-charcoal/50'
@@ -76,7 +87,7 @@ export const CurrentlyMe: React.FC = () => {
                       <div className="p-2 rounded-sm bg-obsidian border border-editorial text-terracotta">
                         <IconComponent className="w-4 h-4" />
                       </div>
-                      <span className="text-[11px] font-mono tracking-widest text-stone uppercase">
+                      <span className="text-[11px] font-mono tracking-wider text-stone uppercase">
                         {item.label}
                       </span>
                     </div>
@@ -93,7 +104,7 @@ export const CurrentlyMe: React.FC = () => {
                   </h3>
                 </div>
 
-                {/* Collapsible / Expandable Detail */}
+                {/* Expandable Detail */}
                 <div className="mt-4">
                   <AnimatePresence initial={false}>
                     {isExpanded && (
@@ -107,9 +118,6 @@ export const CurrentlyMe: React.FC = () => {
                         <p className="text-xs sm:text-sm text-stone-light font-sans leading-relaxed pt-2 border-t border-editorial-subtle">
                           {item.detail}
                         </p>
-                        <span className="text-[10px] font-mono text-terracotta/80 block mt-3 uppercase tracking-wider">
-                          Updated in personal.ts
-                        </span>
                       </motion.div>
                     )}
                   </AnimatePresence>

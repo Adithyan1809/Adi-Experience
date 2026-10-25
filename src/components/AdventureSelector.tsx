@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { adventureVersions } from '../data/personal';
-import { Compass, Sparkles, Flame, Heart, RotateCcw, MessageCircle } from 'lucide-react';
+import { Compass, Sparkles, Flame, Coffee, RotateCcw, MessageCircle } from 'lucide-react';
 
 const iconByVersion = {
   curious: Compass,
   chaotic: Flame,
-  softie: Heart,
+  softie: Coffee,
 };
 
 export const AdventureSelector: React.FC = () => {
@@ -22,21 +22,25 @@ export const AdventureSelector: React.FC = () => {
       <div className="max-w-5xl mx-auto px-6 sm:px-8 md:px-12">
         {/* Header */}
         <div className="text-center space-y-4 max-w-2xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 text-xs font-mono text-terracotta tracking-widest uppercase">
+          <div className="inline-flex items-center gap-2 text-xs font-mono text-terracotta tracking-wider uppercase">
             <span>07</span>
             <span className="text-stone">/</span>
-            <span>Interactive State</span>
+            <span>Choose Your Adventure</span>
           </div>
           <h2 className="font-serif text-3xl sm:text-5xl md:text-6xl text-ivory font-light tracking-tight">
             Which version of me are we meeting today?
           </h2>
           <p className="text-stone text-sm font-sans leading-relaxed">
-            Depending on caffeine levels, the current phase of the moon, or whether my code compiled without throwing a segmentation fault.
+            Depends on caffeine levels, the current phase of the moon, or whether my code compiled on the first try.
           </p>
         </div>
 
         {/* 3 Selector Tabs */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
+        <div
+          role="tablist"
+          aria-label="Personality versions"
+          className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10"
+        >
           {adventureVersions.map((version) => {
             const Icon = iconByVersion[version.id];
             const isSelected = selectedVersionId === version.id;
@@ -44,8 +48,12 @@ export const AdventureSelector: React.FC = () => {
             return (
               <button
                 key={version.id}
+                role="tab"
+                aria-selected={isSelected}
+                aria-controls={`panel-${version.id}`}
+                id={`tab-${version.id}`}
                 onClick={() => setSelectedVersionId(version.id)}
-                className={`p-6 rounded-sm border text-left transition-all duration-300 relative group flex flex-col justify-between ${
+                className={`p-6 rounded-sm border text-left transition-all duration-300 relative group flex flex-col justify-between focus:outline-none focus-visible:ring-2 focus-visible:ring-terracotta ${
                   isSelected
                     ? 'bg-charcoal border-terracotta shadow-xl'
                     : 'bg-obsidian/70 border-editorial hover:border-terracotta/40 hover:bg-charcoal/40'
@@ -81,14 +89,17 @@ export const AdventureSelector: React.FC = () => {
           })}
         </div>
 
-        {/* Revealed Adventure Content Card */}
+        {/* Revealed Content Card */}
         <AnimatePresence mode="wait">
           <motion.div
             key={selected.id}
+            id={`panel-${selected.id}`}
+            role="tabpanel"
+            aria-labelledby={`tab-${selected.id}`}
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -15 }}
-            transition={{ duration: 0.4 }}
+            transition={{ duration: 0.35 }}
             className="p-8 sm:p-12 bg-charcoal border border-editorial rounded-sm shadow-2xl relative"
           >
             {/* Corner crosshairs */}
@@ -97,8 +108,8 @@ export const AdventureSelector: React.FC = () => {
 
             <div className="flex flex-col md:flex-row md:items-center justify-between pb-6 border-b border-editorial-subtle gap-4">
               <div>
-                <span className="text-xs font-mono text-terracotta uppercase tracking-widest block mb-1">
-                  Active Persona // {selected.badge}
+                <span className="text-xs font-mono text-terracotta uppercase tracking-wider block mb-1">
+                  {selected.badge} Mode
                 </span>
                 <h4 className="font-serif text-3xl sm:text-4xl text-ivory font-light">
                   {selected.title}
@@ -110,15 +121,15 @@ export const AdventureSelector: React.FC = () => {
               </div>
             </div>
 
-            {/* Main Narrative */}
+            {/* Narrative */}
             <p className="text-base sm:text-lg text-stone-light font-light leading-relaxed my-8 font-sans">
               {selected.description}
             </p>
 
-            {/* Highlighted behavioral clues */}
+            {/* Behavioral clues */}
             <div className="space-y-3 mb-8">
               <span className="text-xs font-mono text-stone uppercase tracking-wider block">
-                Field Notes & Warning Signs:
+                What to expect:
               </span>
               <ul className="space-y-2">
                 {selected.highlightPoints.map((pt, i) => (
@@ -130,7 +141,7 @@ export const AdventureSelector: React.FC = () => {
               </ul>
             </div>
 
-            {/* Conversation Starter Callout */}
+            {/* Conversation Starter */}
             <div className="p-4 sm:p-5 bg-obsidian/80 border border-editorial-subtle rounded-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-center gap-3">
                 <MessageCircle className="w-4 h-4 text-terracotta shrink-0" />
@@ -143,7 +154,7 @@ export const AdventureSelector: React.FC = () => {
                   const el = document.querySelector('#contact');
                   if (el) el.scrollIntoView({ behavior: 'smooth' });
                 }}
-                className="text-xs font-mono uppercase tracking-wider text-terracotta hover:text-ivory transition-colors whitespace-nowrap self-start sm:self-auto"
+                className="text-xs font-mono uppercase tracking-wider text-terracotta hover:text-ivory transition-colors whitespace-nowrap self-start sm:self-auto focus:outline-none focus:underline"
               >
                 Bring this up →
               </button>
@@ -153,7 +164,7 @@ export const AdventureSelector: React.FC = () => {
             <div className="mt-6 pt-4 border-t border-editorial-subtle flex justify-end">
               <button
                 onClick={() => setSelectedVersionId('curious')}
-                className="inline-flex items-center gap-1.5 text-xs font-mono text-stone hover:text-ivory transition-colors"
+                className="inline-flex items-center gap-1.5 text-xs font-mono text-stone hover:text-ivory transition-colors focus:outline-none focus:text-ivory"
               >
                 <RotateCcw className="w-3 h-3" />
                 <span>Reset selection</span>

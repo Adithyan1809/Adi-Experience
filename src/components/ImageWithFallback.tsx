@@ -48,10 +48,10 @@ export const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
         />
       )}
 
-      {/* Editorial Intentional Fallback Card (shown if image missing or still loading) */}
+      {/* Clean, Intentional Fallback Card (shown if image missing or still loading) */}
       {(hasError || !isLoaded) && (
         <div
-          className={`absolute inset-0 flex flex-col justify-between p-6 sm:p-8 bg-gradient-to-b from-[#242424] via-[#1a1a1a] to-[#141414] transition-opacity duration-500 ${
+          className={`absolute inset-0 flex flex-col justify-between p-6 sm:p-8 bg-gradient-to-b from-[#222222] via-[#1a1a1a] to-[#141414] transition-opacity duration-500 ${
             hasError ? 'opacity-100' : isLoaded ? 'opacity-0 pointer-events-none' : 'opacity-100'
           }`}
         >
@@ -61,22 +61,22 @@ export const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
           <div className="absolute bottom-3 left-3 text-stone-dark text-xs font-mono select-none">+</div>
           <div className="absolute bottom-3 right-3 text-stone-dark text-xs font-mono select-none">+</div>
 
-          {/* Top meta */}
+          {/* Top metadata */}
           <div className="flex items-center justify-between w-full z-10">
-            <span className="text-[10px] uppercase tracking-widest text-stone font-mono">
-              {category || 'Editorial Plate'}
+            <span className="text-[11px] uppercase tracking-wider text-stone font-mono">
+              {category || 'Photo Placeholder'}
             </span>
             {badge && (
-              <span className="text-[9px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-terracotta/20 text-terracotta border border-terracotta/30">
+              <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-charcoal text-stone-light border border-editorial">
                 {badge}
               </span>
             )}
           </div>
 
-          {/* Center visual monogram & editorial seal */}
+          {/* Center visual monogram & title */}
           <div className="my-auto flex flex-col items-center justify-center text-center py-4 z-10">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border border-ivory/15 flex items-center justify-center mb-4 bg-obsidian/40 backdrop-blur-sm group-hover:border-terracotta/40 transition-colors">
-              <span className="font-serif italic text-3xl sm:text-4xl text-ivory/80 group-hover:text-ivory transition-colors">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border border-ivory/15 flex items-center justify-center mb-3 bg-obsidian/40 backdrop-blur-sm group-hover:border-terracotta/40 transition-colors">
+              <span className="font-serif italic text-2xl sm:text-3xl text-ivory/80 group-hover:text-ivory transition-colors">
                 A
               </span>
             </div>
@@ -84,23 +84,14 @@ export const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
               {alt}
             </h4>
             <p className="text-xs text-stone mt-1.5 max-w-[260px] font-sans">
-              {caption || 'A quiet, unhurried moment captured in Bangalore.'}
+              {caption || 'Add your photo to /public' + src}
             </p>
           </div>
 
           {/* Bottom metadata */}
-          <div className="flex items-end justify-between w-full pt-4 border-t border-editorial-subtle z-10">
-            <div className="flex flex-col">
-              <span className="text-[9px] font-mono uppercase tracking-widest text-stone/70">
-                FRAME // 35MM NOIR
-              </span>
-              <span className="text-[10px] text-ivory/60 font-sans">
-                {src.replace(/^\//, '')}
-              </span>
-            </div>
-            <span className="text-[9px] font-mono text-terracotta/80 tracking-wide uppercase">
-              REPLACEABLE ASSET
-            </span>
+          <div className="flex items-end justify-between w-full pt-4 border-t border-editorial-subtle z-10 text-[10px] font-mono text-stone">
+            <span>{src.replace(/^\//, '')}</span>
+            <span className="text-terracotta/90">Replaceable asset</span>
           </div>
 
           {/* Subtle noise grain inside fallback */}
@@ -108,7 +99,7 @@ export const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
         </div>
       )}
 
-      {/* Hover lighting vignette */}
+      {/* Subtle hover vignette */}
       <div className="absolute inset-0 bg-gradient-to-t from-obsidian/60 via-transparent to-transparent opacity-40 group-hover:opacity-20 transition-opacity pointer-events-none" />
     </div>
   );

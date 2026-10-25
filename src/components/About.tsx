@@ -13,7 +13,7 @@ export const About: React.FC = () => {
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6 pb-8 border-b border-editorial">
           <div className="space-y-3">
-            <div className="flex items-center gap-2 text-xs font-mono text-terracotta tracking-widest uppercase">
+            <div className="flex items-center gap-2 text-xs font-mono text-terracotta tracking-wider uppercase">
               <span>02</span>
               <span className="text-stone">/</span>
               <span>About Me</span>
@@ -40,17 +40,17 @@ export const About: React.FC = () => {
             {/* Story Paragraphs */}
             <div className="space-y-6 text-base sm:text-lg text-stone-light font-light leading-relaxed">
               {aboutData.introParagraphs.map((para, i) => (
-                <p key={i} className="first-letter:text-4xl first-letter:font-serif first-letter:text-terracotta first-letter:mr-1 first-letter:float-left first-letter:leading-none">
+                <p key={i} className="first-letter:text-4xl first-letter:font-serif first-letter:text-terracotta first-letter:mr-2 first-letter:float-left first-letter:leading-none">
                   {para}
                 </p>
               ))}
             </div>
 
-            {/* Ambitions Section */}
+            {/* What I'm into */}
             <div className="pt-6 border-t border-editorial space-y-6">
-              <div className="flex items-center gap-2 text-xs font-mono tracking-widest text-terracotta uppercase">
+              <div className="flex items-center gap-2 text-xs font-mono tracking-wider text-terracotta uppercase">
                 <Target className="w-3.5 h-3.5" />
-                <span>What I'm Working Towards</span>
+                <span>What I'm focused on</span>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {aboutData.ambitions.map((item, idx) => (
@@ -70,11 +70,11 @@ export const About: React.FC = () => {
               </div>
             </div>
 
-            {/* Values in Relationships & Life */}
+            {/* Things I appreciate */}
             <div className="pt-6 border-t border-editorial space-y-4">
-              <div className="flex items-center gap-2 text-xs font-mono tracking-widest text-terracotta uppercase">
+              <div className="flex items-center gap-2 text-xs font-mono tracking-wider text-terracotta uppercase">
                 <Heart className="w-3.5 h-3.5" />
-                <span>What I Value In People</span>
+                <span>Things I appreciate</span>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                 {aboutData.values.map((val, idx) => (
@@ -92,7 +92,7 @@ export const About: React.FC = () => {
             </div>
           </motion.div>
 
-          {/* Right Column: Quirks, Editable Fast Facts & Editorial Accent (5 cols) */}
+          {/* Right Column: Quirks & Fast Facts (5 cols) */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -103,11 +103,11 @@ export const About: React.FC = () => {
             {/* Quirks & Humor Card */}
             <div className="p-6 sm:p-8 bg-charcoal/80 border border-editorial relative rounded-sm shadow-xl">
               <div className="flex items-center justify-between mb-6 pb-4 border-b border-editorial-subtle">
-                <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-terracotta">
+                <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-terracotta">
                   <Flame className="w-3.5 h-3.5" />
-                  <span>Quirks & Self-Awareness</span>
+                  <span>A Few Honest Quirks</span>
                 </div>
-                <span className="text-[10px] font-mono text-stone">100% UNFILTERED</span>
+                <span className="text-[10px] font-mono text-stone">Self-aware</span>
               </div>
 
               <div className="space-y-4">
@@ -123,11 +123,11 @@ export const About: React.FC = () => {
             {/* Quick Facts (with clear editable indicators) */}
             <div className="p-6 sm:p-8 bg-obsidian-light border border-editorial rounded-sm space-y-5">
               <div className="flex items-center justify-between pb-3 border-b border-editorial-subtle">
-                <span className="text-xs font-mono tracking-widest uppercase text-stone">
-                  Fast Dossier
+                <span className="text-xs font-mono tracking-wider uppercase text-stone">
+                  Fast Facts
                 </span>
-                <span className="text-[10px] font-mono text-terracotta uppercase">
-                  Centralized In personal.ts
+                <span className="text-[10px] font-mono text-terracotta/90 uppercase">
+                  src/data/personal.ts
                 </span>
               </div>
 
@@ -149,13 +149,13 @@ export const About: React.FC = () => {
               </dl>
             </div>
 
-            {/* Subtle Signature / Seal */}
-            <div className="p-5 border border-editorial-subtle bg-charcoal/20 flex items-center justify-between text-xs text-stone font-mono">
+            {/* Small note */}
+            <div className="p-4 border border-editorial-subtle bg-charcoal/20 flex items-center justify-between text-xs text-stone font-mono">
               <div className="flex items-center gap-2">
                 <Sparkles className="w-3.5 h-3.5 text-terracotta" />
                 <span>{personalInfo.fullName}</span>
               </div>
-              <span className="italic font-serif text-ivory/60 text-sm">adi.exp // 2024</span>
+              <span className="text-stone/70">Bangalore</span>
             </div>
           </motion.div>
         </div>

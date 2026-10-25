@@ -6,22 +6,13 @@ import { GithubIcon, LinkedinIcon, InstagramIcon } from './Icons';
 import {
   Globe,
   ArrowUpRight,
-  Sparkles,
-  Info
+  Sparkles
 } from 'lucide-react';
 
 export const Contact: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
-  const [showSocialNotice, setShowSocialNotice] = useState(false);
 
-  const handleInstagramClick = () => {
-    if (personalInfo.links.instagram) {
-      window.open(personalInfo.links.instagram, '_blank', 'noopener,noreferrer');
-    } else {
-      setShowSocialNotice(true);
-      setTimeout(() => setShowSocialNotice(false), 4000);
-    }
-  };
+  const hasInstagram = Boolean(personalInfo.links.instagram && personalInfo.links.instagram.trim() !== '');
 
   return (
     <>
@@ -46,59 +37,58 @@ export const Contact: React.FC = () => {
             {/* Tagline */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-obsidian border border-editorial text-xs font-mono text-terracotta uppercase tracking-wider mb-8">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Let's Get Coffee</span>
+              <span>Say Hello</span>
             </div>
 
             {/* Headline */}
             <h2 className="font-serif text-4xl sm:text-6xl md:text-6xl text-ivory font-light tracking-tight max-w-2xl mx-auto leading-[1.1]">
-              If you've made it this far,{' '}
-              <span className="italic text-terracotta">we might get along.</span>
+              Your turn.
             </h2>
 
             {/* Supporting Copy */}
             <p className="text-base sm:text-lg text-stone-light max-w-xl mx-auto font-sans font-light leading-relaxed my-8">
-              Whether you came here out of curiosity, stayed for the questionable humor, or just wanted to see what an AI engineer does with a free weekend — hello.
+              If something here made you laugh, disagree with me, or think of a song I need to hear, say hi.
             </p>
 
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2 mb-10">
               <button
                 onClick={() => setModalOpen(true)}
-                className="w-full sm:w-auto px-8 py-4 bg-ivory text-obsidian hover:bg-ivory-muted transition-all duration-300 text-xs font-semibold uppercase tracking-widest rounded-sm shadow-xl hover:shadow-ivory/10 transform hover:-translate-y-0.5"
+                className="w-full sm:w-auto px-8 py-4 bg-ivory text-obsidian hover:bg-ivory-muted transition-all duration-300 text-xs font-semibold uppercase tracking-widest rounded-sm shadow-xl hover:shadow-ivory/10 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-terracotta"
               >
                 Say hello
               </button>
 
-              <button
-                onClick={handleInstagramClick}
-                className="w-full sm:w-auto px-8 py-4 border border-editorial hover:border-terracotta text-ivory transition-all duration-300 text-xs font-semibold uppercase tracking-widest rounded-sm flex items-center justify-center gap-2.5 group"
-              >
-                <InstagramIcon className="w-4 h-4 text-terracotta group-hover:text-ivory transition-colors" />
-                <span>Find me on Instagram</span>
-              </button>
+              {hasInstagram ? (
+                <a
+                  href={personalInfo.links.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto px-8 py-4 border border-editorial hover:border-terracotta text-ivory transition-all duration-300 text-xs font-semibold uppercase tracking-widest rounded-sm flex items-center justify-center gap-2.5 group focus:outline-none focus:ring-2 focus:ring-terracotta"
+                >
+                  <InstagramIcon className="w-4 h-4 text-terracotta group-hover:text-ivory transition-colors" />
+                  <span>Find me on Instagram</span>
+                </a>
+              ) : (
+                <a
+                  href={personalInfo.links.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto px-8 py-4 border border-editorial hover:border-terracotta text-ivory transition-all duration-300 text-xs font-semibold uppercase tracking-widest rounded-sm flex items-center justify-center gap-2.5 group focus:outline-none focus:ring-2 focus:ring-terracotta"
+                >
+                  <LinkedinIcon className="w-4 h-4 text-terracotta group-hover:text-ivory transition-colors" />
+                  <span>Connect on LinkedIn</span>
+                </a>
+              )}
             </div>
 
-            {/* Social notice feedback if Instagram not yet set */}
-            {showSocialNotice && (
-              <motion.div
-                initial={{ opacity: 0, y: -5 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="p-3 bg-obsidian border border-terracotta/40 text-stone-light text-xs font-mono max-w-md mx-auto mb-8 rounded-sm flex items-center gap-2 text-left"
-              >
-                <Info className="w-4 h-4 text-terracotta shrink-0" />
-                <span>
-                  Instagram handle is awaiting configuration in <code>src/data/personal.ts</code>. You can reach Adi directly via "Say hello" or LinkedIn!
-                </span>
-              </motion.div>
-            )}
-
             {/* Social and Web Links */}
-            <div className="pt-8 border-t border-editorial-subtle flex flex-wrap items-center justify-center gap-6 sm:gap-8 text-xs font-mono uppercase tracking-widest text-stone">
+            <div className="pt-8 border-t border-editorial-subtle flex flex-wrap items-center justify-center gap-6 sm:gap-8 text-xs font-mono uppercase tracking-wider text-stone">
               <a
                 href={personalInfo.links.website}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-ivory transition-colors flex items-center gap-1.5"
+                className="hover:text-ivory transition-colors flex items-center gap-1.5 focus:outline-none focus:underline"
               >
                 <Globe className="w-3.5 h-3.5 text-terracotta" />
                 <span>adithyanp.me</span>
@@ -109,7 +99,7 @@ export const Contact: React.FC = () => {
                 href={personalInfo.links.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-ivory transition-colors flex items-center gap-1.5"
+                className="hover:text-ivory transition-colors flex items-center gap-1.5 focus:outline-none focus:underline"
               >
                 <LinkedinIcon className="w-3.5 h-3.5 text-terracotta" />
                 <span>LinkedIn</span>
@@ -120,7 +110,7 @@ export const Contact: React.FC = () => {
                 href={personalInfo.links.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-ivory transition-colors flex items-center gap-1.5"
+                className="hover:text-ivory transition-colors flex items-center gap-1.5 focus:outline-none focus:underline"
               >
                 <GithubIcon className="w-3.5 h-3.5 text-terracotta" />
                 <span>GitHub</span>

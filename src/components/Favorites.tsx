@@ -22,22 +22,26 @@ export const Favorites: React.FC = () => {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6 pb-8 border-b border-editorial">
           <div className="space-y-3">
-            <div className="flex items-center gap-2 text-xs font-mono text-terracotta tracking-widest uppercase">
+            <div className="flex items-center gap-2 text-xs font-mono text-terracotta tracking-wider uppercase">
               <span>09</span>
               <span className="text-stone">/</span>
-              <span>Cultural Influences</span>
+              <span>Favorites</span>
             </div>
             <h2 className="font-serif text-3xl sm:text-5xl md:text-6xl text-ivory font-light tracking-tight">
               A few things currently living rent-free in my head.
             </h2>
           </div>
           <p className="text-stone text-sm max-w-md font-sans leading-relaxed">
-            From Hans Zimmer scores to late-night Indiranagar coffee spots, books that changed my perspective, and films that refuse to fade.
+            Hans Zimmer scores, Bangalore coffee spots, books that changed how I work, and films that stick around.
           </p>
         </div>
 
         {/* Category Tabs */}
-        <div className="flex flex-wrap gap-2 sm:gap-3 mb-10 pb-4 border-b border-editorial-subtle">
+        <div
+          role="tablist"
+          aria-label="Favorites categories"
+          className="flex flex-wrap gap-2 sm:gap-3 mb-10 pb-4 border-b border-editorial-subtle"
+        >
           {favoritesData.map((group, idx) => {
             const TabIcon = (categoryIcons as any)[group.icon] || Disc;
             const isCurrent = activeTab === idx;
@@ -45,8 +49,12 @@ export const Favorites: React.FC = () => {
             return (
               <button
                 key={group.category}
+                role="tab"
+                aria-selected={isCurrent}
+                aria-controls={`fav-panel-${idx}`}
+                id={`fav-tab-${idx}`}
                 onClick={() => setActiveTab(idx)}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-sm text-xs font-mono uppercase tracking-wider transition-all duration-300 ${
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-sm text-xs font-mono uppercase tracking-wider transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-terracotta ${
                   isCurrent
                     ? 'bg-ivory text-obsidian font-semibold shadow-md'
                     : 'bg-charcoal text-stone hover:text-ivory border border-editorial hover:border-terracotta/40'
@@ -59,12 +67,15 @@ export const Favorites: React.FC = () => {
           })}
         </div>
 
-        {/* Content Showcase (Playlist-inspired layout) */}
+        {/* Content Showcase */}
         <motion.div
           key={currentGroup.category}
+          id={`fav-panel-${activeTab}`}
+          role="tabpanel"
+          aria-labelledby={`fav-tab-${activeTab}`}
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
+          transition={{ duration: 0.35 }}
           className="space-y-4"
         >
           <div className="flex items-center justify-between text-xs font-mono text-stone pb-3">
@@ -86,7 +97,7 @@ export const Favorites: React.FC = () => {
                     <span className="px-2 py-0.5 rounded-sm bg-obsidian border border-editorial-subtle text-terracotta">
                       {item.categoryTag}
                     </span>
-                    <span>TRACK 0{idx + 1}</span>
+                    <span>0{idx + 1}</span>
                   </div>
 
                   <h3 className="font-serif text-2xl text-ivory font-medium group-hover:text-terracotta transition-colors mb-1 leading-snug">
