@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { lifestyleItems } from '../data/lifestyle';
 import { LifestyleItem } from '../types';
@@ -11,10 +11,46 @@ export const LifestyleGallery: React.FC = () => {
   // Only render configured lifestyle frames
   const activeItems = lifestyleItems.filter((item) => item.isConfigured !== false);
 
+  // Handle modal keyboard accessibility & scroll locking
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setSelectedItem(null);
+    };
+    if (selectedItem) {
+      window.addEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+    };
+  }, [selectedItem]);
+
   const handleKeyDown = (e: React.KeyboardEvent, item: LifestyleItem) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
       setSelectedItem(item);
+    }
+  };
+
+  const getColSpan = (idx: number) => {
+    switch (idx) {
+      case 0:
+        return 'col-span-12 md:col-span-6 lg:col-span-5';
+      case 1:
+        return 'col-span-12 md:col-span-6 lg:col-span-4';
+      case 2:
+        return 'col-span-12 md:col-span-12 lg:col-span-3';
+      case 3:
+        return 'col-span-12 md:col-span-12 lg:col-span-6';
+      case 4:
+        return 'col-span-12 md:col-span-6 lg:col-span-3';
+      case 5:
+        return 'col-span-12 md:col-span-6 lg:col-span-3';
+      default:
+        return 'col-span-12 md:col-span-6 lg:col-span-4';
     }
   };
 
@@ -45,65 +81,53 @@ export const LifestyleGallery: React.FC = () => {
 
         {/* Magazine Asymmetric Collage Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 sm:gap-8 items-start">
-          {activeItems.map((item, idx) => {
-            // Determine column span based on index for balanced asymmetric editorial composition
-            const colSpan =
-              idx === 0
-                ? 'lg:col-span-5'
-                : idx === 3
-                ? 'sm:col-span-2 lg:col-span-7'
-                : idx >= 4
-                ? 'lg:col-span-6'
-                : 'sm:col-span-1 lg:col-span-3.5';
-
-            return (
-              <motion.div
-                key={item.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-60px' }}
-                transition={{ duration: 0.7, delay: idx * 0.08 }}
-                className={`${colSpan} cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-terracotta rounded-sm`}
-                role="button"
-                tabIndex={0}
-                onClick={() => setSelectedItem(item)}
-                onKeyDown={(e) => handleKeyDown(e, item)}
-                aria-label={`View ${item.title}`}
-              >
-                <div className="relative overflow-hidden rounded-sm">
-                  <ImageWithFallback
-                    src={item.imagePath}
-                    alt={item.title}
-                    aspect={item.aspect}
-                    category={item.category}
-                    badge={item.locationTag}
-                    caption={item.caption}
-                    hasRealPhoto={item.hasRealPhoto}
-                  />
-                  <div className="absolute inset-0 bg-obsidian/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none">
-                    <span className="p-3 bg-obsidian/80 backdrop-blur-md rounded-full text-ivory border border-editorial flex items-center gap-2 text-xs font-mono">
-                      <Eye className="w-3.5 h-3.5 text-terracotta" />
-                      <span>View</span>
-                    </span>
-                  </div>
+          {activeItems.map((item, idx) => (
+            <motion.div
+              key={item.id}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 0.7, delay: idx * 0.08 }}
+              className={`${getColSpan(idx)} cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-terracotta rounded-sm`}
+              role="button"
+              tabIndex={0}
+              onClick={() => setSelectedItem(item)}
+              onKeyDown={(e) => handleKeyDown(e, item)}
+              aria-label={`View ${item.title}`}
+            >
+              <div className="relative overflow-hidden rounded-sm">
+                <ImageWithFallback
+                  src={item.imagePath}
+                  alt={item.title}
+                  aspect={item.aspect}
+                  category={item.category}
+                  badge={item.locationTag}
+                  caption={item.caption}
+                  hasRealPhoto={item.hasRealPhoto}
+                />
+                <div className="absolute inset-0 bg-obsidian/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none">
+                  <span className="p-3 bg-obsidian/80 backdrop-blur-md rounded-full text-ivory border border-editorial flex items-center gap-2 text-xs font-mono">
+                    <Eye className="w-3.5 h-3.5 text-terracotta" />
+                    <span>View</span>
+                  </span>
                 </div>
-                <div className="mt-4 flex items-baseline justify-between">
-                  <div>
-                    <span className="text-[11px] font-mono text-terracotta uppercase tracking-wider">
-                      {item.category}
-                    </span>
-                    <h3 className="font-serif text-xl text-ivory font-medium group-hover:text-terracotta transition-colors">
-                      {item.title}
-                    </h3>
-                  </div>
-                  <span className="text-xs font-mono text-stone">0{idx + 1}</span>
+              </div>
+              <div className="mt-4 flex items-baseline justify-between">
+                <div>
+                  <span className="text-[11px] font-mono text-terracotta uppercase tracking-wider">
+                    {item.category}
+                  </span>
+                  <h3 className="font-serif text-xl text-ivory font-medium group-hover:text-terracotta transition-colors">
+                    {item.title}
+                  </h3>
                 </div>
-                <p className="text-xs text-stone mt-1">
-                  {item.caption}
-                </p>
-              </motion.div>
-            );
-          })}
+                <span className="text-xs font-mono text-stone">0{idx + 1}</span>
+              </div>
+              <p className="text-xs text-stone mt-1">
+                {item.caption}
+              </p>
+            </motion.div>
+          ))}
         </div>
       </div>
 
@@ -115,12 +139,14 @@ export const LifestyleGallery: React.FC = () => {
             role="dialog"
             aria-modal="true"
             aria-labelledby="lightbox-title"
+            onClick={() => setSelectedItem(null)}
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.25 }}
+              onClick={(e) => e.stopPropagation()}
               className="relative max-w-2xl w-full bg-charcoal border border-editorial rounded-sm overflow-hidden shadow-2xl p-6 sm:p-8 space-y-5"
             >
               {/* Close Button */}

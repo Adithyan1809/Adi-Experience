@@ -40,7 +40,14 @@ export const About: React.FC = () => {
             {/* Story Paragraphs */}
             <div className="space-y-6 text-base sm:text-lg text-stone-light font-light leading-relaxed">
               {aboutData.introParagraphs.map((para, i) => (
-                <p key={i} className="first-letter:text-4xl first-letter:font-serif first-letter:text-terracotta first-letter:mr-2 first-letter:float-left first-letter:leading-none">
+                <p
+                  key={i}
+                  className={
+                    i === 0
+                      ? 'first-letter:text-4xl first-letter:font-serif first-letter:text-terracotta first-letter:mr-2.5 first-letter:float-left first-letter:leading-none'
+                      : ''
+                  }
+                >
                   {para}
                 </p>
               ))}

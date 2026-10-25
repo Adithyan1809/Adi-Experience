@@ -120,44 +120,41 @@ export const MusicPlayer: React.FC<{ compact?: boolean }> = ({ compact = false }
             : 'bg-obsidian/80 border-editorial text-stone'
         }`}
       >
-        {/* Play / Pause Toggle Button */}
+        {/* Play / Pause Toggle Button & Label */}
         <button
           onClick={togglePlay}
-          className="flex items-center gap-1.5 focus:outline-none focus-visible:ring-1 focus-visible:ring-terracotta text-ivory hover:text-terracotta transition-colors"
+          className="flex items-center gap-1.5 focus:outline-none focus-visible:ring-1 focus-visible:ring-terracotta text-ivory hover:text-terracotta transition-colors text-left"
           aria-label={isPlaying ? 'Pause background soundtrack' : 'Play background soundtrack'}
           title={isPlaying ? 'Pause music' : 'Play music'}
         >
           {isPlaying ? (
-            <Pause className="w-3.5 h-3.5 text-terracotta" />
+            <Pause className="w-3.5 h-3.5 text-terracotta shrink-0" />
           ) : (
-            <Play className="w-3.5 h-3.5 text-terracotta fill-terracotta/20" />
+            <Play className="w-3.5 h-3.5 text-terracotta fill-terracotta/20 shrink-0" />
           )}
 
           {/* Equalizer animation bars or label */}
           {isPlaying && !isMuted ? (
-            <div className="flex items-end gap-[2px] h-3 w-3 px-[1px]" aria-hidden="true">
+            <div className="flex items-end gap-[2px] h-3 w-3 px-[1px] shrink-0" aria-hidden="true">
               <span className="w-[2px] bg-terracotta rounded-full animate-[pulse_0.8s_ease-in-out_infinite] h-2" />
               <span className="w-[2px] bg-terracotta rounded-full animate-[pulse_0.6s_ease-in-out_infinite] h-3" />
               <span className="w-[2px] bg-terracotta rounded-full animate-[pulse_0.9s_ease-in-out_infinite] h-1.5" />
             </div>
           ) : (
-            <Music className="w-3 h-3 text-stone" />
+            <Music className="w-3 h-3 text-stone shrink-0" />
           )}
-        </button>
 
-        {/* Status text / Autoplay notice */}
-        <span
-          onClick={togglePlay}
-          className="cursor-pointer text-[11px] tracking-wider select-none truncate max-w-[120px] sm:max-w-[150px] text-ivory/80 hover:text-ivory transition-colors"
-        >
-          {autoplayBlocked && !isPlaying ? (
-            <span className="text-terracotta font-medium">Enable sound</span>
-          ) : isPlaying ? (
-            <span>Soundtrack</span>
-          ) : (
-            <span className="text-stone">Sound off</span>
-          )}
-        </span>
+          {/* Status text / Autoplay notice */}
+          <span className="text-[11px] tracking-wider select-none truncate max-w-[120px] sm:max-w-[150px] text-ivory/80 group-hover:text-ivory transition-colors ml-0.5">
+            {autoplayBlocked && !isPlaying ? (
+              <span className="text-terracotta font-medium">Enable sound</span>
+            ) : isPlaying ? (
+              <span>Soundtrack</span>
+            ) : (
+              <span className="text-stone">Sound off</span>
+            )}
+          </span>
+        </button>
 
         {/* Volume & Mute Controls */}
         <div className="flex items-center gap-1 pl-1 border-l border-editorial-subtle">

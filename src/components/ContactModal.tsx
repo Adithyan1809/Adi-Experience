@@ -199,10 +199,11 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="text-[11px] font-mono text-stone uppercase tracking-wider block mb-1.5">
+                    <label htmlFor="contact-name" className="text-[11px] font-mono text-stone uppercase tracking-wider block mb-1.5">
                       Your Name
                     </label>
                     <input
+                      id="contact-name"
                       type="text"
                       required
                       placeholder="Your name"
@@ -212,10 +213,11 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
                     />
                   </div>
                   <div>
-                    <label className="text-[11px] font-mono text-stone uppercase tracking-wider block mb-1.5">
+                    <label htmlFor="contact-email" className="text-[11px] font-mono text-stone uppercase tracking-wider block mb-1.5">
                       Your Email
                     </label>
                     <input
+                      id="contact-email"
                       type="email"
                       required
                       placeholder="your.email@example.com"
@@ -227,10 +229,11 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
                 </div>
 
                 <div>
-                  <label className="text-[11px] font-mono text-stone uppercase tracking-wider block mb-1.5">
+                  <label htmlFor="contact-topic" className="text-[11px] font-mono text-stone uppercase tracking-wider block mb-1.5">
                     Topic
                   </label>
                   <select
+                    id="contact-topic"
                     value={formData.topic}
                     onChange={(e) => setFormData({ ...formData, topic: e.target.value })}
                     className="w-full px-3.5 py-2.5 bg-obsidian border border-editorial rounded-sm text-sm text-ivory focus:border-terracotta focus:outline-none transition-colors"
@@ -243,10 +246,11 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
                 </div>
 
                 <div>
-                  <label className="text-[11px] font-mono text-stone uppercase tracking-wider block mb-1.5">
+                  <label htmlFor="contact-message" className="text-[11px] font-mono text-stone uppercase tracking-wider block mb-1.5">
                     Your Message
                   </label>
                   <textarea
+                    id="contact-message"
                     rows={4}
                     required
                     placeholder="Tell me what you're working on, your favorite coffee spot, or an absurd thought from today..."

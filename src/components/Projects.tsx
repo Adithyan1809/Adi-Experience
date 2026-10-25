@@ -52,7 +52,15 @@ export const Projects: React.FC = () => {
                 viewport={{ once: true, margin: '-60px' }}
                 transition={{ duration: 0.7, delay: idx * 0.1 }}
                 onClick={() => setActiveProject(project.id)}
-                className={`p-6 sm:p-10 rounded-sm border transition-all duration-500 relative cursor-pointer ${
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    setActiveProject(project.id);
+                  }
+                }}
+                tabIndex={0}
+                role="region"
+                aria-label={`${project.title} project details`}
+                className={`p-6 sm:p-10 rounded-sm border transition-all duration-500 relative cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-terracotta ${
                   isSelected
                     ? 'bg-charcoal border-terracotta/60 shadow-2xl'
                     : 'bg-obsidian-light/50 border-editorial hover:border-terracotta/30'
