@@ -127,6 +127,15 @@ export interface SpotifyConfig {
   playlists: SpotifyPlaylist[];
 }
 
+export interface FavoriteMusicItem {
+  id: string;
+  name: string;
+  subtext: string;
+  type: 'artist' | 'track';
+  image: string;
+  spotifyUrl: string;
+}
+
 export interface ArchiveEntry {
   id: string;
   title: string;

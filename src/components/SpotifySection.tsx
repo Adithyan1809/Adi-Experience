@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Headphones, ExternalLink, VolumeX, Play, Disc, Radio, ArrowDown, Music } from 'lucide-react';
-import { spotifyConfig, toSpotifyUri, toSpotifyEmbedUrl, isValidSpotifyUrl } from '../data/spotify';
+import { spotifyConfig, toSpotifyUri, toSpotifyEmbedUrl, isValidSpotifyUrl, favoriteMusicItems } from '../data/spotify';
 import { SpotifyPlaylist, SpotifyEmbedController, SpotifyIFrameAPI } from '../types';
 
 declare global {
@@ -492,6 +492,65 @@ export const SpotifySection: React.FC = () => {
                     </>
                   )}
                 </div>
+              </div>
+            </div>
+
+            {/* Favourite Tracks & Artists Grid (Matching Image 2) */}
+            <div className="mt-16 sm:mt-20 pt-12 border-t border-editorial">
+              <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
+                <div className="space-y-1">
+                  <span className="text-xs font-mono text-terracotta uppercase tracking-wider block">
+                    High Rotation
+                  </span>
+                  <h3 className="font-serif text-2xl sm:text-3xl text-ivory font-light">
+                    Favourite Tracks & Artists
+                  </h3>
+                </div>
+                <p className="text-xs text-stone font-mono">
+                  Top artists & heavy rotation
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+                {favoriteMusicItems.map((item) => (
+                  <a
+                    key={item.id}
+                    href={item.spotifyUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={handleExternalHandoff}
+                    className="group relative bg-[#181818]/90 hover:bg-[#202020] border border-editorial hover:border-terracotta/40 rounded-2xl p-3 sm:p-3.5 transition-all duration-300 flex flex-col justify-between shadow-lg hover:shadow-2xl hover:-translate-y-0.5 focus:outline-none focus:ring-1 focus:ring-terracotta"
+                  >
+                    {/* Thumbnail Image */}
+                    <div className="relative w-full aspect-[168/71] rounded-xl overflow-hidden bg-charcoal border border-white/5">
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        loading="lazy"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    </div>
+
+                    {/* Details & Spotify Badge */}
+                    <div className="pt-3 flex items-end justify-between gap-2">
+                      <div className="min-w-0 flex-1">
+                        <h4 className="text-sm font-semibold text-ivory truncate group-hover:text-white transition-colors">
+                          {item.name}
+                        </h4>
+                        <p className="text-xs text-stone truncate font-sans capitalize mt-0.5">
+                          {item.subtext}
+                        </p>
+                      </div>
+
+                      {/* Spotify Icon */}
+                      <div className="shrink-0 p-1 text-[#1DB954] group-hover:scale-110 transition-transform">
+                        <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                          <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.5 17.3c-.2.3-.6.4-.9.2-2.5-1.5-5.6-1.9-9.3-1-.4.1-.7-.1-.8-.5-.1-.4.1-.7.5-.8 4.1-1 7.6-.5 10.3 1.2.3.2.4.6.2.9zm1.5-3.3c-.3.4-.8.5-1.2.3-3-1.8-7.5-2.4-11-1.3-.4.1-.9-.1-1-.5-.1-.4.1-.9.5-1 4.1-1.2 9.1-.6 12.5 1.5.4.1.5.7.2 1zm.1-3.4c-3.6-2.1-9.5-2.3-12.9-1.3-.5.2-1.1-.1-1.3-.6-.2-.5.1-1.1.6-1.3 4-1.2 10.5-1 14.7 1.5.5.3.6.9.3 1.4-.3.5-.9.6-1.4.3z" />
+                        </svg>
+                      </div>
+                    </div>
+                  </a>
+                ))}
               </div>
             </div>
           </div>

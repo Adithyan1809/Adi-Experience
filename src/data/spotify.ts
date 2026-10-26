@@ -1,4 +1,4 @@
-import { SpotifyConfig } from '../types';
+import { SpotifyConfig, FavoriteMusicItem } from '../types';
 
 /**
  * Extracts a normalized Spotify URI (e.g. spotify:playlist:...) from any web URL or URI.
@@ -44,51 +44,97 @@ export const isValidSpotifyUrl = (url?: string): boolean => {
 /**
  * Spotify Configuration for "The Listening Room"
  *
- * To customize or connect your personal Spotify playlists:
- * 1. Open Spotify, right-click any playlist or album > Share > "Copy link to playlist".
- * 2. Paste the URL into `embedUrl` and `spotifyUrl`.
- * 3. Update `title`, `subtitle`, `description`, and `category` to accurately reflect your curation.
- * 4. Set `isConfigured: true` (or `false` to hide until ready).
- * 5. (Optional) Paste your public Spotify profile link into `profileUrl` (e.g. "https://open.spotify.com/user/YOUR_ID").
- *
- * Playlists marked `isConfigured: false` or with blank/generic URLs are automatically hidden.
- * The Spotify profile link remains hidden until a valid non-empty public profile URL is provided.
+ * Current configuration: Single primary playlist as requested.
+ * (Tabs are automatically hidden when only 1 playlist is active).
  */
 export const spotifyConfig: SpotifyConfig = {
-  sectionHeading: 'A little of what I listen to.',
-  sectionSubtitle: 'Curated soundtracks for late nights, deep work sprints, and quiet mornings.',
-  // Add your real public Spotify profile URL here when ready (e.g. https://open.spotify.com/user/YOUR_ID):
+  sectionHeading: 'The Listening Room',
+  sectionSubtitle: 'Soundtracks for late nights, deep work sprints, and everyday wandering.',
+  // Add your real public Spotify profile URL here when ready:
   profileUrl: '',
   playlists: [
     {
-      id: 'on-repeat',
-      title: 'Lo-Fi Beats',
-      subtitle: 'Curated downtime rotation',
-      description: 'Chilled instrumental hip-hop and downtempo beats for casual listening and unwinding.',
+      id: 'adi-curation',
+      title: 'Current Rotation',
+      subtitle: 'Personal Curation',
+      description: 'The tracks, grooves, and nocturnal soundscapes carrying my days in Bangalore.',
       category: 'Rotation',
-      embedUrl: 'https://open.spotify.com/playlist/37i9dQZF1DWWQRwui0ExPn',
-      spotifyUrl: 'https://open.spotify.com/playlist/37i9dQZF1DWWQRwui0ExPn',
-      isConfigured: true
-    },
-    {
-      id: 'after-hours',
-      title: 'Late Night Jazz',
-      subtitle: 'Nocturnal soundscapes',
-      description: 'Mellow brass, acoustic piano, and subtle rhythms for quiet evenings and late reading.',
-      category: 'Late Night',
-      embedUrl: 'https://open.spotify.com/playlist/37i9dQZF1DX4wta20Jg5ne',
-      spotifyUrl: 'https://open.spotify.com/playlist/37i9dQZF1DX4wta20Jg5ne',
-      isConfigured: true
-    },
-    {
-      id: 'focus-mode',
-      title: 'Deep Focus',
-      subtitle: 'Ambient engineering soundtrack',
-      description: 'Atmospheric ambient textures, minimalist drones, and calm synths designed for sustained concentration.',
-      category: 'Focus',
-      embedUrl: 'https://open.spotify.com/playlist/37i9dQZF1DXdLEN7aqioXM',
-      spotifyUrl: 'https://open.spotify.com/playlist/37i9dQZF1DXdLEN7aqioXM',
+      embedUrl: 'https://open.spotify.com/playlist/7cALwbrGI4Fxh1JYsJqNNh?si=F6OQNXZdRoaD1Nfwz7wXgw',
+      spotifyUrl: 'https://open.spotify.com/playlist/7cALwbrGI4Fxh1JYsJqNNh?si=F6OQNXZdRoaD1Nfwz7wXgw',
       isConfigured: true
     }
   ]
 };
+
+/**
+ * Top Favourite Tracks & Artists
+ * Curated list matching the user's high rotation selection.
+ */
+export const favoriteMusicItems: FavoriteMusicItem[] = [
+  // Top Artists
+  {
+    id: 'the-weeknd',
+    name: 'The Weeknd',
+    subtext: 'r&b / soul',
+    type: 'artist',
+    image: '/images/music/the-weeknd.jpg',
+    spotifyUrl: 'https://open.spotify.com/artist/1Xyo4u8uXC1ZmMpatF05PJ'
+  },
+  {
+    id: 'sza',
+    name: 'SZA',
+    subtext: 'r&b / r&b/soul',
+    type: 'artist',
+    image: '/images/music/sza.jpg',
+    spotifyUrl: 'https://open.spotify.com/artist/7tYKF4w9nC0nq9CsPZTHte'
+  },
+  {
+    id: 'seedhe-maut',
+    name: 'Seedhe Maut',
+    subtext: 'desi hip hop / hindi hip hop',
+    type: 'artist',
+    image: '/images/music/seedhe-maut.jpg',
+    spotifyUrl: 'https://open.spotify.com/artist/2oBG74gAocPMFv6Ij9ykOX'
+  },
+  {
+    id: 'gesaffelstein',
+    name: 'Gesaffelstein',
+    subtext: 'electronic',
+    type: 'artist',
+    image: '/images/music/gesaffelstein.jpg',
+    spotifyUrl: 'https://open.spotify.com/artist/3eKjFkW4z0inZq8bp9sE25'
+  },
+  // Top Tracks
+  {
+    id: 'parda-hata-do',
+    name: 'Parda Hata Do - Trap Mix',
+    subtext: 'Asha Bhosle, Mohammed Rafi',
+    type: 'track',
+    image: '/images/music/parda-hata-do.jpg',
+    spotifyUrl: 'https://open.spotify.com/search/Parda%20Hata%20Do'
+  },
+  {
+    id: 'seven',
+    name: 'Seven (feat. Latto)',
+    subtext: 'Jung Kook, Latto',
+    type: 'track',
+    image: '/images/music/seven.jpg',
+    spotifyUrl: 'https://open.spotify.com/track/7x9aauaA9cu6tyfpHnqDLo'
+  },
+  {
+    id: 'i-was-never-there',
+    name: 'I Was Never There',
+    subtext: 'The Weeknd, Gesaffelstein',
+    type: 'track',
+    image: '/images/music/i-was-never-there.jpg',
+    spotifyUrl: 'https://open.spotify.com/track/1qFxsT6V6tM44qZfV8nJbO'
+  },
+  {
+    id: 'the-hills',
+    name: 'The Hills',
+    subtext: 'The Weeknd',
+    type: 'track',
+    image: '/images/music/the-hills.jpg',
+    spotifyUrl: 'https://open.spotify.com/track/7fBv7CLKzipRcf62qq9509'
+  }
+];

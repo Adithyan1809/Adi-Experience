@@ -1,7 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { aboutData, personalInfo } from '../data/personal';
-import { Target, Sparkles, FileText, ArrowDown } from 'lucide-react';
+import { Target, FileText, ArrowDown } from 'lucide-react';
+import { ImageWithFallback } from './ImageWithFallback';
 
 export const About: React.FC = () => {
   const scrollToNext = () => {
@@ -106,44 +107,39 @@ export const About: React.FC = () => {
             )}
           </motion.div>
 
-          {/* Right Column: Quick Dossier & Verified Facts (5 cols) */}
+          {/* Right Column: Image Card (5 cols) */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-80px' }}
             transition={{ duration: 0.8, delay: 0.15 }}
-            className="lg:col-span-5 space-y-8"
+            className="lg:col-span-5 relative"
           >
-            {/* The Short Version Dossier */}
-            <div className="p-6 sm:p-8 bg-obsidian-light border border-editorial rounded-sm space-y-5">
-              <div className="flex items-center justify-between pb-3 border-b border-editorial-subtle">
-                <span className="text-xs font-mono tracking-wider uppercase text-terracotta">
-                  The Short Version
+            {/* Decorative Framing Accent */}
+            <div className="absolute -top-3 -right-3 w-full h-full border border-terracotta/30 rounded-none pointer-events-none -z-10 translate-x-1 translate-y-1" />
+
+            {/* Editorial Image Card */}
+            <div className="relative rounded-sm overflow-hidden border border-editorial bg-charcoal shadow-2xl">
+              <ImageWithFallback
+                src={personalInfo.heroPhoto.src}
+                alt={personalInfo.fullName}
+                aspect="hero"
+                category="Portrait"
+                badge="Adi"
+                caption="AI/ML student at DSATM, Bangalore"
+                hasRealPhoto={true}
+                className="w-full"
+              />
+
+              {/* Integrated Editorial Footer */}
+              <div className="p-4 bg-obsidian-light/95 backdrop-blur-sm border-t border-editorial flex items-center justify-between text-xs font-mono">
+                <span className="text-ivory font-medium tracking-wide">
+                  {personalInfo.fullName}
                 </span>
-                <span className="text-[10px] font-mono text-stone uppercase">
-                  Bangalore, India
+                <span className="text-terracotta">
+                  {personalInfo.location}
                 </span>
               </div>
-
-              <dl className="divide-y divide-editorial-subtle text-xs sm:text-sm">
-                {aboutData.facts.map((fact, idx) => (
-                  <div key={idx} className="py-3 flex items-center justify-between gap-4">
-                    <dt className="text-stone font-mono text-xs">{fact.label}</dt>
-                    <dd className="text-ivory font-medium text-right">
-                      {fact.value}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-            </div>
-
-            {/* Signature Tag */}
-            <div className="p-4 border border-editorial-subtle bg-charcoal/20 flex items-center justify-between text-xs text-stone font-mono">
-              <div className="flex items-center gap-2">
-                <Sparkles className="w-3.5 h-3.5 text-terracotta" />
-                <span>{personalInfo.fullName}</span>
-              </div>
-              <span className="text-stone/70">Engineering • Bangalore</span>
             </div>
           </motion.div>
         </div>
