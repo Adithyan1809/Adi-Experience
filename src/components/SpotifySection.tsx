@@ -1,31 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Headphones, ExternalLink, VolumeX, Play, Disc, Radio, ArrowDown, Music } from 'lucide-react';
-import { spotifyConfig } from '../data/spotify';
-import { SpotifyPlaylist } from '../types';
-
-/**
- * Spotify Embed IFrame Controller interfaces as defined by
- * https://developer.spotify.com/documentation/embeds/references/iframe-api
- */
-export interface SpotifyEmbedController {
-  loadUri: (uri: string) => void;
-  play: () => void;
-  pause: () => void;
-  resume: () => void;
-  togglePlay: () => void;
-  destroy: () => void;
-  addListener: (event: string, callback: (eventData?: unknown) => void) => void;
-  removeListener?: (event: string, callback: (eventData?: unknown) => void) => void;
-}
-
-export interface SpotifyIFrameAPI {
-  createController: (
-    element: HTMLElement,
-    options: { uri?: string; url?: string; width?: string | number; height?: string | number },
-    callback: (controller: SpotifyEmbedController) => void
-  ) => void;
-}
+import { spotifyConfig, toSpotifyUri, toSpotifyEmbedUrl, isValidSpotifyUrl } from '../data/spotify';
+import { SpotifyPlaylist, SpotifyEmbedController, SpotifyIFrameAPI } from '../types';
 
 declare global {
   interface Window {
@@ -33,47 +10,6 @@ declare global {
     SpotifyIframeApi?: SpotifyIFrameAPI;
   }
 }
-
-/**
- * Extracts a normalized Spotify URI (e.g. spotify:playlist:...) from any web URL or URI.
- */
-export const toSpotifyUri = (raw?: string): string | null => {
-  if (!raw) return null;
-  const trimmed = raw.trim();
-
-  // Handle existing Spotify URI scheme: spotify:playlist:xxx
-  if (/^spotify:(playlist|album|track|artist):[a-zA-Z0-9]+/.test(trimmed)) {
-    return trimmed.split('?')[0];
-  }
-
-  // Handle standard or embed web URLs: open.spotify.com/(embed/)?(playlist|album|track|artist)/xxx
-  const match = trimmed.match(/open\.spotify\.com\/(?:embed\/)?(playlist|album|track|artist)\/([a-zA-Z0-9]+)/);
-  if (match) {
-    return `spotify:${match[1]}:${match[2]}`;
-  }
-
-  return null;
-};
-
-/**
- * Converts any Spotify URL or URI into a clean official embed URL.
- */
-export const toSpotifyEmbedUrl = (raw: string): string => {
-  const uri = toSpotifyUri(raw);
-  if (uri) {
-    const [, type, id] = uri.split(':');
-    return `https://open.spotify.com/embed/${type}/${id}?utm_source=generator&theme=0`;
-  }
-  return raw.trim();
-};
-
-/**
- * Validates whether a playlist embed URL is a legitimate, configured Spotify resource.
- */
-export const isValidSpotifyUrl = (url?: string): boolean => {
-  if (!url) return false;
-  return toSpotifyUri(url) !== null;
-};
 
 // Singleton caching for the Spotify IFrame API script promise
 let cachedIFrameAPI: SpotifyIFrameAPI | null = null;

@@ -101,6 +101,25 @@ export interface SpotifyPlaylist {
   isConfigured: boolean;
 }
 
+export interface SpotifyEmbedController {
+  loadUri: (uri: string) => void;
+  play: () => void;
+  pause: () => void;
+  resume: () => void;
+  togglePlay: () => void;
+  destroy: () => void;
+  addListener: (event: string, callback: (eventData?: unknown) => void) => void;
+  removeListener?: (event: string, callback: (eventData?: unknown) => void) => void;
+}
+
+export interface SpotifyIFrameAPI {
+  createController: (
+    element: HTMLElement,
+    options: { uri?: string; url?: string; width?: string | number; height?: string | number },
+    callback: (controller: SpotifyEmbedController) => void
+  ) => void;
+}
+
 export interface SpotifyConfig {
   sectionHeading: string;
   sectionSubtitle: string;
