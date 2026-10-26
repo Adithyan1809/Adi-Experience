@@ -118,24 +118,31 @@ All playlist configurations live in `src/data/spotify.ts`:
    ```ts
    profileUrl: 'https://open.spotify.com/user/YOUR_USERNAME'
    ```
+   *(The Spotify profile link remains hidden if left blank or unconfigured).*
+
 2. **Add genuine playlists**:
    In `playlists`, set your playlist embed URL and toggle `isConfigured: true`:
    ```ts
    {
      id: 'on-repeat',
-     title: 'On Repeat',
-     subtitle: 'Current high rotation',
-     description: 'A mix of electronic grooves and songs carrying my week.',
+     title: 'Lo-Fi Beats',
+     subtitle: 'Curated downtime rotation',
+     description: 'A selection of chilled instrumental hip-hop and downtempo beats.',
      category: 'Rotation',
-     embedUrl: 'https://open.spotify.com/embed/playlist/YOUR_PLAYLIST_ID?utm_source=generator&theme=0',
-     spotifyUrl: 'https://open.spotify.com/playlist/YOUR_PLAYLIST_ID',
+     embedUrl: 'https://open.spotify.com/playlist/37i9dQZF1DWWQRwui0ExPn',
+     spotifyUrl: 'https://open.spotify.com/playlist/37i9dQZF1DWWQRwui0ExPn',
      isConfigured: true // ← Set to true once embedUrl is set
    }
    ```
-3. **Audio coordination**:
-   - Integrated with the Spotify iFrame API (`playback_update`) to pause the local ambient soundtrack when Spotify playback actually begins.
-   - Includes a polite manual handoff button (*"Pause background soundtrack"* / *"Resume background track"*) so visitors have transparent, manual control if external scripts are blocked.
-   - Ambient playback is never resumed automatically when Spotify stops; the visitor retains full manual control.
+   *(Playlists marked `isConfigured: false` or with invalid URLs are automatically hidden. If no playlists are configured, a minimal quiet plate is rendered).*
+
+3. **Audio coordination & DOM ownership**:
+   - **Dedicated Embed Target**: Spotify receives an isolated empty target element (`#spotify-embed-target`), ensuring React never reconciles or clears internal iframe children.
+   - **Clean Fallback**: In environments where the external Spotify script fails to load, a resilient official `<iframe>` fallback renders automatically.
+   - **Playback Handoff**: Subscribes to `playback_started` and `playback_update` (`!isPaused`) to pause ambient background playback with a 1.5-second debounce.
+   - **External Link Handoff**: Clicking *"Open in Spotify"* or the Spotify profile button triggers the same non-destructive handoff before opening Spotify in a new tab.
+   - **Non-Destructive Preference**: Automated and external-link handoffs dispatch `userInitiated: false`, stopping the ambient audio without overwriting the visitor's stored preference in `localStorage`.
+   - **Manual Resume Control**: Ambient playback is never resumed automatically when external audio stops; the visitor retains complete control via *"Resume background track"* or the global ambient player widget.
 
 ---
 

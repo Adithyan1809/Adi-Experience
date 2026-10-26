@@ -44,25 +44,27 @@ export const isValidSpotifyUrl = (url?: string): boolean => {
 /**
  * Spotify Configuration for "The Listening Room"
  *
- * To connect your real Spotify playlists:
- * 1. Open Spotify, right-click your playlist or album > Share > "Copy link to playlist" (or "Copy embed code").
- * 2. Paste the URL into `embedUrl`.
- * 3. Set `isConfigured: true`.
- * 4. (Optional) Add your real Spotify profile link in `profileUrl`.
+ * To customize or connect your personal Spotify playlists:
+ * 1. Open Spotify, right-click any playlist or album > Share > "Copy link to playlist".
+ * 2. Paste the URL into `embedUrl` and `spotifyUrl`.
+ * 3. Update `title`, `subtitle`, `description`, and `category` to accurately reflect your curation.
+ * 4. Set `isConfigured: true` (or `false` to hide until ready).
+ * 5. (Optional) Paste your public Spotify profile link into `profileUrl` (e.g. "https://open.spotify.com/user/YOUR_ID").
  *
- * Unconfigured playlists and generic homepage links are automatically hidden.
+ * Playlists marked `isConfigured: false` or with blank/generic URLs are automatically hidden.
+ * The Spotify profile link remains hidden until a valid non-empty public profile URL is provided.
  */
 export const spotifyConfig: SpotifyConfig = {
   sectionHeading: 'A little of what I listen to.',
-  sectionSubtitle: 'Soundtracks for late nights, deep work sprints, and everyday wandering.',
+  sectionSubtitle: 'Curated soundtracks for late nights, deep work sprints, and quiet mornings.',
   // Add your real public Spotify profile URL here when ready (e.g. https://open.spotify.com/user/YOUR_ID):
   profileUrl: '',
   playlists: [
     {
       id: 'on-repeat',
-      title: 'On Repeat',
-      subtitle: 'Current high rotation',
-      description: 'Downtempo beats, melodic textures, and grooves carrying my week.',
+      title: 'Lo-Fi Beats',
+      subtitle: 'Curated downtime rotation',
+      description: 'Chilled instrumental hip-hop and downtempo beats for casual listening and unwinding.',
       category: 'Rotation',
       embedUrl: 'https://open.spotify.com/playlist/37i9dQZF1DWWQRwui0ExPn',
       spotifyUrl: 'https://open.spotify.com/playlist/37i9dQZF1DWWQRwui0ExPn',
@@ -70,9 +72,9 @@ export const spotifyConfig: SpotifyConfig = {
     },
     {
       id: 'after-hours',
-      title: 'After Hours',
-      subtitle: 'Late night quietude',
-      description: 'Warm analog synthesizers, mellow chords, and nocturnal soundscapes.',
+      title: 'Late Night Jazz',
+      subtitle: 'Nocturnal soundscapes',
+      description: 'Mellow brass, acoustic piano, and subtle rhythms for quiet evenings and late reading.',
       category: 'Late Night',
       embedUrl: 'https://open.spotify.com/playlist/37i9dQZF1DX4wta20Jg5ne',
       spotifyUrl: 'https://open.spotify.com/playlist/37i9dQZF1DX4wta20Jg5ne',
@@ -80,9 +82,9 @@ export const spotifyConfig: SpotifyConfig = {
     },
     {
       id: 'focus-mode',
-      title: 'Focus Mode',
-      subtitle: 'Deep flow states',
-      description: 'Minimal electronic soundscapes and ambient frequencies for deep engineering sessions.',
+      title: 'Deep Focus',
+      subtitle: 'Ambient engineering soundtrack',
+      description: 'Atmospheric ambient textures, minimalist drones, and calm synths designed for sustained concentration.',
       category: 'Focus',
       embedUrl: 'https://open.spotify.com/playlist/37i9dQZF1DXdLEN7aqioXM',
       spotifyUrl: 'https://open.spotify.com/playlist/37i9dQZF1DXdLEN7aqioXM',

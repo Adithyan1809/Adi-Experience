@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Headphones, ExternalLink, VolumeX, Play, Disc, Radio, ArrowDown, Music } from 'lucide-react';
 import { spotifyConfig, toSpotifyUri, toSpotifyEmbedUrl, isValidSpotifyUrl } from '../data/spotify';
@@ -63,7 +63,7 @@ const loadSpotifyIframeApi = (): Promise<SpotifyIFrameAPI> => {
 };
 
 export const SpotifySection: React.FC = () => {
-  // Only display genuinely configured playlists with valid URLs
+  // Only display genuinely configured playlists with valid Spotify URLs
   const configuredPlaylists: SpotifyPlaylist[] = spotifyConfig.playlists.filter(
     (p) => p.isConfigured && isValidSpotifyUrl(p.embedUrl)
   );
@@ -74,10 +74,13 @@ export const SpotifySection: React.FC = () => {
   );
   const [ambientAudioPaused, setAmbientAudioPaused] = useState<boolean>(false);
   const [apiLoadFailed, setApiLoadFailed] = useState<boolean>(false);
+  const [isPlayerReady, setIsPlayerReady] = useState<boolean>(false);
 
-  const iframeContainerRef = useRef<HTMLDivElement | null>(null);
+  // Dedicated DOM target ref for Spotify iFrame API (contains NO React children)
+  const embedTargetRef = useRef<HTMLDivElement | null>(null);
   const controllerRef = useRef<SpotifyEmbedController | null>(null);
   const currentLoadedUriRef = useRef<string | null>(null);
+  const isInitializingRef = useRef<boolean>(false);
   const lastPauseTimestampRef = useRef<number>(0);
 
   // Check if profile URL is genuine and not a generic homepage link
@@ -93,7 +96,7 @@ export const SpotifySection: React.FC = () => {
     configuredPlaylists.find((p) => p.id === activePlaylistId) || configuredPlaylists[0];
 
   // Pause ambient audio (differentiates automatic handoff from explicit user pause)
-  const handlePlaybackStarted = () => {
+  const handleHandoff = useCallback((source: 'spotify-playback' | 'external-link' | 'manual') => {
     const now = Date.now();
     // Debounce repeated event dispatches within 1.5 seconds
     if (now - lastPauseTimestampRef.current < 1500) {
@@ -105,23 +108,21 @@ export const SpotifySection: React.FC = () => {
       // Dispatches event with userInitiated: false so localStorage preference is preserved
       window.dispatchEvent(
         new CustomEvent('adi:pause-ambient', {
-          detail: { userInitiated: false, source: 'spotify-playback' }
+          detail: { userInitiated: false, source }
         })
       );
       setAmbientAudioPaused(true);
     }
-  };
+  }, []);
 
   // Manual pause handoff
   const handleManualPause = () => {
-    if (typeof window !== 'undefined') {
-      window.dispatchEvent(
-        new CustomEvent('adi:pause-ambient', {
-          detail: { userInitiated: false, source: 'manual-handoff' }
-        })
-      );
-      setAmbientAudioPaused(true);
-    }
+    handleHandoff('manual');
+  };
+
+  // External Spotify link handoff (Open in Spotify / Profile link)
+  const handleExternalHandoff = () => {
+    handleHandoff('external-link');
   };
 
   // Manual resume ambient audio on user demand
@@ -153,59 +154,76 @@ export const SpotifySection: React.FC = () => {
       return;
     }
 
-    // 2. Controller does not exist yet; attach to rendered container element
-    const container = iframeContainerRef.current;
-    if (!container) return;
+    // 2. Controller is currently in flight or target element not yet attached
+    if (isInitializingRef.current) return;
+    const targetElement = embedTargetRef.current;
+    if (!targetElement) return;
 
     let isCancelled = false;
+    isInitializingRef.current = true;
 
     loadSpotifyIframeApi()
       .then((IFrameAPI) => {
-        if (isCancelled || !iframeContainerRef.current) return;
+        if (isCancelled || !embedTargetRef.current) {
+          isInitializingRef.current = false;
+          return;
+        }
 
-        // If another effect pass created the controller, use loadUri
+        // Check if another pass set controller while waiting for API script
         if (controllerRef.current) {
+          isInitializingRef.current = false;
           controllerRef.current.loadUri(targetUri);
           currentLoadedUriRef.current = targetUri;
           return;
         }
 
-        // Clear container content before controller initialization
-        iframeContainerRef.current.innerHTML = '';
-
         IFrameAPI.createController(
-          iframeContainerRef.current,
+          embedTargetRef.current,
           {
             uri: targetUri,
             width: '100%',
             height: 352
           },
           (controller) => {
+            isInitializingRef.current = false;
+
             if (isCancelled) {
-              controller.destroy?.();
+              try {
+                controller.destroy?.();
+              } catch {
+                // Ignore destruction error if already detached
+              }
               return;
             }
 
             controllerRef.current = controller;
             currentLoadedUriRef.current = targetUri;
+            setIsPlayerReady(true);
 
-            // Listen to both playback_started and playback_update for robust detection
+            // Listen to playback_started and playback_update for robust audio coordination
             controller.addListener('playback_started', () => {
-              handlePlaybackStarted();
+              handleHandoff('spotify-playback');
             });
 
             controller.addListener('playback_update', (e: unknown) => {
               const eventData = e as { data?: { isPaused?: boolean } } | undefined;
               if (eventData?.data && !eventData.data.isPaused) {
-                handlePlaybackStarted();
+                handleHandoff('spotify-playback');
+              }
+            });
+
+            controller.addListener('ready', () => {
+              if (!isCancelled) {
+                setIsPlayerReady(true);
               }
             });
           }
         );
       })
-      .catch(() => {
-        // Fallback gracefully if API cannot be loaded
+      .catch((error) => {
+        isInitializingRef.current = false;
         if (!isCancelled) {
+          console.warn('Spotify iFrame API loading failed, using fallback iframe', error);
           setApiLoadFailed(true);
         }
       });
@@ -213,16 +231,21 @@ export const SpotifySection: React.FC = () => {
     return () => {
       isCancelled = true;
     };
-  }, [hasConfiguredPlaylists, activePlaylist]);
+  }, [hasConfiguredPlaylists, activePlaylist, handleHandoff]);
 
   // Clean up controller on component unmount only
   useEffect(() => {
     return () => {
       if (controllerRef.current?.destroy) {
-        controllerRef.current.destroy();
+        try {
+          controllerRef.current.destroy();
+        } catch {
+          // Ignore destruction race
+        }
         controllerRef.current = null;
         currentLoadedUriRef.current = null;
       }
+      isInitializingRef.current = false;
     };
   }, []);
 
@@ -264,6 +287,7 @@ export const SpotifySection: React.FC = () => {
                 href={spotifyConfig.profileUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={handleExternalHandoff}
                 className="inline-flex items-center gap-2 px-4 py-2 border border-editorial hover:border-terracotta text-stone-light hover:text-ivory transition-colors text-xs font-mono uppercase tracking-wider rounded-sm focus:outline-none focus:ring-1 focus:ring-terracotta"
               >
                 <Disc className="w-3.5 h-3.5 text-terracotta" />
@@ -316,9 +340,10 @@ export const SpotifySection: React.FC = () => {
               <div
                 className="flex flex-wrap items-center gap-2 sm:gap-3 mb-8 border-b border-editorial-subtle pb-4"
                 role="tablist"
+                aria-label="Spotify Playlists"
               >
                 {configuredPlaylists.map((playlist) => {
-                  const isActive = playlist.id === activePlaylistId;
+                  const isActive = playlist.id === activePlaylist.id;
                   return (
                     <button
                       key={playlist.id}
@@ -383,16 +408,27 @@ export const SpotifySection: React.FC = () => {
                   </p>
                 )}
 
-                {/* Honest Manual Handoff Button */}
+                {/* Honest Manual Handoff Control */}
                 <div className="pt-2 flex items-center gap-3">
-                  <button
-                    type="button"
-                    onClick={handleManualPause}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-obsidian border border-editorial hover:border-terracotta text-stone hover:text-ivory text-[11px] font-mono uppercase tracking-wider rounded-sm transition-colors focus:outline-none"
-                  >
-                    <VolumeX className="w-3 h-3 text-terracotta" />
-                    <span>Pause background soundtrack</span>
-                  </button>
+                  {ambientAudioPaused ? (
+                    <button
+                      type="button"
+                      onClick={handleResumeAmbient}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-obsidian border border-editorial hover:border-terracotta text-stone hover:text-ivory text-[11px] font-mono uppercase tracking-wider rounded-sm transition-colors focus:outline-none"
+                    >
+                      <Play className="w-3 h-3 text-terracotta" />
+                      <span>Resume background track</span>
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleManualPause}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-obsidian border border-editorial hover:border-terracotta text-stone hover:text-ivory text-[11px] font-mono uppercase tracking-wider rounded-sm transition-colors focus:outline-none"
+                    >
+                      <VolumeX className="w-3 h-3 text-terracotta" />
+                      <span>Pause background soundtrack</span>
+                    </button>
+                  )}
                 </div>
 
                 {/* Direct External Link */}
@@ -402,6 +438,7 @@ export const SpotifySection: React.FC = () => {
                       href={activePlaylist.spotifyUrl}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={handleExternalHandoff}
                       className="inline-flex items-center gap-1.5 text-xs font-mono text-terracotta hover:text-ivory transition-colors uppercase tracking-wider focus:outline-none focus:underline"
                     >
                       <span>Open in Spotify</span>
@@ -413,17 +450,11 @@ export const SpotifySection: React.FC = () => {
 
               {/* Official Spotify Embed Player Container */}
               <div className="lg:col-span-7">
-                {/* 
-                  The container attached to iframeContainerRef where Spotify iFrame API attaches the controller.
-                  If the API script fails to load, a graceful fallback iframe is rendered inside.
-                */}
-                <div
-                  ref={iframeContainerRef}
-                  id="spotify-iframe-container"
-                  className="w-full min-h-[352px] rounded-sm overflow-hidden border border-editorial bg-charcoal shadow-2xl relative flex items-center justify-center"
-                >
-                  {apiLoadFailed && (
+                <div className="w-full min-h-[352px] h-[352px] rounded-sm overflow-hidden border border-editorial bg-charcoal shadow-2xl relative">
+                  {apiLoadFailed ? (
+                    /* Graceful fallback iframe if Spotify API script fails to load */
                     <iframe
+                      key={activePlaylist.id}
                       title={`Spotify Player - ${activePlaylist.title}`}
                       src={toSpotifyEmbedUrl(activePlaylist.embedUrl)}
                       width="100%"
@@ -431,14 +462,34 @@ export const SpotifySection: React.FC = () => {
                       frameBorder="0"
                       allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
                       loading="lazy"
-                      className="w-full bg-charcoal"
+                      className="w-full h-[352px] bg-charcoal border-0 block"
                     />
-                  )}
-                  {!apiLoadFailed && !controllerRef.current && (
-                    <div className="p-8 text-center text-xs font-mono text-stone space-y-2">
-                      <Music className="w-6 h-6 text-terracotta mx-auto animate-pulse" />
-                      <span>Loading Spotify Player...</span>
-                    </div>
+                  ) : (
+                    <>
+                      {/*
+                        Dedicated Spotify iFrame API Target Element:
+                        React NEVER renders any children inside this DOM element.
+                        Spotify iFrame API creates and manages the embedded iframe directly here.
+                      */}
+                      <div
+                        ref={embedTargetRef}
+                        id="spotify-embed-target"
+                        className={`w-full h-[352px] transition-opacity duration-300 ${
+                          isPlayerReady ? 'opacity-100' : 'opacity-0'
+                        }`}
+                      />
+
+                      {/* Loading State Overlay (rendered outside the dedicated target) */}
+                      {!isPlayerReady && (
+                        <div
+                          className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center text-xs font-mono text-stone space-y-2 bg-charcoal z-10 pointer-events-none"
+                          aria-live="polite"
+                        >
+                          <Music className="w-6 h-6 text-terracotta mx-auto animate-pulse" />
+                          <span>Loading Spotify Player...</span>
+                        </div>
+                      )}
+                    </>
                   )}
                 </div>
               </div>
