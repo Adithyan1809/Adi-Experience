@@ -146,8 +146,11 @@ export const MusicPlayer: React.FC<{ compact?: boolean }> = ({ compact = false }
 
   // Listen for global pause/resume requests (e.g. from Spotify player or media handoff)
   useEffect(() => {
-    const handlePauseAmbient = () => {
-      pauseAudio(true);
+    const handlePauseAmbient = (e?: Event) => {
+      // Differentiate between automated handoff (Spotify playback started) vs deliberate user pause
+      const customEvent = e as CustomEvent<{ userInitiated?: boolean }>;
+      const isUserInitiated = Boolean(customEvent?.detail?.userInitiated);
+      pauseAudio(isUserInitiated);
     };
     const handleResumeAmbient = () => {
       playAudio();

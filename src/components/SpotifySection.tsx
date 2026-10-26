@@ -5,39 +5,125 @@ import { spotifyConfig } from '../data/spotify';
 import { SpotifyPlaylist } from '../types';
 
 /**
- * Validates whether a given URL is a legitimate Spotify playlist, album, or track URL.
+ * Spotify Embed IFrame Controller interfaces as defined by
+ * https://developer.spotify.com/documentation/embeds/references/iframe-api
  */
-export const isValidSpotifyUrl = (url?: string): boolean => {
-  if (!url) return false;
-  const trimmed = url.trim();
-  if (
-    trimmed === '' ||
-    trimmed === 'https://open.spotify.com' ||
-    trimmed === 'https://open.spotify.com/'
-  ) {
-    return false;
+export interface SpotifyEmbedController {
+  loadUri: (uri: string) => void;
+  play: () => void;
+  pause: () => void;
+  resume: () => void;
+  togglePlay: () => void;
+  destroy: () => void;
+  addListener: (event: string, callback: (eventData?: unknown) => void) => void;
+  removeListener?: (event: string, callback: (eventData?: unknown) => void) => void;
+}
+
+export interface SpotifyIFrameAPI {
+  createController: (
+    element: HTMLElement,
+    options: { uri?: string; url?: string; width?: string | number; height?: string | number },
+    callback: (controller: SpotifyEmbedController) => void
+  ) => void;
+}
+
+declare global {
+  interface Window {
+    onSpotifyIframeApiReady?: (IFrameAPI: SpotifyIFrameAPI) => void;
+    SpotifyIframeApi?: SpotifyIFrameAPI;
   }
-  return /open\.spotify\.com\/(embed\/)?(playlist|album|track|artist)\/[a-zA-Z0-9]+/.test(trimmed) ||
-         /spotify:(playlist|album|track|artist):[a-zA-Z0-9]+/.test(trimmed);
+}
+
+/**
+ * Extracts a normalized Spotify URI (e.g. spotify:playlist:...) from any web URL or URI.
+ */
+export const toSpotifyUri = (raw?: string): string | null => {
+  if (!raw) return null;
+  const trimmed = raw.trim();
+
+  // Handle existing Spotify URI scheme: spotify:playlist:xxx
+  if (/^spotify:(playlist|album|track|artist):[a-zA-Z0-9]+/.test(trimmed)) {
+    return trimmed.split('?')[0];
+  }
+
+  // Handle standard or embed web URLs: open.spotify.com/(embed/)?(playlist|album|track|artist)/xxx
+  const match = trimmed.match(/open\.spotify\.com\/(?:embed\/)?(playlist|album|track|artist)\/([a-zA-Z0-9]+)/);
+  if (match) {
+    return `spotify:${match[1]}:${match[2]}`;
+  }
+
+  return null;
 };
 
 /**
- * Normalizes any valid Spotify URL/URI into an official embed URL.
+ * Converts any Spotify URL or URI into a clean official embed URL.
  */
-export const toSpotifyEmbedUrl = (rawUrl: string): string => {
-  const trimmed = rawUrl.trim();
-  if (trimmed.includes('open.spotify.com/embed/')) {
-    return trimmed.includes('?') ? trimmed : `${trimmed}?utm_source=generator&theme=0`;
+export const toSpotifyEmbedUrl = (raw: string): string => {
+  const uri = toSpotifyUri(raw);
+  if (uri) {
+    const [, type, id] = uri.split(':');
+    return `https://open.spotify.com/embed/${type}/${id}?utm_source=generator&theme=0`;
   }
-  const match = trimmed.match(/open\.spotify\.com\/(playlist|album|track|artist)\/([a-zA-Z0-9]+)/);
-  if (match) {
-    return `https://open.spotify.com/embed/${match[1]}/${match[2]}?utm_source=generator&theme=0`;
+  return raw.trim();
+};
+
+/**
+ * Validates whether a playlist embed URL is a legitimate, configured Spotify resource.
+ */
+export const isValidSpotifyUrl = (url?: string): boolean => {
+  if (!url) return false;
+  return toSpotifyUri(url) !== null;
+};
+
+// Singleton caching for the Spotify IFrame API script promise
+let cachedIFrameAPI: SpotifyIFrameAPI | null = null;
+let scriptLoadingPromise: Promise<SpotifyIFrameAPI> | null = null;
+
+const loadSpotifyIframeApi = (): Promise<SpotifyIFrameAPI> => {
+  if (cachedIFrameAPI) {
+    return Promise.resolve(cachedIFrameAPI);
   }
-  const uriMatch = trimmed.match(/spotify:(playlist|album|track|artist):([a-zA-Z0-9]+)/);
-  if (uriMatch) {
-    return `https://open.spotify.com/embed/${uriMatch[1]}/${uriMatch[2]}?utm_source=generator&theme=0`;
+  if (typeof window !== 'undefined' && window.SpotifyIframeApi) {
+    cachedIFrameAPI = window.SpotifyIframeApi;
+    return Promise.resolve(cachedIFrameAPI);
   }
-  return trimmed;
+  if (scriptLoadingPromise) {
+    return scriptLoadingPromise;
+  }
+
+  scriptLoadingPromise = new Promise<SpotifyIFrameAPI>((resolve, reject) => {
+    if (typeof window === 'undefined') {
+      reject(new Error('Window not available'));
+      return;
+    }
+
+    // Register global callback before script injection
+    const previousReady = window.onSpotifyIframeApiReady;
+    window.onSpotifyIframeApiReady = (IFrameAPI: SpotifyIFrameAPI) => {
+      cachedIFrameAPI = IFrameAPI;
+      window.SpotifyIframeApi = IFrameAPI;
+      if (typeof previousReady === 'function') {
+        previousReady(IFrameAPI);
+      }
+      resolve(IFrameAPI);
+    };
+
+    // Check if script is already present in DOM
+    const existingScript = document.getElementById('spotify-iframe-api-script') as HTMLScriptElement | null;
+    if (!existingScript) {
+      const script = document.createElement('script');
+      script.id = 'spotify-iframe-api-script';
+      script.src = 'https://open.spotify.com/embed/iframe-api/v1';
+      script.async = true;
+      script.onerror = () => {
+        scriptLoadingPromise = null;
+        reject(new Error('Failed to load Spotify iFrame API script'));
+      };
+      document.body.appendChild(script);
+    }
+  });
+
+  return scriptLoadingPromise;
 };
 
 export const SpotifySection: React.FC = () => {
@@ -51,8 +137,12 @@ export const SpotifySection: React.FC = () => {
     configuredPlaylists[0]?.id || ''
   );
   const [ambientAudioPaused, setAmbientAudioPaused] = useState<boolean>(false);
-  const [embedLoadError, setEmbedLoadError] = useState<boolean>(false);
+  const [apiLoadFailed, setApiLoadFailed] = useState<boolean>(false);
+
   const iframeContainerRef = useRef<HTMLDivElement | null>(null);
+  const controllerRef = useRef<SpotifyEmbedController | null>(null);
+  const currentLoadedUriRef = useRef<string | null>(null);
+  const lastPauseTimestampRef = useRef<number>(0);
 
   // Check if profile URL is genuine and not a generic homepage link
   const hasRealProfileUrl = Boolean(
@@ -63,78 +153,142 @@ export const SpotifySection: React.FC = () => {
     !spotifyConfig.profileUrl.includes('example.com')
   );
 
-  const activePlaylist = configuredPlaylists.find((p) => p.id === activePlaylistId) || configuredPlaylists[0];
+  const activePlaylist =
+    configuredPlaylists.find((p) => p.id === activePlaylistId) || configuredPlaylists[0];
 
-  // Pause ambient audio explicitly
-  const pauseAmbientAudio = () => {
+  // Pause ambient audio (differentiates automatic handoff from explicit user pause)
+  const handlePlaybackStarted = () => {
+    const now = Date.now();
+    // Debounce repeated event dispatches within 1.5 seconds
+    if (now - lastPauseTimestampRef.current < 1500) {
+      return;
+    }
+    lastPauseTimestampRef.current = now;
+
     if (typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent('adi:pause-ambient'));
+      // Dispatches event with userInitiated: false so localStorage preference is preserved
+      window.dispatchEvent(
+        new CustomEvent('adi:pause-ambient', {
+          detail: { userInitiated: false, source: 'spotify-playback' }
+        })
+      );
       setAmbientAudioPaused(true);
     }
   };
 
-  // Resume ambient audio on user demand
-  const resumeAmbientAudio = () => {
+  // Manual pause handoff
+  const handleManualPause = () => {
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(
+        new CustomEvent('adi:pause-ambient', {
+          detail: { userInitiated: false, source: 'manual-handoff' }
+        })
+      );
+      setAmbientAudioPaused(true);
+    }
+  };
+
+  // Manual resume ambient audio on user demand
+  const handleResumeAmbient = () => {
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent('adi:resume-ambient'));
       setAmbientAudioPaused(false);
     }
   };
 
-  // Initialize Spotify iFrame Player API for playback detection where available
+  // Initialize Spotify iFrame Player API controller or update via loadUri()
   useEffect(() => {
     if (!hasConfiguredPlaylists || !activePlaylist) return;
 
-    let isSubscribed = true;
+    const targetUri = toSpotifyUri(activePlaylist.embedUrl);
+    if (!targetUri) return;
 
-    // Load Spotify IFrame API script if not already on the page
-    const existingScript = document.getElementById('spotify-iframe-api');
-    if (!existingScript) {
-      const script = document.createElement('script');
-      script.id = 'spotify-iframe-api';
-      script.src = 'https://open.spotify.com/embed/iframe-api/v1';
-      script.async = true;
-      document.body.appendChild(script);
+    // 1. If controller already exists, use supported loadUri() without recreating iframe
+    if (controllerRef.current) {
+      if (currentLoadedUriRef.current !== targetUri) {
+        try {
+          controllerRef.current.loadUri(targetUri);
+          currentLoadedUriRef.current = targetUri;
+        } catch {
+          // If loadUri failed, allow re-initialization
+          controllerRef.current = null;
+        }
+      }
+      return;
     }
 
-    // Window callback invoked when Spotify API is ready
-    (window as unknown as { onSpotifyIframeApiReady?: (IFrameAPI: unknown) => void }).onSpotifyIframeApiReady = (IFrameAPI: unknown) => {
-      if (!isSubscribed || !iframeContainerRef.current) return;
-      const api = IFrameAPI as {
-        createController: (
-          element: HTMLElement,
-          options: { uri?: string; url?: string; width?: string; height?: string },
-          callback: (controller: {
-            addListener: (event: string, callback: (e: { data: { isPaused: boolean; position: number } }) => void) => void;
-            destroy?: () => void;
-          }) => void
-        ) => void;
-      };
+    // 2. Controller does not exist yet; attach to rendered container element
+    const container = iframeContainerRef.current;
+    if (!container) return;
 
-      try {
-        const embedUrl = toSpotifyEmbedUrl(activePlaylist.embedUrl);
-        api.createController(
+    let isCancelled = false;
+
+    loadSpotifyIframeApi()
+      .then((IFrameAPI) => {
+        if (isCancelled || !iframeContainerRef.current) return;
+
+        // If another effect pass created the controller, use loadUri
+        if (controllerRef.current) {
+          controllerRef.current.loadUri(targetUri);
+          currentLoadedUriRef.current = targetUri;
+          return;
+        }
+
+        // Clear container content before controller initialization
+        iframeContainerRef.current.innerHTML = '';
+
+        IFrameAPI.createController(
           iframeContainerRef.current,
-          { url: embedUrl, width: '100%', height: '352' },
+          {
+            uri: targetUri,
+            width: '100%',
+            height: 352
+          },
           (controller) => {
-            if (!isSubscribed) return;
-            controller.addListener('playback_update', (e) => {
-              // Pause ambient audio only when playback actually begins
-              if (!e.data.isPaused && e.data.position > 0) {
-                pauseAmbientAudio();
+            if (isCancelled) {
+              controller.destroy?.();
+              return;
+            }
+
+            controllerRef.current = controller;
+            currentLoadedUriRef.current = targetUri;
+
+            // Listen to both playback_started and playback_update for robust detection
+            controller.addListener('playback_started', () => {
+              handlePlaybackStarted();
+            });
+
+            controller.addListener('playback_update', (e: unknown) => {
+              const eventData = e as { data?: { isPaused?: boolean } } | undefined;
+              if (eventData?.data && !eventData.data.isPaused) {
+                handlePlaybackStarted();
               }
             });
           }
         );
-      } catch {
-        // Fallback gracefully to manual handoff if API init fails
-      }
-    };
+      })
+      .catch(() => {
+        // Fallback gracefully if API cannot be loaded
+        if (!isCancelled) {
+          setApiLoadFailed(true);
+        }
+      });
 
     return () => {
-      isSubscribed = false;
+      isCancelled = true;
     };
   }, [hasConfiguredPlaylists, activePlaylist]);
+
+  // Clean up controller on component unmount only
+  useEffect(() => {
+    return () => {
+      if (controllerRef.current?.destroy) {
+        controllerRef.current.destroy();
+        controllerRef.current = null;
+        currentLoadedUriRef.current = null;
+      }
+    };
+  }, []);
 
   const scrollToNext = () => {
     const el = document.getElementById('personality');
@@ -200,7 +354,7 @@ export const SpotifySection: React.FC = () => {
               <div className="flex items-center gap-4">
                 <button
                   type="button"
-                  onClick={resumeAmbientAudio}
+                  onClick={handleResumeAmbient}
                   className="inline-flex items-center gap-1.5 text-terracotta hover:text-ivory transition-colors uppercase tracking-wider text-[11px] font-semibold focus:outline-none focus:underline"
                 >
                   <Play className="w-3 h-3 fill-terracotta" />
@@ -238,7 +392,6 @@ export const SpotifySection: React.FC = () => {
                       id={`tab-${playlist.id}`}
                       onClick={() => {
                         setActivePlaylistId(playlist.id);
-                        setEmbedLoadError(false);
                       }}
                       className={`px-4 py-2.5 rounded-sm text-xs font-mono uppercase tracking-wider transition-all duration-300 flex items-center gap-2 border focus:outline-none focus:ring-1 focus:ring-terracotta ${
                         isActive
@@ -294,11 +447,11 @@ export const SpotifySection: React.FC = () => {
                   </p>
                 )}
 
-                {/* Manual audio coordination handoff */}
+                {/* Honest Manual Handoff Button */}
                 <div className="pt-2 flex items-center gap-3">
                   <button
                     type="button"
-                    onClick={pauseAmbientAudio}
+                    onClick={handleManualPause}
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-obsidian border border-editorial hover:border-terracotta text-stone hover:text-ivory text-[11px] font-mono uppercase tracking-wider rounded-sm transition-colors focus:outline-none"
                   >
                     <VolumeX className="w-3 h-3 text-terracotta" />
@@ -322,29 +475,18 @@ export const SpotifySection: React.FC = () => {
                 )}
               </div>
 
-              {/* Official Spotify Embed Player */}
+              {/* Official Spotify Embed Player Container */}
               <div className="lg:col-span-7">
-                {embedLoadError ? (
-                  <div className="p-8 bg-charcoal border border-editorial rounded-sm text-center space-y-3">
-                    <Music className="w-8 h-8 text-stone mx-auto" />
-                    <h4 className="font-serif text-xl text-ivory">Playlist currently unavailable</h4>
-                    <p className="text-xs text-stone font-sans max-w-sm mx-auto">
-                      This Spotify embed could not be loaded directly. You can listen to it directly in Spotify.
-                    </p>
-                    {activePlaylist.spotifyUrl && (
-                      <a
-                        href={activePlaylist.spotifyUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-ivory text-obsidian text-xs font-semibold uppercase tracking-wider rounded-sm hover:bg-ivory-muted transition-colors mt-2"
-                      >
-                        <span>Listen on Spotify</span>
-                        <ExternalLink className="w-3.5 h-3.5" />
-                      </a>
-                    )}
-                  </div>
-                ) : (
-                  <div className="rounded-sm overflow-hidden border border-editorial bg-charcoal shadow-2xl">
+                {/* 
+                  The container attached to iframeContainerRef where Spotify iFrame API attaches the controller.
+                  If the API script fails to load, a graceful fallback iframe is rendered inside.
+                */}
+                <div
+                  ref={iframeContainerRef}
+                  id="spotify-iframe-container"
+                  className="w-full min-h-[352px] rounded-sm overflow-hidden border border-editorial bg-charcoal shadow-2xl relative flex items-center justify-center"
+                >
+                  {apiLoadFailed && (
                     <iframe
                       title={`Spotify Player - ${activePlaylist.title}`}
                       src={toSpotifyEmbedUrl(activePlaylist.embedUrl)}
@@ -353,11 +495,16 @@ export const SpotifySection: React.FC = () => {
                       frameBorder="0"
                       allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
                       loading="lazy"
-                      onError={() => setEmbedLoadError(true)}
                       className="w-full bg-charcoal"
                     />
-                  </div>
-                )}
+                  )}
+                  {!apiLoadFailed && !controllerRef.current && (
+                    <div className="p-8 text-center text-xs font-mono text-stone space-y-2">
+                      <Music className="w-6 h-6 text-terracotta mx-auto animate-pulse" />
+                      <span>Loading Spotify Player...</span>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
