@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { projectsData } from '../data/projects';
 import { GithubIcon } from './Icons';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, ChevronDown, Sparkles } from 'lucide-react';
 
 export const Projects: React.FC = () => {
-  const [activeProject, setActiveProject] = useState<string>(projectsData[0].id);
+  const [expandedId, setExpandedId] = useState<string | null>(projectsData[0].id);
+
+  const toggleExpand = (id: string) => {
+    setExpandedId((prev) => (prev === id ? null : id));
+  };
 
   return (
     <section id="projects" className="py-24 sm:py-32 border-t border-editorial relative bg-obsidian">
@@ -28,7 +32,7 @@ export const Projects: React.FC = () => {
               href="https://github.com/Adithyan1809"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs font-mono text-terracotta hover:text-ivory transition-colors uppercase tracking-wider"
+              className="inline-flex items-center gap-1.5 text-xs font-mono text-terracotta hover:text-ivory transition-colors uppercase tracking-wider focus:outline-none focus:underline"
             >
               <GithubIcon className="w-3.5 h-3.5" />
               <span>Explore GitHub Repositories</span>
@@ -37,59 +41,48 @@ export const Projects: React.FC = () => {
           </div>
         </div>
 
-        {/* Project Story List */}
-        <div className="space-y-8">
+        {/* Project Card List */}
+        <div className="space-y-6">
           {projectsData.map((project, idx) => {
-            const isSelected = activeProject === project.id;
+            const isExpanded = expandedId === project.id;
 
             return (
               <motion.div
                 key={project.id}
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 25 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-60px' }}
-                transition={{ duration: 0.7, delay: idx * 0.1 }}
-                onClick={() => setActiveProject(project.id)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    setActiveProject(project.id);
-                  }
-                }}
-                tabIndex={0}
-                role="region"
-                aria-label={`${project.title} project details`}
-                className={`p-6 sm:p-10 rounded-sm border transition-all duration-500 relative cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-terracotta ${
-                  isSelected
-                    ? 'bg-charcoal border-terracotta/60 shadow-2xl'
-                    : 'bg-obsidian-light/50 border-editorial hover:border-terracotta/30'
+                viewport={{ once: true, margin: '-40px' }}
+                transition={{ duration: 0.6, delay: idx * 0.08 }}
+                className={`p-6 sm:p-8 rounded-sm border transition-all duration-300 ${
+                  isExpanded
+                    ? 'bg-charcoal border-terracotta/50 shadow-xl'
+                    : 'bg-obsidian-light/60 border-editorial hover:border-terracotta/30'
                 }`}
               >
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                  {/* Left Column: Title, Role, Tags (5 cols) */}
-                  <div className="lg:col-span-5 space-y-4">
-                    <div className="flex items-center gap-3">
-                      <span className="text-[11px] font-mono text-terracotta uppercase tracking-wider">
-                        {project.status === 'Featured' ? 'Featured Build' : 'Active System'}
+                {/* Collapsed Top Summary */}
+                <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
+                  <div className="space-y-2.5 max-w-2xl">
+                    <div className="flex items-center gap-3 text-xs font-mono">
+                      <span className="text-terracotta uppercase tracking-wider font-medium">
+                        {project.status === 'Featured' ? 'Featured Project' : 'In Progress'}
                       </span>
-                      <span className="w-6 h-[1px] bg-editorial" />
-                      <span className="text-xs font-mono text-stone ml-auto">
-                        {project.timeframe}
-                      </span>
+                      <span className="w-4 h-[1px] bg-editorial" />
+                      <span className="text-stone">{project.timeframe}</span>
                     </div>
 
-                    <h3 className="font-serif text-3xl sm:text-4xl text-ivory font-medium tracking-tight">
+                    <h3 className="font-serif text-2xl sm:text-3xl text-ivory font-medium tracking-tight">
                       {project.title}
                     </h3>
 
-                    <p className="text-xs font-mono text-terracotta uppercase tracking-wider">
-                      {project.role}
+                    <p className="text-sm sm:text-base text-stone-light font-light leading-relaxed font-sans">
+                      {project.description}
                     </p>
 
-                    <div className="flex flex-wrap gap-2 pt-2">
+                    <div className="flex flex-wrap gap-2 pt-1">
                       {project.tags.map((tag) => (
                         <span
                           key={tag}
-                          className="text-[11px] font-mono px-2.5 py-1 rounded-sm bg-obsidian/70 border border-editorial-subtle text-stone-light"
+                          className="text-[11px] font-mono px-2.5 py-1 rounded-sm bg-obsidian/70 border border-editorial-subtle text-stone"
                         >
                           {tag}
                         </span>
@@ -97,68 +90,92 @@ export const Projects: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Right Column: Narrative Story & Actions (7 cols) */}
-                  <div className="lg:col-span-7 flex flex-col justify-between h-full space-y-6">
-                    <div className="space-y-4">
-                      <p className="text-base sm:text-lg text-ivory/90 font-light leading-relaxed">
-                        {project.description}
-                      </p>
+                  {/* Actions & Expand Trigger */}
+                  <div className="flex flex-wrap items-center gap-3 pt-2 md:pt-0 shrink-0">
+                    {project.repoUrl && (
+                      <a
+                        href={project.repoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-3.5 py-2 border border-editorial hover:border-terracotta text-ivory text-xs font-mono uppercase tracking-wider rounded-sm transition-colors focus:outline-none focus:ring-1 focus:ring-terracotta"
+                      >
+                        <GithubIcon className="w-3.5 h-3.5 text-stone" />
+                        <span>GitHub Profile</span>
+                      </a>
+                    )}
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                        <div className="p-4 bg-obsidian/60 border border-editorial-subtle rounded-sm">
-                          <span className="text-[10px] font-mono text-stone uppercase tracking-wider block mb-1">
+                    {project.demoUrl && (
+                      <a
+                        href={project.demoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-ivory text-obsidian text-xs font-semibold uppercase tracking-wider rounded-sm hover:bg-ivory-muted transition-colors"
+                      >
+                        <span>Live Site</span>
+                        <ArrowUpRight className="w-3.5 h-3.5" />
+                      </a>
+                    )}
+
+                    <button
+                      type="button"
+                      onClick={() => toggleExpand(project.id)}
+                      aria-expanded={isExpanded}
+                      aria-controls={`project-details-${project.id}`}
+                      className="inline-flex items-center gap-2 px-3.5 py-2 bg-obsidian border border-editorial hover:border-terracotta text-ivory text-xs font-mono uppercase tracking-wider rounded-sm transition-colors focus:outline-none focus:ring-1 focus:ring-terracotta"
+                    >
+                      <span>{isExpanded ? 'Hide Details' : 'Details'}</span>
+                      <ChevronDown
+                        className={`w-3.5 h-3.5 text-terracotta transition-transform duration-300 ${
+                          isExpanded ? 'rotate-180' : ''
+                        }`}
+                      />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Expanded Deep-Dive Details */}
+                <AnimatePresence initial={false}>
+                  {isExpanded && (
+                    <motion.div
+                      id={`project-details-${project.id}`}
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                      className="overflow-hidden"
+                    >
+                      <div className="mt-6 pt-6 border-t border-editorial-subtle grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="p-4 bg-obsidian/70 border border-editorial-subtle rounded-sm">
+                          <span className="text-[10px] font-mono text-terracotta uppercase tracking-wider block mb-1.5">
                             The Problem
                           </span>
-                          <p className="text-xs text-stone-light leading-relaxed font-sans">
+                          <p className="text-xs sm:text-sm text-stone-light leading-relaxed font-sans font-light">
                             {project.problem}
                           </p>
                         </div>
 
-                        <div className="p-4 bg-obsidian/60 border border-editorial-subtle rounded-sm">
-                          <span className="text-[10px] font-mono text-stone uppercase tracking-wider block mb-1">
-                            Technical Challenge
+                        <div className="p-4 bg-obsidian/70 border border-editorial-subtle rounded-sm">
+                          <span className="text-[10px] font-mono text-terracotta uppercase tracking-wider block mb-1.5">
+                            The Interesting Part
                           </span>
-                          <p className="text-xs text-stone-light leading-relaxed font-sans">
+                          <p className="text-xs sm:text-sm text-stone-light leading-relaxed font-sans font-light">
                             {project.challenge}
                           </p>
                         </div>
+
+                        <div className="p-4 bg-obsidian/70 border border-editorial-subtle rounded-sm">
+                          <div className="flex items-center gap-1.5 text-[10px] font-mono text-terracotta uppercase tracking-wider mb-1.5">
+                            <Sparkles className="w-3 h-3 text-terracotta" />
+                            <span>What I Learned</span>
+                          </div>
+                          <p className="text-xs sm:text-sm text-stone-light leading-relaxed font-sans font-light">
+                            {project.learned || 'Hands-on system design and architecture considerations.'}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-
-                    {/* Action Links */}
-                    <div className="flex flex-wrap items-center gap-4 pt-4 border-t border-editorial-subtle">
-                      {project.demoUrl ? (
-                        <a
-                          href={project.demoUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          className="inline-flex items-center gap-2 px-4 py-2 bg-ivory text-obsidian text-xs font-semibold uppercase tracking-wider rounded-sm hover:bg-ivory-muted transition-colors"
-                        >
-                          <span>Live Site</span>
-                          <ArrowUpRight className="w-3.5 h-3.5" />
-                        </a>
-                      ) : (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-obsidian text-stone text-xs font-mono tracking-wider rounded-sm border border-editorial-subtle cursor-default">
-                          <span>{project.status === 'Featured' ? 'Project build' : 'In development'}</span>
-                        </span>
-                      )}
-
-                      {project.repoUrl && (
-                        <a
-                          href={project.repoUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          className="inline-flex items-center gap-2 px-4 py-2 border border-editorial hover:border-terracotta text-ivory text-xs font-mono uppercase tracking-wider rounded-sm transition-colors"
-                        >
-                          <GithubIcon className="w-3.5 h-3.5 text-stone" />
-                          <span>GitHub Profile</span>
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </motion.div>
             );
           })}

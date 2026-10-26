@@ -4,11 +4,11 @@
 - **Title**: *The Adi Experience — Ambient Theme*
 - **File**: `public/audio/adi-theme.mp3`
 - **Format**: MP3 Stereo, 44.1 kHz, 128 kbps, 24-second seamless loop
-- **Instrumentation**: Warm synthesized acoustic/piano chords (Fmaj9 → Am7 → Dm9 → Cadd9) with soft exponential decay, gentle stereo panning, and subtle low-end resonance.
-- **Vibe**: Calming, warm, understated, contemplative, lightly romantic.
+- **Instrumentation**: Algorithmically synthesized harmonic chord tones (Fmaj9 → Am7 → Dm9 → Cadd9) with soft exponential decay, gentle stereo panning, and subtle low-end resonance.
+- **Vibe**: Calming, warm, understated, and contemplative.
 - **License**: **Creative Commons Zero (CC0 1.0 Universal) / Public Domain Dedication**.
-  - 100% original composition algorithmically synthesized specifically for this project.
-  - Royalty-free, commercial-use allowed, no copyright strikes, no external attribution required.
+  - 100% original composition programmatically synthesized via script without third-party samples.
+  - Royalty-free, commercial-use allowed, no copyright claims, no external attribution required.
 
 ---
 

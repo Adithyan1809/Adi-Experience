@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Copy, Check, Mail, ExternalLink, ArrowUpRight } from 'lucide-react';
 import { personalInfo } from '../data/personal';
@@ -19,46 +19,75 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
     message: '',
   });
 
+  const previousActiveElementRef = useRef<HTMLElement | null>(null);
+  const messageInputRef = useRef<HTMLTextAreaElement | null>(null);
+
   const email = personalInfo.links.email || 'contact@adithyanp.me';
 
+  // Manage focus restoration and escape key dismissal
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
     if (isOpen) {
-      window.addEventListener('keydown', handleKeyDown);
+      previousActiveElementRef.current = document.activeElement as HTMLElement | null;
       document.body.style.overflow = 'hidden';
+
+      const timer = setTimeout(() => {
+        messageInputRef.current?.focus();
+      }, 50);
+
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') {
+          onClose();
+        }
+      };
+
+      window.addEventListener('keydown', handleKeyDown);
+      return () => {
+        clearTimeout(timer);
+        window.removeEventListener('keydown', handleKeyDown);
+        document.body.style.overflow = '';
+      };
+    } else {
+      if (previousActiveElementRef.current) {
+        previousActiveElementRef.current.focus();
+      }
     }
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = '';
-    };
   }, [isOpen, onClose]);
 
-  const copyEmail = () => {
-    navigator.clipboard.writeText(email);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2500);
+  const copyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(email);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    } catch {
+      // Graceful fallback when clipboard permission is denied
+    }
   };
 
-  const copyNoteText = () => {
+  const copyNoteText = async () => {
     const senderName = formData.name.trim() || 'A Visitor';
-    const fullText = `Hi Adi,\n\n${formData.message}\n\nFrom: ${senderName} (${formData.email})\nTopic: ${formData.topic}`;
-    navigator.clipboard.writeText(fullText);
-    setCopiedNote(true);
-    setTimeout(() => setCopiedNote(false), 2500);
+    const emailInfo = formData.email.trim() ? ` (${formData.email.trim()})` : '';
+    const fullText = `Hi Adi,\n\n${formData.message}\n\nFrom: ${senderName}${emailInfo}\nTopic: ${formData.topic}`;
+
+    try {
+      await navigator.clipboard.writeText(fullText);
+      setCopiedNote(true);
+      setTimeout(() => setCopiedNote(false), 2500);
+    } catch {
+      // Graceful fallback
+    }
   };
 
   const openMailto = () => {
     const senderName = formData.name.trim() || 'A Visitor';
+    const emailInfo = formData.email.trim() ? ` (${formData.email.trim()})` : '';
     const subject = encodeURIComponent(`[Adi Experience] ${formData.topic} — from ${senderName}`);
-    const body = encodeURIComponent(`Hi Adi,\n\n${formData.message}\n\nFrom: ${senderName} (${formData.email})`);
+    const body = encodeURIComponent(`Hi Adi,\n\n${formData.message}\n\nFrom: ${senderName}${emailInfo}`);
     window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.email.trim() || !formData.message.trim()) {
+    if (!formData.message.trim()) {
       return;
     }
     setSubmitted(true);
@@ -83,16 +112,22 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
           role="dialog"
           aria-modal="true"
           aria-labelledby="contact-modal-title"
+          onClick={() => {
+            resetForm();
+            onClose();
+          }}
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
             transition={{ duration: 0.25 }}
+            onClick={(e) => e.stopPropagation()}
             className="relative max-w-xl w-full bg-charcoal border border-editorial rounded-sm p-6 sm:p-10 shadow-2xl space-y-6"
           >
             {/* Close Button */}
             <button
+              type="button"
               onClick={() => {
                 resetForm();
                 onClose();
@@ -215,12 +250,11 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
                   </div>
                   <div>
                     <label htmlFor="contact-email" className="text-[11px] font-mono text-stone uppercase tracking-wider block mb-1.5">
-                      Your Email <span className="text-terracotta">*</span>
+                      Your Email <span className="text-stone/60 lowercase">(optional)</span>
                     </label>
                     <input
                       id="contact-email"
                       type="email"
-                      required
                       placeholder="your.email@example.com"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -252,6 +286,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
                   </label>
                   <textarea
                     id="contact-message"
+                    ref={messageInputRef}
                     rows={4}
                     required
                     placeholder="Tell me what you're working on, a good book or music recommendation, or just say hello..."

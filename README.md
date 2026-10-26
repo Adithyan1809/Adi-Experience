@@ -14,7 +14,7 @@ Designed with the **"Midnight Editorial"** aesthetic: combining cinematic photog
 - **Bundler**: Vite 6
 - **Styling**: Tailwind CSS 3
 - **Animations**: Framer Motion 12
-- **Audio Engine**: HTML5 Audio (`/audio/adi-theme.mp3`, CC0 original composition)
+- **Audio Engine**: HTML5 Audio (`/audio/adi-theme.mp3`, CC0 programmatic synthesis)
 - **Icons**: Lucide React + Custom Inline Brand SVGs
 - **Typography**: Google Fonts (*Cormorant Garamond* & *Plus Jakarta Sans*)
 
@@ -47,18 +47,18 @@ All personal data, projects, lifestyle snapshots, and prompts are centralized in
 
 ### Page Section Order:
 1. **Hero** (`#hero`): Editorial opening with ambient soundtrack player, verified bio, and portrait slot.
-2. **About** (`#about`): Focus areas (AI & Data Engineering, Gym & Consistency, Practical Software), IEEE research highlight, and verified dossier.
-3. **Snapshots** (`#lifestyle`): Asymmetric visual log with interactive lightbox dialog and intentional fallback plates.
+2. **About** (`#about`): Focused introduction, focus areas (AI & Data Systems, Regular Gym Training, Practical Software), IEEE research highlight, and "The short version" dossier.
+3. **Snapshots / Everyday Cadence** (`#lifestyle`): When photos are configured, displays genuine photography with responsive crops and lightbox; when unconfigured, tastefully defaults to a text-led everyday cadence section rather than empty frames.
 4. **Right Now** (`#currently`): Live bandwidth (Building prototypes, Learning data architectures, 5 km running goal, Shipping open-source).
 5. **Little Things** (`#personality`): A mix of harmless quirks, curiosity rabbit holes, lifestyle preferences, and everyday observations.
-6. **Projects** (`#projects`): Practical engineering stories for WellNest, Project IRIS, and ResumePilot with honest GitHub profile links.
+6. **Projects** (`#projects`): Compact expandable engineering stories for WellNest, Project IRIS, and ResumePilot with honest GitHub profile links and takeaways.
 7. **Say Hello** (`#contact`): "Your turn" closing section with verified links and a low-pressure mail client launcher.
 
 ```text
 Adi-Experience/
 ├── public/
 │   ├── audio/
-│   │   ├── adi-theme.mp3        # Seamless royalty-free ambient loop (CC0 original)
+│   │   ├── adi-theme.mp3        # Seamless royalty-free ambient loop (CC0 synthesized loop)
 │   │   └── README.md            # Track specifications and audio license notes
 │   └── images/
 │       ├── hero.jpg             # Hero portrait (800x1000)
@@ -73,12 +73,12 @@ Adi-Experience/
 │   ├── components/
 │   │   ├── Navbar.tsx           # Sticky navigation with monogram, scroll spy & direct action
 │   │   ├── Hero.tsx             # Editorial opening with CTAs & integrated Music Player
-│   │   ├── MusicPlayer.tsx      # Ambient soundtrack controller with equalizer & volume slider
+│   │   ├── MusicPlayer.tsx      # Ambient soundtrack controller with mobile & desktop volume popover
 │   │   ├── About.tsx            # Beyond the profile story, focus areas & IEEE research
-│   │   ├── LifestyleGallery.tsx # Magazine collage with interactive lightbox & intentional fallback
+│   │   ├── LifestyleGallery.tsx # Photo gallery when configured, or text-led cadence when photos are pending
 │   │   ├── CurrentlyMe.tsx      # Live bandwidth: Building, Learning, Fitness (5 km goal), Next
 │   │   ├── Personality.tsx      # "Little Things" expandable accordion cards
-│   │   ├── Projects.tsx         # Engineering stories (WellNest, Project IRIS, ResumePilot)
+│   │   ├── Projects.tsx         # Expandable engineering stories (WellNest, Project IRIS, ResumePilot)
 │   │   ├── Contact.tsx          # "Your turn." closing section with verified links
 │   │   ├── ContactModal.tsx     # Direct mailto dispatch to contact@adithyanp.me + copy button
 │   │   ├── Footer.tsx           # Signature, dynamic year & smooth back-to-top
@@ -86,7 +86,7 @@ Adi-Experience/
 │   │   └── ImageWithFallback.tsx# Editorial artwork placeholder plate or genuine photo loader
 │   ├── data/
 │   │   ├── personal.ts          # Bio, college, facts, currently me, personality & music config
-│   │   ├── projects.ts          # Technical projects with verified problems, challenges & tags
+│   │   ├── projects.ts          # Technical projects with verified problems, challenges, takeaways & tags
 │   │   └── lifestyle.ts         # Journal captions, categories & hasRealPhoto flags
 │   ├── types/
 │   │   └── index.ts             # TypeScript interface definitions
@@ -102,10 +102,9 @@ Adi-Experience/
 
 ## 🖼️ How to Add Your Real Photos
 
-The site uses a dual-state image system. Until you provide genuine photos, it displays **tailored editorial film-plates with typography, lens markings, and monograms** rather than broken images or low-res placeholders.
+The website displays genuine photographs only when explicitly configured via `hasRealPhoto: true`. When photos are not yet configured, the gallery automatically renders a text-led "Everyday Cadence" section rather than empty frames.
 
-### When You Have Your Real Photos Ready:
-1. Place your JPEG/PNG files in `/public/images/`:
+### Step 1: Place your image files in `public/images/`:
 
 | File Path | Recommended Ratio | Description |
 | :--- | :--- | :--- |
@@ -118,35 +117,35 @@ The site uses a dual-state image system. Until you provide genuine photos, it di
 | `public/images/lifestyle-6.jpg` | 1:1 square | Sunset sky, dusk view, golden hour moment |
 | `public/images/og-image.jpg` | 1.91:1 (1200x630) | Open Graph preview card for social links (already generated) |
 
-2. Flip `hasRealPhoto: true` in your data files:
-   - For the hero portrait, in [`src/data/personal.ts`](file:///c:/Users/HP/Desktop/Adi-Experience/src/data/personal.ts):
-     ```typescript
-     heroPhoto: {
-       src: '/images/hero.jpg',
-       caption: 'AI/ML student at DSATM, Bangalore',
-       alt: 'Portrait of Adi',
-       hasRealPhoto: true, // ← Flip to true
-     }
-     ```
-   - For lifestyle gallery photos, in [`src/data/lifestyle.ts`](file:///c:/Users/HP/Desktop/Adi-Experience/src/data/lifestyle.ts):
-     ```typescript
-     {
-       id: 'everyday',
-       imagePath: '/images/lifestyle-1.jpg',
-       hasRealPhoto: true, // ← Flip to true
-       ...
-     }
-     ```
+### Step 2: Enable the photo flags in your data files:
+- For the hero portrait, in `src/data/personal.ts`:
+  ```typescript
+  heroPhoto: {
+    src: '/images/hero.jpg',
+    caption: 'AI/ML student at DSATM, Bangalore',
+    alt: 'Portrait of Adi',
+    hasRealPhoto: true, // ← Set to true once hero.jpg is added
+  }
+  ```
+- For lifestyle gallery photos, in `src/data/lifestyle.ts`:
+  ```typescript
+  {
+    id: 'everyday',
+    imagePath: '/images/lifestyle-1.jpg',
+    hasRealPhoto: true, // ← Set to true for photos you have added
+    ...
+  }
+  ```
 
 ---
 
 ## ✍️ Checklist of Unconfirmed Details to Verify
 
-Before publishing, review these placeholders in [`src/data/personal.ts`](file:///c:/Users/HP/Desktop/Adi-Experience/src/data/personal.ts):
+Before publishing, review these placeholders in `src/data/personal.ts`:
 
-- [ ] **Email Address**: Check `links.email` (currently `contact@adithyanp.me`).
+- [ ] **Email Address**: Check `links.email` (currently `contact@adithyanp.me`). Verify this is your preferred contact address.
 - [ ] **Instagram (Optional)**: If you'd like your Instagram profile linked, paste your URL in `links.instagram`. If left empty `''`, the website gracefully hides the Instagram button and links your verified GitHub and LinkedIn.
-- [ ] **Personality Prompts**: In `personalityPrompts`, review each answer. If you want to hide any prompt, simply set `isConfigured: false`:
+- [ ] **Personality Prompts**: In `personalityPrompts`, review each answer. To hide any prompt, simply set `isConfigured: false`:
   - `harmless-habit`: Browser tab hoarding habit.
   - `rabbit-holes`: Multi-hour technical/curiosity deep dives.
   - `talk-for-hours`: Subjects you enjoy talking about (AI systems, film scores).
@@ -160,13 +159,17 @@ Before publishing, review these placeholders in [`src/data/personal.ts`](file://
 
 ## 🎵 Ambient Background Music System
 
-The website includes a dedicated editorial background soundtrack (`adi-theme.mp3`) located in `public/audio/`.
+The website includes a dedicated background soundtrack (`adi-theme.mp3`) located in `public/audio/`.
 
-- **Sound Profile**: A warm, mellow acoustic ambient loop (Fmaj9 → Am7 → Dm9 → Cadd9) composed at 68 BPM.
-- **License**: 100% Royalty-Free / Public Domain (CC0).
-- **Controls**: Play/Pause toggle, 4-bar animated equalizer, volume slider (persisted in `localStorage`).
-- **Autoplay Handling**: If the browser blocks audio on first visit, a non-intrusive `"Enable sound"` button appears in the Hero without interrupting navigation.
-- **To Replace**: Drop any `.mp3` into `public/audio/adi-theme.mp3` or update the file path in `src/data/personal.ts`.
+- **Sound Profile**: An ambient synthesized chord progression (Fmaj9 → Am7 → Dm9 → Cadd9) algorithmically synthesized at 68 BPM.
+- **License**: **Creative Commons Zero (CC0 1.0 Universal) / Public Domain Dedication**. 100% original programmatic synthesis without third-party audio samples.
+- **Controls**:
+  - Play/Pause toggle with live 4-bar equalizer indicator.
+  - Mute/Unmute toggle.
+  - Volume popover slider accessible on **both mobile and desktop**, with percentage readout and outside-click dismissal.
+  - Browser-native autoplay detection: If the browser blocks audio on first visit, a non-intrusive `"Enable sound"` button appears in the Hero without interrupting navigation.
+  - Preferences (`volume`, `muted`, `paused`) are safely persisted in `localStorage` with `try/catch` guards.
+- **To Replace**: Drop any `.mp3` into `public/audio/adi-theme.mp3` or update `musicConfig` in `src/data/personal.ts`.
 
 ---
 
@@ -183,8 +186,8 @@ The website includes a dedicated editorial background soundtrack (`adi-theme.mp3
 ## ♿ Accessibility & Performance Standards
 
 - High-contrast, WCAG 2.1 AA compliant typography.
-- Native keyboard navigation and visible focus rings across all cards and buttons.
-- Modal escape key listener and background scroll locking.
-- Full respect for `prefers-reduced-motion`.
-- Fully responsive on mobile, tablet, and wide desktop displays.
-- Zero console warnings or broken asset calls.
+- Native semantic buttons with visible focus rings across all cards, sliders, and accordions.
+- Project cards with real expand/collapse interaction, `aria-expanded`, and `aria-controls`.
+- Contact modal with focus trapping, Escape key listener, and focus restoration to trigger button.
+- Full support for `prefers-reduced-motion`.
+- Fully responsive on mobile, tablet, and wide desktop displays with zero horizontal overflow.

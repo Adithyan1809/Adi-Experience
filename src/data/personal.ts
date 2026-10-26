@@ -36,7 +36,7 @@ export const personalInfo: PersonalInfo = {
 
 export const musicConfig: MusicTrackConfig = {
   title: 'Ambient Theme',
-  artist: 'Original Instrumental',
+  artist: 'Original Synthesizer Loop',
   src: '/audio/adi-theme.mp3',
   defaultVolume: 0.18
 };
@@ -46,20 +46,20 @@ export const aboutData = {
   subheading: "A few genuine details behind the terminal and the projects.",
   introParagraphs: [
     "I'm Adi, an engineering student at Dayananda Sagar Academy of Technology & Management in Bangalore, specializing in Artificial Intelligence and Machine Learning. I like building practical software, exploring data engineering and cloud systems, and turning technical concepts into products that actually work.",
-    "Outside the screen, I care about fitness, gym training, and consistent self-improvement. There is usually an occasional curiosity rabbit hole, and plenty I'm still figuring out like everyone else."
+    "Outside the screen, I care about fitness, regular gym training, and steady self-improvement. There is usually an occasional curiosity rabbit hole, and plenty I'm still figuring out along the way."
   ],
   focusAreas: [
     {
-      title: 'AI & Data Engineering',
-      description: 'Interested in real-time machine learning, data pipelines, Big Data, and cloud infrastructure.'
+      title: 'AI & Data Systems',
+      description: 'Hands-on exploration across machine learning models, data pipelines, and cloud architecture.'
     },
     {
-      title: 'Gym & Consistency',
-      description: 'Treating daily training and physical routines as anchors for focus, stamina, and mental clarity.'
+      title: 'Regular Gym Training',
+      description: 'Treating consistent workouts and aerobic conditioning as anchors for focus and stamina.'
     },
     {
       title: 'Practical Software',
-      description: 'Building tools that solve real human friction rather than just writing code for the sake of it.'
+      description: 'Building tools that solve real friction rather than just writing code for the sake of it.'
     }
   ],
   researchHighlight: {
@@ -72,8 +72,8 @@ export const aboutData = {
     { label: 'Location', value: 'Bangalore, India', isEditable: false },
     { label: 'Education', value: 'DSATM (B.E. in AI & ML)', isEditable: false },
     { label: 'Experience', value: 'Technical Lead Intern at SMAP Technologies', isEditable: false },
-    { label: 'Current Focus', value: 'AI/ML, Data Systems & Cloud', isEditable: false },
-    { label: 'Fitness Goal', value: 'Running 5 km continuously', isEditable: true }
+    { label: 'Fitness Goal', value: 'Running 5 km continuously', isEditable: true },
+    { label: 'Interests', value: 'AI, Data Pipelines & Cloud', isEditable: false }
   ] as AboutFact[]
 };
 

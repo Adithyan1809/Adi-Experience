@@ -58,6 +58,7 @@ export interface ProjectItem {
   description: string;
   problem: string;
   challenge: string;
+  learned?: string;
   tags: string[];
   imagePath?: string;
   demoUrl?: string;

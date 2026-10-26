@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { aboutData, personalInfo } from '../data/personal';
-import { Target, Sparkles, FileText, CheckCircle2 } from 'lucide-react';
+import { Target, Sparkles, FileText } from 'lucide-react';
 
 export const About: React.FC = () => {
   return (
@@ -107,14 +107,14 @@ export const About: React.FC = () => {
             transition={{ duration: 0.8, delay: 0.15 }}
             className="lg:col-span-5 space-y-8"
           >
-            {/* Quick Facts Dossier */}
+            {/* The Short Version Dossier */}
             <div className="p-6 sm:p-8 bg-obsidian-light border border-editorial rounded-sm space-y-5">
               <div className="flex items-center justify-between pb-3 border-b border-editorial-subtle">
-                <span className="text-xs font-mono tracking-wider uppercase text-stone">
-                  Quick Dossier
+                <span className="text-xs font-mono tracking-wider uppercase text-terracotta">
+                  The Short Version
                 </span>
-                <span className="text-[10px] font-mono text-terracotta/90 uppercase">
-                  Verified Details
+                <span className="text-[10px] font-mono text-stone uppercase">
+                  Bangalore, India
                 </span>
               </div>
 
@@ -136,27 +136,13 @@ export const About: React.FC = () => {
               </dl>
             </div>
 
-            {/* Technical Background Note */}
-            <div className="p-6 bg-charcoal/80 border border-editorial rounded-sm space-y-3">
-              <span className="text-xs font-mono uppercase tracking-wider text-terracotta block">
-                Technical Background
-              </span>
-              <p className="text-xs text-stone-light font-sans leading-relaxed">
-                Prior experience includes serving as <strong>Technical Lead Intern at SMAP Technologies</strong> (Sept 2025 – Jan 2026), focusing on computer vision and multi-stream system reliability.
-              </p>
-              <div className="pt-2 flex items-center gap-2 text-[11px] font-mono text-stone">
-                <CheckCircle2 className="w-3.5 h-3.5 text-terracotta" />
-                <span>Dayananda Sagar Academy of Tech & Management</span>
-              </div>
-            </div>
-
             {/* Signature Tag */}
             <div className="p-4 border border-editorial-subtle bg-charcoal/20 flex items-center justify-between text-xs text-stone font-mono">
               <div className="flex items-center gap-2">
                 <Sparkles className="w-3.5 h-3.5 text-terracotta" />
                 <span>{personalInfo.fullName}</span>
               </div>
-              <span className="text-stone/70">Bangalore, India</span>
+              <span className="text-stone/70">DSATM • AI & ML</span>
             </div>
           </motion.div>
         </div>
