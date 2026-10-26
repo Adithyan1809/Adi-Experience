@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { lifestyleItems } from '../data/lifestyle';
 import { LifestyleItem } from '../types';
 import { ImageWithFallback } from './ImageWithFallback';
-import { Eye, X, MapPin, Laptop, Dumbbell, Coffee, Footprints, Sparkles, Moon, Image as ImageIcon } from 'lucide-react';
+import { Eye, X, MapPin, Laptop, Dumbbell, Coffee, Footprints, Sparkles, Moon, Image as ImageIcon, ArrowDown } from 'lucide-react';
 
 const cadenceIcons: Record<string, React.ElementType> = {
   everyday: Laptop,
@@ -16,6 +16,13 @@ const cadenceIcons: Record<string, React.ElementType> = {
 
 export const LifestyleGallery: React.FC = () => {
   const [selectedItem, setSelectedItem] = useState<LifestyleItem | null>(null);
+
+  const scrollToNext = () => {
+    const el = document.getElementById('currently');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   // Filter only genuine, explicitly configured photographs
   const genuinePhotos = lifestyleItems.filter(
@@ -73,7 +80,7 @@ export const LifestyleGallery: React.FC = () => {
   };
 
   return (
-    <section id="lifestyle" className="py-24 sm:py-32 border-t border-editorial relative bg-obsidian-dark/40 overflow-hidden">
+    <section id="lifestyle" className="py-24 sm:py-32 border-t border-editorial relative bg-obsidian-dark/40 scroll-snap-chapter overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 sm:px-8 md:px-12">
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6 pb-8 border-b border-editorial">
@@ -203,6 +210,22 @@ export const LifestyleGallery: React.FC = () => {
             </div>
           </div>
         )}
+
+        {/* Next Chapter Cue */}
+        <div className="mt-16 sm:mt-20 pt-6 border-t border-editorial-subtle flex items-center justify-between text-xs font-mono text-stone">
+          <span className="hidden sm:inline">CHAPTER 03 / CADENCE</span>
+          <button
+            onClick={scrollToNext}
+            className="flex items-center gap-2 hover:text-ivory transition-colors group cursor-pointer mx-auto sm:mx-0 focus:outline-none"
+            aria-label="Advance to Lately section"
+          >
+            <span className="uppercase text-[11px] tracking-wider text-stone group-hover:text-ivory">
+              Next: Lately
+            </span>
+            <ArrowDown className="w-3.5 h-3.5 text-terracotta group-hover:translate-y-0.5 transition-transform" />
+          </button>
+          <span className="hidden sm:inline">03 / 09</span>
+        </div>
       </div>
 
       {/* Lightbox Detail Modal (active when real photos are clicked) */}

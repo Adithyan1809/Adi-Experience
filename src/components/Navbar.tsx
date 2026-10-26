@@ -3,13 +3,13 @@ import { Menu, X, ArrowUpRight } from 'lucide-react';
 import { personalInfo } from '../data/personal';
 
 const navLinks = [
-  { label: 'Home', href: '#hero' },
   { label: 'About', href: '#about' },
-  { label: 'Snapshots', href: '#lifestyle' },
-  { label: 'Right Now', href: '#currently' },
+  { label: 'Cadence', href: '#lifestyle' },
+  { label: 'Lately', href: '#currently' },
+  { label: 'Listening', href: '#music-room' },
   { label: 'Little Things', href: '#personality' },
+  { label: 'Archive', href: '#archive' },
   { label: 'Projects', href: '#projects' },
-  { label: 'Say Hello', href: '#contact' },
 ];
 
 export const Navbar: React.FC = () => {
@@ -22,8 +22,18 @@ export const Navbar: React.FC = () => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 40);
 
-      // Section spy
-      const sections = ['hero', 'about', 'lifestyle', 'currently', 'personality', 'projects', 'contact'];
+      // Section spy across all chapters
+      const sections = [
+        'hero',
+        'about',
+        'lifestyle',
+        'currently',
+        'music-room',
+        'personality',
+        'archive',
+        'projects',
+        'contact'
+      ];
       const scrollPosition = window.scrollY + 200;
 
       for (let i = sections.length - 1; i >= 0; i--) {

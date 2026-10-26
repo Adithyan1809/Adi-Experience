@@ -1,11 +1,18 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { aboutData, personalInfo } from '../data/personal';
-import { Target, Sparkles, FileText } from 'lucide-react';
+import { Target, Sparkles, FileText, ArrowDown } from 'lucide-react';
 
 export const About: React.FC = () => {
+  const scrollToNext = () => {
+    const el = document.getElementById('lifestyle');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
-    <section id="about" className="py-24 sm:py-32 border-t border-editorial relative overflow-hidden">
+    <section id="about" className="py-24 sm:py-32 border-t border-editorial relative scroll-snap-chapter overflow-hidden">
       {/* Background radial accent */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-terracotta/3 rounded-full blur-[140px] pointer-events-none" />
 
@@ -145,6 +152,22 @@ export const About: React.FC = () => {
               <span className="text-stone/70">DSATM • AI & ML</span>
             </div>
           </motion.div>
+        </div>
+
+        {/* Next Chapter Cue */}
+        <div className="mt-16 sm:mt-20 pt-6 border-t border-editorial-subtle flex items-center justify-between text-xs font-mono text-stone">
+          <span className="hidden sm:inline">CHAPTER 02 / ABOUT</span>
+          <button
+            onClick={scrollToNext}
+            className="flex items-center gap-2 hover:text-ivory transition-colors group cursor-pointer mx-auto sm:mx-0 focus:outline-none"
+            aria-label="Advance to Snapshots section"
+          >
+            <span className="uppercase text-[11px] tracking-wider text-stone group-hover:text-ivory">
+              Next: Everyday Snapshots
+            </span>
+            <ArrowDown className="w-3.5 h-3.5 text-terracotta group-hover:translate-y-0.5 transition-transform" />
+          </button>
+          <span className="hidden sm:inline">02 / 09</span>
         </div>
       </div>
     </section>

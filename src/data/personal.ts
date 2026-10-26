@@ -4,8 +4,43 @@ import {
   CurrentlyItem,
   PersonalityPrompt,
   ResearchItem,
-  MusicTrackConfig
+  MusicTrackConfig,
+  ConversationStarter
 } from '../types';
+
+export const easterEggConfig = {
+  triggerCount: 5,
+  title: 'Backstage Pass',
+  message: "You found the backstage pass. Thanks for taking the time to explore this little corner of the internet. Here's to building interesting things, finding great coffee, and having unhurried conversations.",
+  actionPrompt: 'Send a backstage hello'
+};
+
+export const conversationStarters: ConversationStarter[] = [
+  {
+    id: 'music',
+    label: 'Recommend a song',
+    topic: 'Music Recommendation',
+    openingPrompt: "Hey Adi, here's a track or album you should check out:\n\n"
+  },
+  {
+    id: 'project',
+    label: 'Talk about a project',
+    topic: 'Project Discussion',
+    openingPrompt: "Hey Adi, I took a look at your projects and wanted to chat about:\n\n"
+  },
+  {
+    id: 'hello',
+    label: 'Just saying hello',
+    topic: 'Just saying hello',
+    openingPrompt: "Hey Adi, stopped by your site and wanted to say hello!\n\n"
+  },
+  {
+    id: 'curiosity',
+    label: 'Bangalore café or spot',
+    topic: 'Bangalore Recommendation',
+    openingPrompt: "Hey Adi, here's a solid café, spot, or bookshop in Bangalore worth checking out:\n\n"
+  }
+];
 
 export const personalInfo: PersonalInfo = {
   name: 'Adi',

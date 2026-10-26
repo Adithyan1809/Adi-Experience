@@ -78,3 +78,14 @@
 .border-editorial-subtle {
   border-color: rgba(242, 235, 221, 0.06);
 }
+
+/* Editorial chapter scroll snapping (desktop proximity only, never locks mobile or reduced-motion) */
+@media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-snap-type: y proximity;
+  }
+  .scroll-snap-chapter {
+    scroll-snap-align: start;
+    scroll-snap-stop: normal;
+  }
+}

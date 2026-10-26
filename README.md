@@ -14,7 +14,7 @@ Designed with the **"Midnight Editorial"** aesthetic: combining cinematic photog
 - **Bundler**: Vite 6
 - **Styling**: Tailwind CSS 3
 - **Animations**: Framer Motion 12
-- **Audio Engine**: HTML5 Audio (`/audio/adi-theme.mp3`, CC0 programmatic synthesis)
+- **Audio Engine**: HTML5 Audio (`/audio/adi-theme.mp3`, CC0 programmatic synthesis) + Spotify Embeds
 - **Icons**: Lucide React + Custom Inline Brand SVGs
 - **Typography**: Google Fonts (*Cormorant Garamond* & *Plus Jakarta Sans*)
 
@@ -41,18 +41,21 @@ npm run preview
 
 ---
 
-## 📁 Architecture & Flow
+## 📁 Architecture & Editorial Chapters
 
-All personal data, projects, lifestyle snapshots, and prompts are centralized in `src/data/` so you can customize your website **without modifying any React component logic**.
+All personal data, projects, lifestyle snapshots, archive entries, and music tracks are centralized in `src/data/` so you can customize your website **without modifying any React component logic**.
 
-### Page Section Order:
-1. **Hero** (`#hero`): Editorial opening with ambient soundtrack player, verified bio, and portrait slot.
-2. **About** (`#about`): Focused introduction, focus areas (AI & Data Systems, Regular Gym Training, Practical Software), IEEE research highlight, and "The short version" dossier.
-3. **Snapshots / Everyday Cadence** (`#lifestyle`): When photos are configured, displays genuine photography with responsive crops and lightbox; when unconfigured, tastefully defaults to a text-led everyday cadence section rather than empty frames.
-4. **Right Now** (`#currently`): Live bandwidth (Building prototypes, Learning data architectures, 5 km running goal, Shipping open-source).
-5. **Little Things** (`#personality`): A mix of harmless quirks, curiosity rabbit holes, lifestyle preferences, and everyday observations.
-6. **Projects** (`#projects`): Compact expandable engineering stories for WellNest, Project IRIS, and ResumePilot with honest GitHub profile links and takeaways.
-7. **Say Hello** (`#contact`): "Your turn" closing section with verified links and a low-pressure mail client launcher.
+### Sequential Editorial Chapters:
+1. **Chapter 01: Intro** (`#hero`): Editorial opening with ambient soundtrack player, verified bio, and portrait slot.
+2. **Chapter 02: About** (`#about`): Focused introduction, focus areas (AI & Data Systems, Regular Gym Training, Practical Software), IEEE research highlight, and "The short version" dossier.
+3. **Chapter 03: Cadence** (`#lifestyle`): When photos are configured, displays genuine photography with responsive crops and lightbox; when unconfigured, tastefully defaults to a text-led everyday cadence section rather than empty frames.
+4. **Chapter 04: Lately** (`#currently`): Live bandwidth ("Lately, I've been...") with updated timestamp, building prototypes, learning data systems, 5 km running endurance goal, and shipping open-source.
+5. **Chapter 05: Listening** (`#music-room`): **The Listening Room** featuring up to 3 curated Spotify playlists (*On Repeat*, *After Hours*, *Focus Mode*), lazy-loaded Spotify player embeds, external Spotify profile links, and intelligent audio coordination that pauses local ambient playback when playing Spotify.
+6. **Chapter 06: Little Things** (`#personality`): A mix of harmless quirks, curiosity rabbit holes, lifestyle preferences, and everyday observations.
+7. **Chapter 07: Archive** (`#archive`): **Personal Archive ("Things worth remembering.")** featuring quiet milestones, lessons learned, and Bangalore observations.
+8. **Chapter 08: Work** (`#projects`): Compact expandable engineering stories for WellNest, Project IRIS, and ResumePilot with honest GitHub profile links, architectural takeaways, and lessons learned.
+9. **Chapter 09: Contact** (`#contact`): "Your turn" closing section with quick conversation starter prompt pills (*"Recommend a song"*, *"Talk about a project"*, *"Just saying hello"*, *"Bangalore spot"*), verified social links, and an accessible contact modal.
+10. **Footer** (`#footer`): Signature, year, back-to-top button, and the **Monogram "A" Backstage Pass Easter Egg** (activates after 5 taps or keyboard presses).
 
 ```text
 Adi-Experience/
@@ -76,27 +79,86 @@ Adi-Experience/
 │   │   ├── MusicPlayer.tsx      # Ambient soundtrack controller with mobile & desktop volume popover
 │   │   ├── About.tsx            # Beyond the profile story, focus areas & IEEE research
 │   │   ├── LifestyleGallery.tsx # Photo gallery when configured, or text-led cadence when photos are pending
-│   │   ├── CurrentlyMe.tsx      # Live bandwidth: Building, Learning, Fitness (5 km goal), Next
+│   │   ├── CurrentlyMe.tsx      # "Lately, I've been..." live bandwidth with updated timestamp
+│   │   ├── SpotifySection.tsx   # "The Listening Room" Spotify embeds, playlist tabs & audio coordination
 │   │   ├── Personality.tsx      # "Little Things" expandable accordion cards
+│   │   ├── PersonalArchive.tsx  # "Things worth remembering" editorial archive cards
 │   │   ├── Projects.tsx         # Expandable engineering stories (WellNest, Project IRIS, ResumePilot)
-│   │   ├── Contact.tsx          # "Your turn." closing section with verified links
+│   │   ├── Contact.tsx          # "Your turn." closing section with conversation starter pills
 │   │   ├── ContactModal.tsx     # Direct mailto dispatch to contact@adithyanp.me + copy button
-│   │   ├── Footer.tsx           # Signature, dynamic year & smooth back-to-top
+│   │   ├── ScrollExperience.tsx # Slim top progress indicator & desktop vertical section-nav rail
+│   │   ├── Footer.tsx           # Signature, dynamic year, back-to-top & Backstage Pass Easter egg
 │   │   ├── Icons.tsx            # Clean brand SVG icons (GitHub, LinkedIn, Instagram)
 │   │   └── ImageWithFallback.tsx# Editorial artwork placeholder plate or genuine photo loader
 │   ├── data/
-│   │   ├── personal.ts          # Bio, college, facts, currently me, personality & music config
-│   │   ├── projects.ts          # Technical projects with verified problems, challenges, takeaways & tags
+│   │   ├── personal.ts          # Bio, college, facts, currently me, personality, starters & easter egg
+│   │   ├── spotify.ts           # Playlists, Spotify profile URL, embed URIs & categories
+│   │   ├── archive.ts           # Personal archive entries, categories & summaries
+│   │   ├── projects.ts          # Technical projects with verified problems, challenges & tags
 │   │   └── lifestyle.ts         # Journal captions, categories & hasRealPhoto flags
 │   ├── types/
 │   │   └── index.ts             # TypeScript interface definitions
 │   ├── App.tsx                  # Main layout container
 │   ├── main.tsx                 # React entry point
-│   └── index.css                # Tailwind imports, film grain, accessibility & custom scrollbars
+│   └── index.css                # Tailwind imports, film grain, proximity snap & accessibility
 ├── index.html                   # SEO tags, absolute Open Graph metadata & typography
 ├── tailwind.config.js           # Midnight Editorial theme palette
 └── tsconfig.json                # TypeScript configuration
 ```
+
+---
+
+## 🎧 Configuring Spotify ("The Listening Room")
+
+All playlist configurations live in `src/data/spotify.ts`:
+
+1. **Add your Spotify profile**:
+   Update `profileUrl` with your public profile link:
+   ```ts
+   profileUrl: 'https://open.spotify.com/user/YOUR_USERNAME'
+   ```
+2. **Add genuine playlists**:
+   In `playlists`, set your playlist embed URL and toggle `isConfigured: true`:
+   ```ts
+   {
+     id: 'on-repeat',
+     title: 'On Repeat',
+     subtitle: 'Current high rotation',
+     description: 'A mix of electronic grooves and songs carrying my week.',
+     category: 'Rotation',
+     embedUrl: 'https://open.spotify.com/embed/playlist/YOUR_PLAYLIST_ID?utm_source=generator&theme=0',
+     spotifyUrl: 'https://open.spotify.com/playlist/YOUR_PLAYLIST_ID',
+     isConfigured: true // ← Set to true once embedUrl is set
+   }
+   ```
+3. **Audio coordination**:
+   Whenever a visitor interacts with Spotify or clicks an external link, a custom browser event `adi:pause-ambient` fires automatically, cleanly pausing the local ambient soundtrack so visitors never experience clashing audio.
+
+---
+
+## 📜 Personal Archive ("Things worth remembering.")
+
+All archive entries live in `src/data/archive.ts`:
+- Each entry has `id`, `title`, `date`, `category` (`Observation` | `Milestone` | `Lesson` | `Discovery`), `summary`, `content`, and `tag`.
+- Set `isConfigured: false` to hide any entry without deleting it.
+
+---
+
+## 💬 Conversation Starters & Contact Modal
+
+Visitors can jump directly into specific conversation topics from `src/components/Contact.tsx`:
+- *"Recommend a song"*
+- *"Talk about a project"*
+- *"Just saying hello"*
+- *"Bangalore café or spot"*
+
+Clicking any starter opens `ContactModal.tsx` with the topic pre-selected and a natural opening prompt inserted into the message textarea, ready for them to complete.
+
+---
+
+## 🗝️ Footer Monogram Easter Egg ("Backstage Pass")
+
+Tapping or clicking the "A" monogram in the footer 5 times (or pressing Enter / Space with keyboard focus) reveals the understated **Backstage Pass** card with a friendly message and a one-click button to send a backstage hello. Fully accessible and dismissible with Escape. Configured in `src/data/personal.ts` under `easterEggConfig`.
 
 ---
 
@@ -133,43 +195,8 @@ The website displays genuine photographs only when explicitly configured via `ha
     id: 'everyday',
     imagePath: '/images/lifestyle-1.jpg',
     hasRealPhoto: true, // ← Set to true for photos you have added
-    ...
   }
   ```
-
----
-
-## ✍️ Checklist of Unconfirmed Details to Verify
-
-Before publishing, review these placeholders in `src/data/personal.ts`:
-
-- [ ] **Email Address**: Check `links.email` (currently `contact@adithyanp.me`). Verify this is your preferred contact address.
-- [ ] **Instagram (Optional)**: If you'd like your Instagram profile linked, paste your URL in `links.instagram`. If left empty `''`, the website gracefully hides the Instagram button and links your verified GitHub and LinkedIn.
-- [ ] **Personality Prompts**: In `personalityPrompts`, review each answer. To hide any prompt, simply set `isConfigured: false`:
-  - `harmless-habit`: Browser tab hoarding habit.
-  - `rabbit-holes`: Multi-hour technical/curiosity deep dives.
-  - `talk-for-hours`: Subjects you enjoy talking about (AI systems, film scores).
-  - `opinion-defend`: Simplicity over software bloat, filter coffee.
-  - `slow-afternoon`: Quiet bookstore, unhurried walk, good coffee.
-  - `three-small-things`: Compiling code, Bangalore rain, background music loops.
-  - `plan-rarely-turn-down`: Spontaneous food or neighborhood exploration.
-- [ ] **Fitness Goal**: In `aboutData.facts` and `currentlyItems`, verified to: *"Running 5 km continuously"*.
-
----
-
-## 🎵 Ambient Background Music System
-
-The website includes a dedicated background soundtrack (`adi-theme.mp3`) located in `public/audio/`.
-
-- **Sound Profile**: An ambient synthesized chord progression (Fmaj9 → Am7 → Dm9 → Cadd9) algorithmically synthesized at 68 BPM.
-- **License**: **Creative Commons Zero (CC0 1.0 Universal) / Public Domain Dedication**. 100% original programmatic synthesis without third-party audio samples.
-- **Controls**:
-  - Play/Pause toggle with live 4-bar equalizer indicator.
-  - Mute/Unmute toggle.
-  - Volume popover slider accessible on **both mobile and desktop**, with percentage readout and outside-click dismissal.
-  - Browser-native autoplay detection: If the browser blocks audio on first visit, a non-intrusive `"Enable sound"` button appears in the Hero without interrupting navigation.
-  - Preferences (`volume`, `muted`, `paused`) are safely persisted in `localStorage` with `try/catch` guards.
-- **To Replace**: Drop any `.mp3` into `public/audio/adi-theme.mp3` or update `musicConfig` in `src/data/personal.ts`.
 
 ---
 
@@ -183,11 +210,13 @@ The website includes a dedicated background soundtrack (`adi-theme.mp3`) located
 
 ---
 
-## ♿ Accessibility & Performance Standards
+## ♿ Accessibility & Motion Standards
 
 - High-contrast, WCAG 2.1 AA compliant typography.
-- Native semantic buttons with visible focus rings across all cards, sliders, and accordions.
-- Project cards with real expand/collapse interaction, `aria-expanded`, and `aria-controls`.
+- Slim top scroll progress bar with Framer Motion spring physics.
+- Desktop vertical section-navigation rail with live scroll spy and accessible tooltips.
+- Proximity scroll snapping (`scroll-snap-type: y proximity`) on desktop viewports (`≥ 1024px`) with `scroll-snap-stop: normal`, preserving natural mouse wheel and touch scrolling.
+- Automatically disables snapping on mobile and when `prefers-reduced-motion` is active.
+- Native semantic buttons with visible focus rings across all cards, sliders, tabs, and accordions.
 - Contact modal with focus trapping, Escape key listener, and focus restoration to trigger button.
-- Full support for `prefers-reduced-motion`.
-- Fully responsive on mobile, tablet, and wide desktop displays with zero horizontal overflow.
+- Zero horizontal overflow across all screen sizes.

@@ -16,7 +16,7 @@ export const Hero: React.FC = () => {
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex flex-col justify-between pt-28 pb-12 sm:pb-16 px-6 sm:px-8 md:px-12 max-w-7xl mx-auto overflow-hidden"
+      className="relative min-h-screen flex flex-col justify-between pt-28 pb-12 sm:pb-16 px-6 sm:px-8 md:px-12 max-w-7xl mx-auto scroll-snap-chapter overflow-hidden"
     >
       {/* Background ambient subtle glows */}
       <div className="absolute top-1/4 -left-20 w-96 h-96 bg-terracotta/5 rounded-full blur-3xl pointer-events-none" />

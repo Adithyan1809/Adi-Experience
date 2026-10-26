@@ -89,3 +89,39 @@ export interface MusicTrackConfig {
   src: string;
   defaultVolume: number; // 0.0 to 1.0
 }
+
+export interface SpotifyPlaylist {
+  id: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  category: 'Rotation' | 'Late Night' | 'Focus';
+  embedUrl: string;
+  spotifyUrl: string;
+  isConfigured: boolean;
+}
+
+export interface SpotifyConfig {
+  sectionHeading: string;
+  sectionSubtitle: string;
+  profileUrl: string;
+  playlists: SpotifyPlaylist[];
+}
+
+export interface ArchiveEntry {
+  id: string;
+  title: string;
+  date: string;
+  category: 'Observation' | 'Milestone' | 'Lesson' | 'Discovery';
+  summary: string;
+  content: string;
+  tag?: string;
+  isConfigured?: boolean;
+}
+
+export interface ConversationStarter {
+  id: string;
+  label: string;
+  topic: string;
+  openingPrompt: string;
+}

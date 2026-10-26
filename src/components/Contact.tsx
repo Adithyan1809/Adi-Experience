@@ -1,22 +1,48 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { personalInfo } from '../data/personal';
+import { personalInfo, conversationStarters } from '../data/personal';
+import { ConversationStarter } from '../types';
 import { ContactModal } from './ContactModal';
 import { GithubIcon, LinkedinIcon, InstagramIcon } from './Icons';
 import {
   Globe,
   ArrowUpRight,
-  Sparkles
+  Sparkles,
+  MessageSquare,
+  Music,
+  Code,
+  Coffee
 } from 'lucide-react';
+
+const starterIcons: Record<string, React.ElementType> = {
+  music: Music,
+  project: Code,
+  hello: MessageSquare,
+  curiosity: Coffee,
+};
 
 export const Contact: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
+  const [initialTopic, setInitialTopic] = useState('Just saying hello');
+  const [initialMessage, setInitialMessage] = useState('');
 
   const hasInstagram = Boolean(personalInfo.links.instagram && personalInfo.links.instagram.trim() !== '');
 
+  const openWithStarter = (starter: ConversationStarter) => {
+    setInitialTopic(starter.topic);
+    setInitialMessage(starter.openingPrompt);
+    setModalOpen(true);
+  };
+
+  const openDefault = () => {
+    setInitialTopic('Just saying hello');
+    setInitialMessage('');
+    setModalOpen(true);
+  };
+
   return (
     <>
-      <section id="contact" className="py-28 sm:py-36 border-t border-editorial relative bg-obsidian overflow-hidden">
+      <section id="contact" className="py-28 sm:py-36 border-t border-editorial relative bg-obsidian scroll-snap-chapter overflow-hidden">
         {/* Ambient atmospheric glows */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-terracotta/5 rounded-full blur-[140px] pointer-events-none" />
 
@@ -50,10 +76,33 @@ export const Contact: React.FC = () => {
               If something here caught your attention, you have a recommendation, or you just want to say hello, my inbox is open.
             </p>
 
+            {/* Conversation Starter Prompt Pills */}
+            <div className="mb-8 max-w-xl mx-auto">
+              <span className="text-[11px] font-mono uppercase tracking-wider text-stone block mb-3">
+                Quick conversation starters
+              </span>
+              <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5">
+                {conversationStarters.map((starter) => {
+                  const Icon = starterIcons[starter.id] || MessageSquare;
+                  return (
+                    <button
+                      key={starter.id}
+                      type="button"
+                      onClick={() => openWithStarter(starter)}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-obsidian border border-editorial hover:border-terracotta/60 text-stone-light hover:text-ivory transition-all duration-200 text-xs font-mono group focus:outline-none focus:ring-1 focus:ring-terracotta"
+                    >
+                      <Icon className="w-3 h-3 text-terracotta group-hover:scale-110 transition-transform" />
+                      <span>{starter.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2 mb-10">
               <button
-                onClick={() => setModalOpen(true)}
+                onClick={openDefault}
                 className="w-full sm:w-auto px-8 py-4 bg-ivory text-obsidian hover:bg-ivory-muted transition-all duration-300 text-xs font-semibold uppercase tracking-widest rounded-sm shadow-xl hover:shadow-ivory/10 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-terracotta"
               >
                 Say hello
@@ -122,7 +171,12 @@ export const Contact: React.FC = () => {
       </section>
 
       {/* Accessible Contact Modal */}
-      <ContactModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
+      <ContactModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        initialTopic={initialTopic}
+        initialMessage={initialMessage}
+      />
     </>
   );
 };

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { projectsData } from '../data/projects';
 import { GithubIcon } from './Icons';
-import { ArrowUpRight, ChevronDown, Sparkles } from 'lucide-react';
+import { ArrowUpRight, ChevronDown, Sparkles, ArrowDown } from 'lucide-react';
 
 export const Projects: React.FC = () => {
   const [expandedId, setExpandedId] = useState<string | null>(projectsData[0].id);
@@ -11,8 +11,15 @@ export const Projects: React.FC = () => {
     setExpandedId((prev) => (prev === id ? null : id));
   };
 
+  const scrollToNext = () => {
+    const el = document.getElementById('contact');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
-    <section id="projects" className="py-24 sm:py-32 border-t border-editorial relative bg-obsidian">
+    <section id="projects" className="py-24 sm:py-32 border-t border-editorial relative bg-obsidian scroll-snap-chapter overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 sm:px-8 md:px-12">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6 pb-8 border-b border-editorial">
@@ -179,6 +186,22 @@ export const Projects: React.FC = () => {
               </motion.div>
             );
           })}
+        </div>
+
+        {/* Next Chapter Cue */}
+        <div className="mt-16 sm:mt-20 pt-6 border-t border-editorial-subtle flex items-center justify-between text-xs font-mono text-stone">
+          <span className="hidden sm:inline">CHAPTER 08 / WORK</span>
+          <button
+            onClick={scrollToNext}
+            className="flex items-center gap-2 hover:text-ivory transition-colors group cursor-pointer mx-auto sm:mx-0 focus:outline-none"
+            aria-label="Advance to Contact section"
+          >
+            <span className="uppercase text-[11px] tracking-wider text-stone group-hover:text-ivory">
+              Next: Say Hello
+            </span>
+            <ArrowDown className="w-3.5 h-3.5 text-terracotta group-hover:translate-y-0.5 transition-transform" />
+          </button>
+          <span className="hidden sm:inline">08 / 09</span>
         </div>
       </div>
     </section>

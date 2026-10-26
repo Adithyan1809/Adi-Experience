@@ -6,23 +6,43 @@ import { personalInfo } from '../data/personal';
 interface ContactModalProps {
   isOpen: boolean;
   onClose: () => void;
+  initialTopic?: string;
+  initialMessage?: string;
 }
 
-export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
+export const ContactModal: React.FC<ContactModalProps> = ({
+  isOpen,
+  onClose,
+  initialTopic = 'Just saying hello',
+  initialMessage = ''
+}) => {
   const [copied, setCopied] = useState(false);
   const [copiedNote, setCopiedNote] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    topic: 'Just saying hello',
-    message: '',
+    topic: initialTopic,
+    message: initialMessage,
   });
 
   const previousActiveElementRef = useRef<HTMLElement | null>(null);
   const messageInputRef = useRef<HTMLTextAreaElement | null>(null);
 
   const email = personalInfo.links.email || 'contact@adithyanp.me';
+
+  // Synchronize initial form state when opened with a prompt starter
+  useEffect(() => {
+    if (isOpen) {
+      setFormData({
+        name: '',
+        email: '',
+        topic: initialTopic || 'Just saying hello',
+        message: initialMessage || '',
+      });
+      setSubmitted(false);
+    }
+  }, [isOpen, initialTopic, initialMessage]);
 
   // Manage focus restoration and escape key dismissal
   useEffect(() => {
@@ -274,8 +294,10 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
                     className="w-full px-3.5 py-2.5 bg-obsidian border border-editorial rounded-sm text-sm text-ivory focus:border-terracotta focus:outline-none transition-colors"
                   >
                     <option value="Just saying hello">Just saying hello</option>
+                    <option value="Music Recommendation">Recommend a song</option>
+                    <option value="Project Discussion">Talk about a project</option>
+                    <option value="Bangalore Recommendation">Bangalore café or spot</option>
                     <option value="Something I'm building">Something I'm building</option>
-                    <option value="A recommendation">A recommendation</option>
                     <option value="Other">Other</option>
                   </select>
                 </div>

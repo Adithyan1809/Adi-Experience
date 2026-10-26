@@ -144,6 +144,17 @@ export const MusicPlayer: React.FC<{ compact?: boolean }> = ({ compact = false }
     }
   }, []);
 
+  // Listen for global pause requests (e.g. from Spotify player or media overlays)
+  useEffect(() => {
+    const handlePauseAmbient = () => {
+      pauseAudio(true);
+    };
+    window.addEventListener('adi:pause-ambient', handlePauseAmbient);
+    return () => {
+      window.removeEventListener('adi:pause-ambient', handlePauseAmbient);
+    };
+  }, [pauseAudio]);
+
   // Independent play/pause toggle
   const togglePlay = () => {
     if (isPlaying) {

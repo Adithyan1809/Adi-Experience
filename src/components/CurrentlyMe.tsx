@@ -9,7 +9,8 @@ import {
   Dumbbell,
   Sparkles,
   ChevronDown,
-  Clock
+  Clock,
+  ArrowDown
 } from 'lucide-react';
 
 const iconMap = {
@@ -35,22 +36,29 @@ export const CurrentlyMe: React.FC = () => {
     }
   };
 
+  const scrollToNext = () => {
+    const el = document.getElementById('music-room');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
-    <section id="currently" className="py-24 border-t border-editorial relative bg-charcoal/30">
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 md:px-12">
+    <section id="currently" className="py-24 sm:py-32 border-t border-editorial relative bg-charcoal/30 scroll-snap-chapter overflow-hidden">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 md:px-12 relative z-10">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6 pb-8 border-b border-editorial">
           <div className="space-y-3">
             <span className="text-xs font-mono text-terracotta tracking-wider uppercase">
-              Right Now
+              Current Focus
             </span>
             <h2 className="font-serif text-3xl sm:text-5xl md:text-6xl text-ivory font-light tracking-tight">
-              A few things taking up my brain lately.
+              Lately, I&rsquo;ve been&hellip;
             </h2>
           </div>
-          <div className="flex items-center gap-2 text-xs font-mono text-stone max-w-sm">
-            <Clock className="w-3.5 h-3.5 text-terracotta" />
-            <span>What I'm building, learning, and working toward right now.</span>
+          <div className="flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-obsidian border border-editorial text-xs font-mono text-stone max-w-sm">
+            <Clock className="w-3.5 h-3.5 text-terracotta shrink-0" />
+            <span>Updated: Autumn 2024</span>
           </div>
         </div>
 
@@ -123,6 +131,22 @@ export const CurrentlyMe: React.FC = () => {
               </motion.div>
             );
           })}
+        </div>
+
+        {/* Next Chapter Cue */}
+        <div className="mt-16 sm:mt-20 pt-6 border-t border-editorial-subtle flex items-center justify-between text-xs font-mono text-stone">
+          <span className="hidden sm:inline">CHAPTER 04 / LATELY</span>
+          <button
+            onClick={scrollToNext}
+            className="flex items-center gap-2 hover:text-ivory transition-colors group cursor-pointer mx-auto sm:mx-0 focus:outline-none"
+            aria-label="Advance to The Listening Room"
+          >
+            <span className="uppercase text-[11px] tracking-wider text-stone group-hover:text-ivory">
+              Next: The Listening Room
+            </span>
+            <ArrowDown className="w-3.5 h-3.5 text-terracotta group-hover:translate-y-0.5 transition-transform" />
+          </button>
+          <span className="hidden sm:inline">04 / 09</span>
         </div>
       </div>
     </section>

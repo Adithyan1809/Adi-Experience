@@ -9,7 +9,8 @@ import {
   Sparkles,
   Smile,
   Compass,
-  ChevronDown
+  ChevronDown,
+  ArrowDown
 } from 'lucide-react';
 
 const iconMap = {
@@ -39,8 +40,15 @@ export const Personality: React.FC = () => {
   const expandAll = () => setOpenIds(activePrompts.map((p) => p.id));
   const collapseAll = () => setOpenIds([]);
 
+  const scrollToNext = () => {
+    const el = document.getElementById('archive');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
-    <section id="personality" className="py-24 sm:py-32 border-t border-editorial relative bg-charcoal/20">
+    <section id="personality" className="py-24 sm:py-32 border-t border-editorial relative bg-charcoal/20 scroll-snap-chapter overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 sm:px-8 md:px-12">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6 pb-8 border-b border-editorial">
@@ -140,6 +148,22 @@ export const Personality: React.FC = () => {
               </div>
             );
           })}
+        </div>
+
+        {/* Next Chapter Cue */}
+        <div className="mt-16 sm:mt-20 pt-6 border-t border-editorial-subtle flex items-center justify-between text-xs font-mono text-stone">
+          <span className="hidden sm:inline">CHAPTER 06 / DETAILS</span>
+          <button
+            onClick={scrollToNext}
+            className="flex items-center gap-2 hover:text-ivory transition-colors group cursor-pointer mx-auto sm:mx-0 focus:outline-none"
+            aria-label="Advance to Personal Archive section"
+          >
+            <span className="uppercase text-[11px] tracking-wider text-stone group-hover:text-ivory">
+              Next: Personal Archive
+            </span>
+            <ArrowDown className="w-3.5 h-3.5 text-terracotta group-hover:translate-y-0.5 transition-transform" />
+          </button>
+          <span className="hidden sm:inline">06 / 09</span>
         </div>
       </div>
     </section>
