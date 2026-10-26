@@ -94,7 +94,7 @@ export const favoriteMusicItems: FavoriteMusicItem[] = [
     subtext: 'desi hip hop / hindi hip hop',
     type: 'artist',
     image: '/images/music/seedhe-maut.jpg',
-    spotifyUrl: 'https://open.spotify.com/artist/2oBG74gAocPMFv6Ij9ykOX'
+    spotifyUrl: 'https://open.spotify.com/artist/2oBG74gAocPMFv6Ij9ykdo'
   },
   {
     id: 'gesaffelstein',
@@ -102,7 +102,7 @@ export const favoriteMusicItems: FavoriteMusicItem[] = [
     subtext: 'electronic',
     type: 'artist',
     image: '/images/music/gesaffelstein.jpg',
-    spotifyUrl: 'https://open.spotify.com/artist/3eKjFkW4z0inZq8bp9sE25'
+    spotifyUrl: 'https://open.spotify.com/artist/3hteYQFiMFbJY7wS0xDymP'
   },
   // Top Tracks
   {
@@ -128,7 +128,7 @@ export const favoriteMusicItems: FavoriteMusicItem[] = [
     subtext: 'The Weeknd, Gesaffelstein',
     type: 'track',
     image: '/images/music/i-was-never-there.jpg',
-    spotifyUrl: 'https://open.spotify.com/track/1qFxsT6V6tM44qZfV8nJbO'
+    spotifyUrl: 'https://open.spotify.com/track/5rgnyXr2PXFWsAnPFew077'
   },
   {
     id: 'the-hills',

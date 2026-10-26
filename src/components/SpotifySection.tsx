@@ -219,13 +219,14 @@ export const SpotifySection: React.FC = () => {
     const targetElement = embedTargetRef.current;
     if (!targetElement) return;
 
-    // Monotonically increasing setup ID for this effect invocation
+    // Strictly monotonically increasing setup ID (never reset to 0 to prevent ID reuse)
+    let isEffectCancelled = false;
     const setupId = ++activeSetupIdRef.current;
 
     loadSpotifyIframeApi()
       .then((IFrameAPI) => {
         // If this setup pass was superseded by a newer render/effect or target element is unmounted
-        if (activeSetupIdRef.current !== setupId || !embedTargetRef.current) {
+        if (isEffectCancelled || activeSetupIdRef.current !== setupId || !embedTargetRef.current) {
           return;
         }
 
@@ -245,7 +246,7 @@ export const SpotifySection: React.FC = () => {
           },
           (controller) => {
             // Check if this pass was superseded or unmounted before callback returned
-            if (activeSetupIdRef.current !== setupId) {
+            if (isEffectCancelled || activeSetupIdRef.current !== setupId) {
               try {
                 controller.destroy?.();
               } catch {
@@ -271,7 +272,7 @@ export const SpotifySection: React.FC = () => {
             });
 
             controller.addListener('ready', () => {
-              if (activeSetupIdRef.current === setupId) {
+              if (!isEffectCancelled && activeSetupIdRef.current === setupId) {
                 setIsPlayerReady(true);
               }
             });
@@ -279,25 +280,21 @@ export const SpotifySection: React.FC = () => {
         );
       })
       .catch((error) => {
-        if (activeSetupIdRef.current === setupId) {
+        if (!isEffectCancelled && activeSetupIdRef.current === setupId) {
           console.warn('Spotify iFrame API loading failed, using fallback iframe', error);
           setApiLoadFailed(true);
         }
       });
 
     return () => {
-      // In Strict Mode or on dependency change:
-      // Invalidate setupId so in-flight async callbacks abort cleanly without deadlocking
-      if (activeSetupIdRef.current === setupId) {
-        activeSetupIdRef.current = 0;
-      }
+      // Mark this effect run cancelled without resetting the monotonic counter
+      isEffectCancelled = true;
     };
   }, [hasConfiguredPlaylists, activePlaylist, handleHandoff]);
 
   // Clean up controller on component unmount only
   useEffect(() => {
     return () => {
-      activeSetupIdRef.current = 0;
       if (controllerRef.current?.destroy) {
         try {
           controllerRef.current.destroy();
@@ -437,8 +434,9 @@ export const SpotifySection: React.FC = () => {
             {/* Active Playlist Detail & Embed */}
             <div
               id={`panel-${activePlaylist.id}`}
-              role="tabpanel"
-              aria-labelledby={`tab-${activePlaylist.id}`}
+              {...(configuredPlaylists.length > 1
+                ? { role: 'tabpanel', 'aria-labelledby': `tab-${activePlaylist.id}` }
+                : { 'aria-labelledby': `playlist-heading-${activePlaylist.id}` })}
               className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start"
             >
               {/* Editorial Metadata Card */}
@@ -453,7 +451,10 @@ export const SpotifySection: React.FC = () => {
                 </div>
 
                 <div>
-                  <h3 className="font-serif text-2xl sm:text-3xl text-ivory font-light">
+                  <h3
+                    id={`playlist-heading-${activePlaylist.id}`}
+                    className="font-serif text-2xl sm:text-3xl text-ivory font-light"
+                  >
                     {activePlaylist.title}
                   </h3>
                   {activePlaylist.subtitle && (
