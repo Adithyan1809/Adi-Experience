@@ -21,31 +21,31 @@ export const spotifyConfig: SpotifyConfig = {
       id: 'on-repeat',
       title: 'On Repeat',
       subtitle: 'Current high rotation',
-      description: 'Songs and grooves currently carrying my week.',
+      description: 'Downtempo beats, melodic textures, and grooves carrying my week.',
       category: 'Rotation',
-      embedUrl: '',
-      spotifyUrl: '',
-      isConfigured: false
+      embedUrl: 'https://open.spotify.com/playlist/37i9dQZF1DWWQRwui0ExPn',
+      spotifyUrl: 'https://open.spotify.com/playlist/37i9dQZF1DWWQRwui0ExPn',
+      isConfigured: true
     },
     {
       id: 'after-hours',
       title: 'After Hours',
       subtitle: 'Late night quietude',
-      description: 'Downtempo, warm analog synthesizers, and moody textures.',
+      description: 'Warm analog synthesizers, mellow chords, and nocturnal soundscapes.',
       category: 'Late Night',
-      embedUrl: '',
-      spotifyUrl: '',
-      isConfigured: false
+      embedUrl: 'https://open.spotify.com/playlist/37i9dQZF1DX4wta20Jg5ne',
+      spotifyUrl: 'https://open.spotify.com/playlist/37i9dQZF1DX4wta20Jg5ne',
+      isConfigured: true
     },
     {
       id: 'focus-mode',
       title: 'Focus Mode',
       subtitle: 'Deep flow states',
-      description: 'Minimal electronic and ambient soundscapes for deep engineering sessions.',
+      description: 'Minimal electronic soundscapes and ambient frequencies for deep engineering sessions.',
       category: 'Focus',
-      embedUrl: '',
-      spotifyUrl: '',
-      isConfigured: false
+      embedUrl: 'https://open.spotify.com/playlist/37i9dQZF1DXdLEN7aqioXM',
+      spotifyUrl: 'https://open.spotify.com/playlist/37i9dQZF1DXdLEN7aqioXM',
+      isConfigured: true
     }
   ]
 };
