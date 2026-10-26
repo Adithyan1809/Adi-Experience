@@ -144,16 +144,21 @@ export const MusicPlayer: React.FC<{ compact?: boolean }> = ({ compact = false }
     }
   }, []);
 
-  // Listen for global pause requests (e.g. from Spotify player or media overlays)
+  // Listen for global pause/resume requests (e.g. from Spotify player or media handoff)
   useEffect(() => {
     const handlePauseAmbient = () => {
       pauseAudio(true);
     };
+    const handleResumeAmbient = () => {
+      playAudio();
+    };
     window.addEventListener('adi:pause-ambient', handlePauseAmbient);
+    window.addEventListener('adi:resume-ambient', handleResumeAmbient);
     return () => {
       window.removeEventListener('adi:pause-ambient', handlePauseAmbient);
+      window.removeEventListener('adi:resume-ambient', handleResumeAmbient);
     };
-  }, [pauseAudio]);
+  }, [pauseAudio, playAudio]);
 
   // Independent play/pause toggle
   const togglePlay = () => {

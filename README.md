@@ -94,6 +94,7 @@ Adi-Experience/
 │   │   ├── personal.ts          # Bio, college, facts, currently me, personality, starters & easter egg
 │   │   ├── spotify.ts           # Playlists, Spotify profile URL, embed URIs & categories
 │   │   ├── archive.ts           # Personal archive entries, categories & summaries
+│   │   ├── chapters.ts          # Chapter order, IDs, numbers & titles for synchronized navigation
 │   │   ├── projects.ts          # Technical projects with verified problems, challenges & tags
 │   │   └── lifestyle.ts         # Journal captions, categories & hasRealPhoto flags
 │   ├── types/
@@ -132,7 +133,9 @@ All playlist configurations live in `src/data/spotify.ts`:
    }
    ```
 3. **Audio coordination**:
-   Whenever a visitor interacts with Spotify or clicks an external link, a custom browser event `adi:pause-ambient` fires automatically, cleanly pausing the local ambient soundtrack so visitors never experience clashing audio.
+   - Integrated with the Spotify iFrame API (`playback_update`) to pause the local ambient soundtrack when Spotify playback actually begins.
+   - Includes a polite manual handoff button (*"Pause background soundtrack"* / *"Resume background track"*) so visitors have transparent, manual control if external scripts are blocked.
+   - Ambient playback is never resumed automatically when Spotify stops; the visitor retains full manual control.
 
 ---
 

@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { lifestyleItems } from '../data/lifestyle';
 import { LifestyleItem } from '../types';
 import { ImageWithFallback } from './ImageWithFallback';
-import { Eye, X, MapPin, Laptop, Dumbbell, Coffee, Footprints, Sparkles, Moon, Image as ImageIcon, ArrowDown } from 'lucide-react';
+import { Eye, X, MapPin, Laptop, Dumbbell, Coffee, Footprints, Sparkles, Moon, ArrowDown } from 'lucide-react';
 
 const cadenceIcons: Record<string, React.ElementType> = {
   everyday: Laptop,
@@ -198,15 +198,6 @@ export const LifestyleGallery: React.FC = () => {
                   </motion.div>
                 );
               })}
-            </div>
-
-            {/* Quiet, tasteful asset guide note */}
-            <div className="p-4 bg-obsidian/70 border border-editorial-subtle rounded-sm flex items-center justify-between gap-4 text-xs font-mono text-stone">
-              <div className="flex items-center gap-2">
-                <ImageIcon className="w-3.5 h-3.5 text-terracotta shrink-0" />
-                <span>Photo gallery ready: add photos to <code className="text-ivory font-mono">public/images/</code> and set <code className="text-terracotta font-mono">hasRealPhoto: true</code> in <code className="text-ivory font-mono">src/data/lifestyle.ts</code></span>
-              </div>
-              <span className="text-[10px] uppercase text-stone/60 hidden sm:inline">Editorial slot</span>
             </div>
           </div>
         )}

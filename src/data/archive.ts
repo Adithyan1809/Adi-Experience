@@ -1,38 +1,44 @@
 import { ArchiveEntry } from '../types';
 
+/**
+ * Personal Archive: "Things worth remembering."
+ *
+ * Each entry can be enabled or disabled with `isConfigured: true | false`.
+ * Dates, categories, tags, and extended content are entirely optional.
+ * Only configured entries with valid titles and summaries are rendered publicly.
+ */
 export const archiveData = {
   heading: 'Things worth remembering.',
-  subheading: 'A small collection of quiet milestones, honest observations, and lessons learned along the way.',
+  subheading: 'A small, quiet collection of observations and notes kept along the way.',
   entries: [
     {
-      id: 'building-friction',
-      title: 'On building things that matter',
-      date: 'Autumn 2024',
+      id: 'simplicity-over-bloat',
+      title: 'On simplicity over bloat',
       category: 'Observation',
-      summary: "The hardest part of software isn't the algorithmic complexity; it's caring enough about edge cases to make something feel effortless.",
-      content: "Early on, it is tempting to believe that technical novelty is the primary mark of good work. But the most durable tools disappear into the background—they simply eliminate friction and respect the user's attention without demanding applause.",
-      tag: 'Craft & Engineering',
+      summary: 'Simple tools with five features done exceptionally well beat bloated products with fifty half-baked features every single time.',
+      content: 'The hardest part of building software is rarely the raw complexity; it is having the restraint to remove friction and respect the user’s attention rather than constantly demanding applause.',
+      tag: 'Engineering Craft',
       isConfigured: true
     },
     {
-      id: 'endurance-habits',
-      title: 'Unglamorous consistency',
-      date: 'Summer 2024',
-      category: 'Lesson',
-      summary: 'Showing up when you have zero inspiration is what actually builds stamina over months.',
-      content: 'Whether working toward a 5 km continuous run or diagnosing a stubborn distributed systems bug at 1 AM, enthusiasm only lasts forty-eight hours. What carries the rest is quiet, repeatable, stubborn habit.',
-      tag: 'Endurance',
-      isConfigured: true
+      id: 'archive-entry-2',
+      title: '',
+      category: '',
+      date: '',
+      summary: '',
+      content: '',
+      tag: '',
+      isConfigured: false
     },
     {
-      id: 'bangalore-cadence',
-      title: 'The Bangalore weather clause',
-      date: 'Monsoon 2024',
-      category: 'Discovery',
-      summary: 'Every outdoor plan in this city is strictly provisional until four in the afternoon.',
-      content: 'Learning to pivot when a sudden afternoon shower turns roads into waterways is Bangalore’s unofficial initiation. It turns out to be a solid reminder that spontaneous detours often make for much better stories anyway.',
-      tag: 'Life in Bangalore',
-      isConfigured: true
+      id: 'archive-entry-3',
+      title: '',
+      category: '',
+      date: '',
+      summary: '',
+      content: '',
+      tag: '',
+      isConfigured: false
     }
   ] as ArchiveEntry[]
 };

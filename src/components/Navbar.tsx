@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X, ArrowUpRight } from 'lucide-react';
 import { personalInfo } from '../data/personal';
+import { useActiveSection } from './ScrollExperience';
+import { chapterIds } from '../data/chapters';
 
 const navLinks = [
   { label: 'About', href: '#about' },
@@ -15,37 +17,16 @@ const navLinks = [
 export const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState('hero');
+  const activeSection = useActiveSection(chapterIds, 'hero');
 
-  // Handle scroll detection and active section spying
+  // Handle header background transition on scroll
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 40);
-
-      // Section spy across all chapters
-      const sections = [
-        'hero',
-        'about',
-        'lifestyle',
-        'currently',
-        'music-room',
-        'personality',
-        'archive',
-        'projects',
-        'contact'
-      ];
-      const scrollPosition = window.scrollY + 200;
-
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const el = document.getElementById(sections[i]);
-        if (el && el.offsetTop <= scrollPosition) {
-          setActiveSection(sections[i]);
-          break;
-        }
-      }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 

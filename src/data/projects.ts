@@ -12,7 +12,7 @@ export const projectsData: ProjectItem[] = [
     learned: 'Designing calming UI states and managing cross-stack state between Django and React.',
     tags: ['React', 'Django', 'MongoDB', 'REST APIs'],
     demoUrl: undefined,
-    repoUrl: 'https://github.com/Adithyan1809',
+    repoUrl: undefined,
     status: 'Featured'
   },
   {
@@ -26,7 +26,7 @@ export const projectsData: ProjectItem[] = [
     learned: 'Handling concurrent video frame buffers and optimizing inference latency under resource constraints.',
     tags: ['Python', 'OpenCV', 'PyTorch', 'Computer Vision'],
     demoUrl: undefined,
-    repoUrl: 'https://github.com/Adithyan1809',
+    repoUrl: undefined,
     status: 'Featured'
   },
   {
@@ -40,7 +40,7 @@ export const projectsData: ProjectItem[] = [
     learned: 'Prompt chaining, deterministic schema validation, and structured extraction from semi-structured PDF text.',
     tags: ['Python', 'LLM Pipelines', 'FastAPI', 'NLP'],
     demoUrl: undefined,
-    repoUrl: 'https://github.com/Adithyan1809',
+    repoUrl: undefined,
     status: 'In Progress'
   }
 ];

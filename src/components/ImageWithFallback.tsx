@@ -101,7 +101,7 @@ export const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
         <div className="flex items-center justify-between w-full pt-4 border-t border-editorial-subtle z-10 text-[10px] font-mono text-stone">
           <div className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-terracotta/70" />
-            <span>Photo slot</span>
+            <span>Visual Frame</span>
           </div>
           <span className="text-stone/70">Bangalore</span>
         </div>

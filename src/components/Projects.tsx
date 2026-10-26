@@ -107,7 +107,7 @@ export const Projects: React.FC = () => {
                         className="inline-flex items-center gap-2 px-3.5 py-2 border border-editorial hover:border-terracotta text-ivory text-xs font-mono uppercase tracking-wider rounded-sm transition-colors focus:outline-none focus:ring-1 focus:ring-terracotta"
                       >
                         <GithubIcon className="w-3.5 h-3.5 text-stone" />
-                        <span>GitHub Profile</span>
+                        <span>Repository</span>
                       </a>
                     )}
 

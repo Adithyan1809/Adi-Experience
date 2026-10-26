@@ -93,11 +93,11 @@ export interface MusicTrackConfig {
 export interface SpotifyPlaylist {
   id: string;
   title: string;
-  subtitle: string;
-  description: string;
-  category: 'Rotation' | 'Late Night' | 'Focus';
+  subtitle?: string;
+  description?: string;
+  category?: 'Rotation' | 'Late Night' | 'Focus' | string;
   embedUrl: string;
-  spotifyUrl: string;
+  spotifyUrl?: string;
   isConfigured: boolean;
 }
 
@@ -111,10 +111,10 @@ export interface SpotifyConfig {
 export interface ArchiveEntry {
   id: string;
   title: string;
-  date: string;
-  category: 'Observation' | 'Milestone' | 'Lesson' | 'Discovery';
+  date?: string;
+  category?: 'Observation' | 'Milestone' | 'Lesson' | 'Discovery' | string;
   summary: string;
-  content: string;
+  content?: string;
   tag?: string;
   isConfigured?: boolean;
 }

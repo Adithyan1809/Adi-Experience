@@ -129,14 +129,8 @@ export const About: React.FC = () => {
                 {aboutData.facts.map((fact, idx) => (
                   <div key={idx} className="py-3 flex items-center justify-between gap-4">
                     <dt className="text-stone font-mono text-xs">{fact.label}</dt>
-                    <dd className="text-ivory font-medium text-right flex items-center gap-1.5">
-                      <span>{fact.value}</span>
-                      {fact.isEditable && (
-                        <span
-                          title="Editable in src/data/personal.ts"
-                          className="w-1.5 h-1.5 rounded-full bg-terracotta/70"
-                        />
-                      )}
+                    <dd className="text-ivory font-medium text-right">
+                      {fact.value}
                     </dd>
                   </div>
                 ))}
@@ -149,7 +143,7 @@ export const About: React.FC = () => {
                 <Sparkles className="w-3.5 h-3.5 text-terracotta" />
                 <span>{personalInfo.fullName}</span>
               </div>
-              <span className="text-stone/70">DSATM • AI & ML</span>
+              <span className="text-stone/70">Engineering • Bangalore</span>
             </div>
           </motion.div>
         </div>
