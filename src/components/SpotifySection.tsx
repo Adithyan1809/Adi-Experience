@@ -56,10 +56,66 @@ const loadSpotifyIframeApi = (): Promise<SpotifyIFrameAPI> => {
         reject(new Error('Failed to load Spotify iFrame API script'));
       };
       document.body.appendChild(script);
+    } else {
+      // If script tag already exists in DOM, monitor for window.SpotifyIframeApi
+      const interval = setInterval(() => {
+        if (window.SpotifyIframeApi) {
+          clearInterval(interval);
+          cachedIFrameAPI = window.SpotifyIframeApi;
+          resolve(window.SpotifyIframeApi);
+        }
+      }, 50);
+
+      setTimeout(() => {
+        clearInterval(interval);
+        if (!cachedIFrameAPI && !window.SpotifyIframeApi) {
+          scriptLoadingPromise = null;
+          reject(new Error('Spotify iFrame API script timeout'));
+        }
+      }, 5000);
     }
   });
 
   return scriptLoadingPromise;
+};
+
+/**
+ * Reusable card image with smooth fade-in and graceful icon fallback
+ */
+const MusicCardImage: React.FC<{ src: string; alt: string; type: 'artist' | 'track' }> = ({
+  src,
+  alt,
+  type
+}) => {
+  const [hasError, setHasError] = useState<boolean>(false);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+
+  return (
+    <div className="relative w-full aspect-[168/71] rounded-xl overflow-hidden bg-[#242424] border border-white/5 flex items-center justify-center">
+      {!hasError && (
+        <img
+          src={src}
+          alt={alt}
+          loading="lazy"
+          onLoad={() => setIsLoaded(true)}
+          onError={() => setHasError(true)}
+          className={`w-full h-full object-cover group-hover:scale-105 transition-all duration-500 ${
+            isLoaded ? 'opacity-100' : 'opacity-0'
+          }`}
+        />
+      )}
+
+      {(!isLoaded || hasError) && (
+        <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#2a2a2a] to-[#1c1c1c] text-stone">
+          {type === 'artist' ? (
+            <Disc className="w-6 h-6 text-stone/40 animate-pulse" />
+          ) : (
+            <Music className="w-6 h-6 text-stone/40 animate-pulse" />
+          )}
+        </div>
+      )}
+    </div>
+  );
 };
 
 export const SpotifySection: React.FC = () => {
@@ -80,7 +136,9 @@ export const SpotifySection: React.FC = () => {
   const embedTargetRef = useRef<HTMLDivElement | null>(null);
   const controllerRef = useRef<SpotifyEmbedController | null>(null);
   const currentLoadedUriRef = useRef<string | null>(null);
-  const isInitializingRef = useRef<boolean>(false);
+
+  // Monotonically increasing setup ID ensures React Strict Mode replay cannot block setup
+  const activeSetupIdRef = useRef<number>(0);
   const lastPauseTimestampRef = useRef<number>(0);
 
   // Check if profile URL is genuine and not a generic homepage link
@@ -134,6 +192,7 @@ export const SpotifySection: React.FC = () => {
   };
 
   // Initialize Spotify iFrame Player API controller or update via loadUri()
+  // Handles React.StrictMode re-mounts cleanly without deadlock
   useEffect(() => {
     if (!hasConfiguredPlaylists || !activePlaylist) return;
 
@@ -147,31 +206,31 @@ export const SpotifySection: React.FC = () => {
           controllerRef.current.loadUri(targetUri);
           currentLoadedUriRef.current = targetUri;
         } catch {
-          // If loadUri failed, allow re-initialization
+          // If loadUri failed, destroy and allow re-initialization
+          try {
+            controllerRef.current.destroy?.();
+          } catch {}
           controllerRef.current = null;
         }
       }
       return;
     }
 
-    // 2. Controller is currently in flight or target element not yet attached
-    if (isInitializingRef.current) return;
     const targetElement = embedTargetRef.current;
     if (!targetElement) return;
 
-    let isCancelled = false;
-    isInitializingRef.current = true;
+    // Monotonically increasing setup ID for this effect invocation
+    const setupId = ++activeSetupIdRef.current;
 
     loadSpotifyIframeApi()
       .then((IFrameAPI) => {
-        if (isCancelled || !embedTargetRef.current) {
-          isInitializingRef.current = false;
+        // If this setup pass was superseded by a newer render/effect or target element is unmounted
+        if (activeSetupIdRef.current !== setupId || !embedTargetRef.current) {
           return;
         }
 
-        // Check if another pass set controller while waiting for API script
+        // If another pass created the controller while waiting for API script
         if (controllerRef.current) {
-          isInitializingRef.current = false;
           controllerRef.current.loadUri(targetUri);
           currentLoadedUriRef.current = targetUri;
           return;
@@ -185,9 +244,8 @@ export const SpotifySection: React.FC = () => {
             height: 352
           },
           (controller) => {
-            isInitializingRef.current = false;
-
-            if (isCancelled) {
+            // Check if this pass was superseded or unmounted before callback returned
+            if (activeSetupIdRef.current !== setupId) {
               try {
                 controller.destroy?.();
               } catch {
@@ -213,7 +271,7 @@ export const SpotifySection: React.FC = () => {
             });
 
             controller.addListener('ready', () => {
-              if (!isCancelled) {
+              if (activeSetupIdRef.current === setupId) {
                 setIsPlayerReady(true);
               }
             });
@@ -221,21 +279,25 @@ export const SpotifySection: React.FC = () => {
         );
       })
       .catch((error) => {
-        isInitializingRef.current = false;
-        if (!isCancelled) {
+        if (activeSetupIdRef.current === setupId) {
           console.warn('Spotify iFrame API loading failed, using fallback iframe', error);
           setApiLoadFailed(true);
         }
       });
 
     return () => {
-      isCancelled = true;
+      // In Strict Mode or on dependency change:
+      // Invalidate setupId so in-flight async callbacks abort cleanly without deadlocking
+      if (activeSetupIdRef.current === setupId) {
+        activeSetupIdRef.current = 0;
+      }
     };
   }, [hasConfiguredPlaylists, activePlaylist, handleHandoff]);
 
   // Clean up controller on component unmount only
   useEffect(() => {
     return () => {
+      activeSetupIdRef.current = 0;
       if (controllerRef.current?.destroy) {
         try {
           controllerRef.current.destroy();
@@ -245,7 +307,6 @@ export const SpotifySection: React.FC = () => {
         controllerRef.current = null;
         currentLoadedUriRef.current = null;
       }
-      isInitializingRef.current = false;
     };
   }, []);
 
@@ -332,7 +393,7 @@ export const SpotifySection: React.FC = () => {
           )}
         </AnimatePresence>
 
-        {/* Display Configured Playlists OR Minimal Tasteful Placeholder */}
+        {/* Display Configured Playlist OR Minimal Tasteful Placeholder */}
         {hasConfiguredPlaylists && activePlaylist ? (
           <div>
             {/* Playlist Selector Tabs (only shown if 2 or more configured) */}
@@ -521,22 +582,22 @@ export const SpotifySection: React.FC = () => {
                     onClick={handleExternalHandoff}
                     className="group relative bg-[#181818]/90 hover:bg-[#202020] border border-editorial hover:border-terracotta/40 rounded-2xl p-3 sm:p-3.5 transition-all duration-300 flex flex-col justify-between shadow-lg hover:shadow-2xl hover:-translate-y-0.5 focus:outline-none focus:ring-1 focus:ring-terracotta"
                   >
-                    {/* Thumbnail Image */}
-                    <div className="relative w-full aspect-[168/71] rounded-xl overflow-hidden bg-charcoal border border-white/5">
-                      <img
-                        src={item.image}
-                        alt={item.name}
-                        loading="lazy"
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
-                    </div>
+                    {/* Thumbnail Image with graceful fallback */}
+                    <MusicCardImage src={item.image} alt={item.name} type={item.type} />
 
                     {/* Details & Spotify Badge */}
                     <div className="pt-3 flex items-end justify-between gap-2">
                       <div className="min-w-0 flex-1">
-                        <h4 className="text-sm font-semibold text-ivory truncate group-hover:text-white transition-colors">
-                          {item.name}
-                        </h4>
+                        <div className="flex items-center gap-1.5">
+                          <h4 className="text-sm font-semibold text-ivory truncate group-hover:text-white transition-colors">
+                            {item.name}
+                          </h4>
+                          {item.isSearch && (
+                            <span className="text-[9px] font-mono uppercase px-1.5 py-0.5 rounded bg-terracotta/20 text-terracotta border border-terracotta/30 shrink-0">
+                              Search
+                            </span>
+                          )}
+                        </div>
                         <p className="text-xs text-stone truncate font-sans capitalize mt-0.5">
                           {item.subtext}
                         </p>

@@ -47,10 +47,10 @@ All personal data, projects, lifestyle snapshots, archive entries, and music tra
 
 ### Sequential Editorial Chapters:
 1. **Chapter 01: Intro** (`#hero`): Editorial opening with ambient soundtrack player, verified bio, and portrait slot.
-2. **Chapter 02: About** (`#about`): Focused introduction, focus areas (AI & Data Systems, Regular Gym Training, Practical Software), IEEE research highlight, and "The short version" dossier.
+2. **Chapter 02: About** (`#about`): Focused introduction, focus areas (AI & Data Systems, Regular Gym Training, Practical Software), IEEE research highlight, and an editorial portrait image card.
 3. **Chapter 03: Cadence** (`#lifestyle`): When photos are configured, displays genuine photography with responsive crops and lightbox; when unconfigured, tastefully defaults to a text-led everyday cadence section rather than empty frames.
 4. **Chapter 04: Lately** (`#currently`): Live bandwidth ("Lately, I've been...") with updated timestamp, building prototypes, learning data systems, 5 km running endurance goal, and shipping open-source.
-5. **Chapter 05: Listening** (`#music-room`): **The Listening Room** featuring up to 3 curated Spotify playlists (*On Repeat*, *After Hours*, *Focus Mode*), lazy-loaded Spotify player embeds, external Spotify profile links, and intelligent audio coordination that pauses local ambient playback when playing Spotify.
+5. **Chapter 05: Listening** (`#music-room`): **The Listening Room** featuring Adi's personal Spotify curation playlist, a dedicated **Favourite Tracks & Artists** card grid (The Weeknd, SZA, Seedhe Maut, Gesaffelstein, and heavy-rotation tracks), and non-destructive ambient audio handoff.
 6. **Chapter 06: Little Things** (`#personality`): A mix of harmless quirks, curiosity rabbit holes, lifestyle preferences, and everyday observations.
 7. **Chapter 07: Archive** (`#archive`): **Personal Archive ("Things worth remembering.")** featuring quiet milestones, lessons learned, and Bangalore observations.
 8. **Chapter 08: Work** (`#projects`): Compact expandable engineering stories for WellNest, Project IRIS, and ResumePilot with honest GitHub profile links, architectural takeaways, and lessons learned.
@@ -111,7 +111,7 @@ Adi-Experience/
 
 ## 🎧 Configuring Spotify ("The Listening Room")
 
-All playlist configurations live in `src/data/spotify.ts`:
+All playlist and favourite track configurations live in `src/data/spotify.ts`:
 
 1. **Add your Spotify profile**:
    Update `profileUrl` with your public profile link:
@@ -120,27 +120,34 @@ All playlist configurations live in `src/data/spotify.ts`:
    ```
    *(The Spotify profile link remains hidden if left blank or unconfigured).*
 
-2. **Add genuine playlists**:
-   In `playlists`, set your playlist embed URL and toggle `isConfigured: true`:
+2. **Curation playlist**:
+   The active personal curation playlist is configured directly in `playlists`:
    ```ts
    {
-     id: 'on-repeat',
-     title: 'Lo-Fi Beats',
-     subtitle: 'Curated downtime rotation',
-     description: 'A selection of chilled instrumental hip-hop and downtempo beats.',
+     id: 'adi-curation',
+     title: 'Current Rotation',
+     subtitle: 'Personal Curation',
+     description: 'The tracks, grooves, and nocturnal soundscapes carrying my days in Bangalore.',
      category: 'Rotation',
-     embedUrl: 'https://open.spotify.com/playlist/37i9dQZF1DWWQRwui0ExPn',
-     spotifyUrl: 'https://open.spotify.com/playlist/37i9dQZF1DWWQRwui0ExPn',
-     isConfigured: true // ← Set to true once embedUrl is set
+     embedUrl: 'https://open.spotify.com/playlist/7cALwbrGI4Fxh1JYsJqNNh?si=F6OQNXZdRoaD1Nfwz7wXgw',
+     spotifyUrl: 'https://open.spotify.com/playlist/7cALwbrGI4Fxh1JYsJqNNh?si=F6OQNXZdRoaD1Nfwz7wXgw',
+     isConfigured: true
    }
    ```
-   *(Playlists marked `isConfigured: false` or with invalid URLs are automatically hidden. If no playlists are configured, a minimal quiet plate is rendered).*
+   *(Tabs are automatically hidden when a single playlist is active, cleanly presenting the player).*
 
-3. **Audio coordination & DOM ownership**:
+3. **Favourite Tracks & Artists Grid**:
+   High-rotation artists and confirmed tracks are configured in `favoriteMusicItems`:
+   - Artists: *The Weeknd*, *SZA*, *Seedhe Maut*, *Gesaffelstein*.
+   - Tracks: *Parda Hata Do (Trap Mix)* (Spotify Search), *Seven (feat. Latto)*, *I Was Never There*, *The Hills*.
+   - Each card features graceful image fallbacks with smooth fade-ins and opens directly on Spotify.
+
+4. **Audio coordination & Strict Mode lifecycle**:
+   - **React.StrictMode Resilient**: Uses a monotonically increasing setup token to eliminate the double-mount race condition under React Strict Mode in development.
    - **Dedicated Embed Target**: Spotify receives an isolated empty target element (`#spotify-embed-target`), ensuring React never reconciles or clears internal iframe children.
-   - **Clean Fallback**: In environments where the external Spotify script fails to load, a resilient official `<iframe>` fallback renders automatically.
+   - **Clean Fallback**: In environments where the external Spotify script fails to load or times out, a resilient official `<iframe>` fallback renders automatically.
    - **Playback Handoff**: Subscribes to `playback_started` and `playback_update` (`!isPaused`) to pause ambient background playback with a 1.5-second debounce.
-   - **External Link Handoff**: Clicking *"Open in Spotify"* or the Spotify profile button triggers the same non-destructive handoff before opening Spotify in a new tab.
+   - **External Link Handoff**: Clicking *"Open in Spotify"*, the Spotify profile button, or any card in the Favourite Tracks & Artists grid triggers the same non-destructive handoff before opening Spotify in a new tab.
    - **Non-Destructive Preference**: Automated and external-link handoffs dispatch `userInitiated: false`, stopping the ambient audio without overwriting the visitor's stored preference in `localStorage`.
    - **Manual Resume Control**: Ambient playback is never resumed automatically when external audio stops; the visitor retains complete control via *"Resume background track"* or the global ambient player widget.
 

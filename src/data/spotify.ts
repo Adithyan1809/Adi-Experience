@@ -111,7 +111,8 @@ export const favoriteMusicItems: FavoriteMusicItem[] = [
     subtext: 'Asha Bhosle, Mohammed Rafi',
     type: 'track',
     image: '/images/music/parda-hata-do.jpg',
-    spotifyUrl: 'https://open.spotify.com/search/Parda%20Hata%20Do'
+    spotifyUrl: 'https://open.spotify.com/search/Parda%20Hata%20Do%20Trap%20Mix',
+    isSearch: true
   },
   {
     id: 'seven',

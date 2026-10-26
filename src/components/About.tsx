@@ -126,8 +126,8 @@ export const About: React.FC = () => {
                 aspect="hero"
                 category="Portrait"
                 badge="Adi"
-                caption="AI/ML student at DSATM, Bangalore"
-                hasRealPhoto={true}
+                caption={personalInfo.heroPhoto.caption}
+                hasRealPhoto={personalInfo.heroPhoto.hasRealPhoto}
                 className="w-full"
               />
 

@@ -134,6 +134,7 @@ export interface FavoriteMusicItem {
   type: 'artist' | 'track';
   image: string;
   spotifyUrl: string;
+  isSearch?: boolean;
 }
 
 export interface ArchiveEntry {
